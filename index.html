@@ -793,6 +793,8 @@
             }
         }
 
+        
+
         </style>
 </head>
 <body>
@@ -1076,11 +1078,20 @@
             }
         }
 
+        
+        .tab-short { display: none; }
+        .tab-full { display: inline; }
+
+        @media (max-width: 768px) {
+            .tab-short { display: inline; }
+            .tab-full { display: none; }
+        }
+
         </style>
 <div class="container">
         <div class="tabs">
             <button class="tab active" onclick="cambiarTab(event, 'recetas')">📋 Recetas</button>
-            <button class="tab" onclick="cambiarTab(event, 'calcular')">💰 Calcular Costos</button>
+            <button class="tab" onclick="cambiarTab(event, 'calcular')"><span class="tab-full">💰 Calcular Costos</span><span class="tab-short">💰 Costos</span></button>
             <button class="tab" onclick="cambiarTab(event, 'ingredientes')">🥄 Ingredientes</button>
             <button class="tab" onclick="cambiarTab(event, 'cookies')">🍪 Cookies</button>
         </div>

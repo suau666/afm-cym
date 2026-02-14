@@ -795,6 +795,62 @@
 
         
 
+        
+        @media (max-width: 768px) {
+            #tablaIngredientes {
+                display: block;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                table-layout: auto;
+            }
+
+            /* Columna Nombre: sticky a la izquierda */
+            #tablaIngredientes th:nth-child(1),
+            #tablaIngredientes td:nth-child(1) {
+                position: sticky;
+                left: 0;
+                z-index: 2;
+                background: white;
+                min-width: 110px;
+                max-width: 130px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            #tablaIngredientes th:nth-child(1) {
+                background: #A0522D;
+                z-index: 3;
+            }
+
+            /* Cantidad y Precio: ancho fijo compacto */
+            #tablaIngredientes th:nth-child(2),
+            #tablaIngredientes td:nth-child(2),
+            #tablaIngredientes th:nth-child(3),
+            #tablaIngredientes td:nth-child(3) {
+                min-width: 100px;
+            }
+
+            /* Precio/u y Acciones: más angostos, quedan al scroll */
+            #tablaIngredientes th:nth-child(4),
+            #tablaIngredientes td:nth-child(4),
+            #tablaIngredientes th:nth-child(5),
+            #tablaIngredientes td:nth-child(5) {
+                min-width: 80px;
+            }
+
+            #tablaIngredientes input {
+                width: 85px !important;
+                font-size: 14px;
+                padding: 5px 4px;
+            }
+
+            #tablaIngredientes th,
+            #tablaIngredientes td {
+                padding: 10px 8px;
+                font-size: 14px;
+            }
+        }
+
         </style>
 </head>
 <body>
@@ -1087,6 +1143,62 @@
             .tab-full { display: none; }
         }
 
+        
+        @media (max-width: 768px) {
+            #tablaIngredientes {
+                display: block;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                table-layout: auto;
+            }
+
+            /* Columna Nombre: sticky a la izquierda */
+            #tablaIngredientes th:nth-child(1),
+            #tablaIngredientes td:nth-child(1) {
+                position: sticky;
+                left: 0;
+                z-index: 2;
+                background: white;
+                min-width: 110px;
+                max-width: 130px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            #tablaIngredientes th:nth-child(1) {
+                background: #A0522D;
+                z-index: 3;
+            }
+
+            /* Cantidad y Precio: ancho fijo compacto */
+            #tablaIngredientes th:nth-child(2),
+            #tablaIngredientes td:nth-child(2),
+            #tablaIngredientes th:nth-child(3),
+            #tablaIngredientes td:nth-child(3) {
+                min-width: 100px;
+            }
+
+            /* Precio/u y Acciones: más angostos, quedan al scroll */
+            #tablaIngredientes th:nth-child(4),
+            #tablaIngredientes td:nth-child(4),
+            #tablaIngredientes th:nth-child(5),
+            #tablaIngredientes td:nth-child(5) {
+                min-width: 80px;
+            }
+
+            #tablaIngredientes input {
+                width: 85px !important;
+                font-size: 14px;
+                padding: 5px 4px;
+            }
+
+            #tablaIngredientes th,
+            #tablaIngredientes td {
+                padding: 10px 8px;
+                font-size: 14px;
+            }
+        }
+
         </style>
 <div class="container">
         <div class="tabs">
@@ -1172,10 +1284,10 @@
                 <thead>
                     <tr>
                         <th>Nombre</th>
-                        <th>Cantidad (gr/ml/unidad)</th>
-                        <th>Precio ($)</th>
-                        <th>Precio por gr/ml/unidad</th>
-                        <th>Acciones</th>
+                        <th>Cantidad</th>
+                        <th>Precio</th>
+                        <th>Precio/u</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody></tbody>

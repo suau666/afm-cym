@@ -1,0 +1,1819 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="data:image/png;base64,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">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Costos - Postres</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #FFF5E6 0%, #FFE4C4 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 3px solid #e0e0e0;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            background: #f8f9fa;
+            border: none;
+            font-size: 17px;
+            font-weight: 600;
+            color: #6c757d;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab:hover {
+            background: #e9ecef;
+            color: #495057;
+        }
+
+        .tab.active {
+            background: white;
+            color: #D2691E;
+            border-bottom: 3px solid #D2691E;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 40px;
+            animation: fadeIn 0.4s;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            color: #8B4513;
+            margin-bottom: 25px;
+            font-size: 32px;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        h3 {
+            color: #8B4513;
+            font-size: 24px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #D2691E 0%, #A0522D 100%);
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin: 5px;
+            box-shadow: 0 4px 15px rgba(210, 105, 30, 0.4);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(210, 105, 30, 0.6);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #CD5C5C 0%, #8B0000 100%);
+            box-shadow: 0 4px 15px rgba(205, 92, 92, 0.4);
+        }
+
+        .btn-danger:hover {
+            box-shadow: 0 6px 20px rgba(205, 92, 92, 0.6);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #9ACD32 0%, #6B8E23 100%);
+            box-shadow: 0 4px 15px rgba(154, 205, 50, 0.4);
+        }
+
+        .btn-success:hover {
+            box-shadow: 0 6px 20px rgba(154, 205, 50, 0.6);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #BC8F8F 0%, #8B7765 100%);
+            box-shadow: 0 4px 15px rgba(188, 143, 143, 0.4);
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 6px 20px rgba(188, 143, 143, 0.6);
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+
+        /* Recetas */
+        .recetas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+            margin-top: 25px;
+        }
+
+        .receta-card {
+            background: #FFEDD8;
+            padding: 25px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .receta-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        .receta-card h3 {
+            color: #8B4513;
+            margin-bottom: 12px;
+            font-size: 22px;
+        }
+
+        .receta-card .fecha {
+            color: #A0522D;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .star-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 5px;
+            transition: transform 0.2s;
+        }
+
+        .star-btn:hover {
+            transform: scale(1.2);
+        }
+
+        .star-btn.starred {
+            color: #D2691E;
+        }
+
+        .star-btn:not(.starred) {
+            color: #DEB887;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.75);
+            z-index: 1000;
+            animation: fadeIn 0.3s;
+        }
+
+        .modal.active {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 35px;
+            border-radius: 20px;
+            max-width: 1100px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 70px rgba(0,0,0,0.4);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 32px;
+            cursor: pointer;
+            color: #a0aec0;
+            transition: color 0.3s;
+        }
+
+        .close-modal:hover {
+            color: #2d3748;
+        }
+
+        /* Formularios */
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #2d3748;
+            font-size: 15px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #D2691E;
+            box-shadow: 0 0 0 3px rgba(210, 105, 30, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 110px;
+        }
+
+        /* Bloques de ingredientes */
+        .bloque-ingredientes {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #FFF9F0;
+            border-radius: 12px;
+            border: 2px solid #e2e8f0;
+        }
+
+        .bloque-header {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .bloque-titulo-input {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #D2691E;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #8B4513;
+        }
+
+        .ingredientes-list {
+            margin-top: 15px;
+        }
+
+        .ingrediente-item {
+            display: grid;
+            gap: 10px;
+            align-items: center;
+            padding: 12px;
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            border: 2px solid #e2e8f0;
+        }
+
+        .ingrediente-item input,
+        .ingrediente-item select {
+            padding: 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .btn-orden {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 5px;
+            color: #8B4513;
+            transition: all 0.2s;
+        }
+
+        .btn-orden:hover:not(:disabled) {
+            color: #D2691E;
+            transform: scale(1.2);
+        }
+
+        .btn-orden:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        /* Tablas */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 25px;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        table th {
+            background: linear-gradient(135deg, #D2691E 0%, #A0522D 100%);
+            color: white;
+            padding: 18px 20px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        table td {
+            padding: 16px 20px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #8B4513;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        table tr:hover {
+            background: #f7fafc;
+        }
+
+        table tr:last-child td {
+            border-bottom: none;
+        }
+
+        table input {
+            padding: 8px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            width: 100%;
+            font-size: 15px;
+            text-align: center;
+        }
+
+        table select {
+            padding: 8px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            width: 100%;
+            font-size: 15px;
+        }
+
+        /* Resumen de costos */
+        .costo-resumen {
+            margin-top: 35px;
+            padding: 30px;
+            background: linear-gradient(135deg, #D2691E 0%, #A0522D 100%);
+            border-radius: 15px;
+            color: white;
+            box-shadow: 0 8px 25px rgba(210, 105, 30, 0.4);
+        }
+
+        .costo-resumen h3 {
+            margin-bottom: 20px;
+            color: white;
+            font-size: 26px;
+        }
+
+        .costo-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .costo-box {
+            background: rgba(255,255,255,0.2);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .costo-box .label {
+            font-size: 15px;
+            margin-bottom: 8px;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+
+        .costo-box .value {
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .detalle-receta h4 {
+            color: #D2691E;
+            margin-bottom: 12px;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .observaciones-box {
+            background: #f7fafc;
+            padding: 18px;
+            border-radius: 10px;
+            margin-top: 12px;
+            border-left: 4px solid #D2691E;
+            color: #8B4513;
+            line-height: 1.6;
+        }
+
+        .btn-ia { background: linear-gradient(135deg, #6B5B95 0%, #4A3F7A 100%); box-shadow: 0 4px 15px rgba(107,91,149,0.4); }
+        .btn-ia:hover { box-shadow: 0 6px 20px rgba(107,91,149,0.6); }
+        .ia-status { padding:20px; border-radius:12px; text-align:center; font-size:16px; margin:15px 0; }
+        .ia-status.procesando { background:#EEF2FF; color:#4338CA; border:2px solid #818CF8; }
+        .ia-status.error { background:#FEF2F2; color:#DC2626; border:2px solid #FCA5A5; }
+        .ia-tabla th { background:linear-gradient(135deg,#D2691E 0%,#A0522D 100%); color:white; padding:12px; text-align:center; font-size:15px; }
+        .ia-tabla td { padding:10px 12px; border-bottom:1px solid #e2e8f0; text-align:center; font-size:15px; color:#8B4513; }
+        .ia-tabla input { width:100px; padding:6px; border:1.5px solid #e2e8f0; border-radius:6px; text-align:center; font-size:14px; }
+        .voz-ondas { display:flex; justify-content:center; align-items:center; gap:6px; margin:20px 0; }
+        .voz-ondas span { display:inline-block; width:8px; background:#D2691E; border-radius:4px; animation:onda 1s ease-in-out infinite; }
+        .voz-ondas span:nth-child(2){animation-delay:.15s} .voz-ondas span:nth-child(3){animation-delay:.3s}
+        .voz-ondas span:nth-child(4){animation-delay:.45s} .voz-ondas span:nth-child(5){animation-delay:.6s}
+        @keyframes onda { 0%,100%{height:10px} 50%{height:40px} }
+        .modal-ia { max-width:680px; }
+        .selector-box {
+            background: #FFF9F0;
+            padding: 25px;
+            border-radius: 15px;
+            border: 2px solid #e2e8f0;
+            margin-bottom: 25px;
+        }
+
+        .btn-tamano {
+            padding: 12px 24px;
+            border: 3px solid #D2691E;
+            background: white;
+            color: #8B4513;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 700;
+            transition: all 0.3s;
+            min-width: 80px;
+        }
+
+        .btn-tamano:hover {
+            background: #FFF5E6;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(210, 105, 30, 0.3);
+        }
+
+        .btn-tamano.active {
+            background: linear-gradient(135deg, #D2691E 0%, #A0522D 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(210, 105, 30, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div id="loadingOverlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(255,245,230,0.97);z-index:9999;display:flex;justify-content:center;align-items:center;">
+        <div style="text-align:center;color:#8B4513;">
+            <div style="font-size:50px;margin-bottom:20px;">🍰</div>
+            <h3 style="font-size:24px;margin-bottom:10px;">Cargando tu calculadora...</h3>
+            <div style="width:50px;height:50px;border:5px solid #e2e8f0;border-top-color:#D2691E;border-radius:50%;animation:spin 1s linear infinite;margin:20px auto;"></div>
+        </div>
+    </div>
+    <style>@keyframes spin { to { transform:rotate(360deg); }}</style>
+<div class="container">
+        <div class="tabs">
+            <button class="tab active" onclick="cambiarTab(event, 'recetas')">📋 Recetas</button>
+            <button class="tab" onclick="cambiarTab(event, 'calcular')">💰 Calcular Costos</button>
+            <button class="tab" onclick="cambiarTab(event, 'ingredientes')">🥄 Ingredientes</button>
+            <button class="tab" onclick="cambiarTab(event, 'cookies')">🍪 Cookies</button>
+        </div>
+
+        <!-- RECETAS -->
+        <div id="recetas" class="tab-content active">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h2>Gestión de Recetas</h2>
+                <button class="btn" onclick="abrirModalNuevaReceta()">➕ Nueva Receta</button>
+            </div>
+            <div class="recetas-grid" id="recetasGrid"></div>
+        </div>
+
+        <!-- CALCULAR COSTOS -->
+        <div id="calcular" class="tab-content">
+            <h2>Calcular Costos de Postre</h2>
+            <div class="selector-box" style="display: flex; gap: 20px; align-items: flex-end; flex-wrap: wrap;">
+                <div class="form-group" style="flex: 1; min-width: 300px; margin-bottom: 0;">
+                    <label style="font-weight: 700; color: #8B4513; font-size: 16px; margin-bottom: 10px; display: block;">📋 Selecciona una Receta:</label>
+                    <select id="selectRecetaCosto" onchange="cargarRecetaParaCosto()" style="font-size: 16px; padding: 14px; border: 2px solid #D2691E; font-weight: 600;">
+                        <option value="">-- Selecciona una receta --</option>
+                    </select>
+                </div>
+                <div class="form-group" style="width: 250px; margin-bottom: 0; display: none;" id="selectorTamano">
+                    <label style="font-weight: 700; color: #8B4513; font-size: 16px; margin-bottom: 10px; display: block;">📏 Tamaño:</label>
+                    <select id="selectTamano" onchange="cambiarTamano()" style="font-size: 16px; padding: 14px; border: 2px solid #D2691E; font-weight: 600;"></select>
+                </div>
+            </div>
+
+            <div id="areaCalculoCosto" style="display: none;">
+                <h3 style="color: #D2691E; margin-top: 20px;">Ingredientes</h3>
+                <button class="btn btn-success" onclick="agregarIngredienteTemp()">➕ Agregar Ingrediente Extra</button>
+                
+                <table id="tablaCalculoCosto" style="margin-top: 15px;">
+                    <thead>
+                        <tr>
+                            <th>Ingrediente</th>
+                            <th>Cantidad (gr/ml/unidad)</th>
+                            <th>Precio Unit.</th>
+                            <th>Costo</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+
+                <div class="costo-resumen">
+                    <h3>Resumen de Costos</h3>
+                    <div class="costo-grid">
+                        <div class="costo-box">
+                            <div class="label">Costo Base</div>
+                            <div class="value" id="costoBase">$0</div>
+                        </div>
+                        <div class="costo-box">
+                            <div class="label">Precio x2.5</div>
+                            <div class="value" id="costox25">$0</div>
+                        </div>
+                        <div class="costo-box">
+                            <div class="label">Precio x3</div>
+                            <div class="value" id="costox3">$0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- INGREDIENTES -->
+        <div id="ingredientes" class="tab-content">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h2>Ingredientes</h2>
+                <div style="display:flex;gap:10px;align-items:center;">
+                    <button class="btn btn-ia" onclick="abrirCamara()" title="Actualizar precios con foto">📷 Cámara</button>
+                    <button class="btn btn-ia" onclick="abrirMicrofono()" title="Actualizar precios por voz">🎤 Voz</button>
+                    <button class="btn" onclick="abrirModalNuevoIngrediente()">➕ Nuevo Ingrediente</button>
+                </div>
+            </div>
+            <table id="tablaIngredientes">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Cantidad (gr/ml/unidad)</th>
+                        <th>Precio ($)</th>
+                        <th>Precio por gr/ml/unidad</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <!-- COOKIES -->
+        <div id="cookies" class="tab-content">
+            <h2>Cookies</h2>
+            <p style="color: #718096; font-size: 18px; text-align: center;">Esta sección se desarrollará próximamente...</p>
+        </div>
+    </div>
+
+    <!-- Modal: Nueva/Editar Receta -->
+    <div id="modalReceta" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="tituloModalReceta">Nueva Receta</h2>
+                <button class="close-modal" onclick="cerrarModalReceta()">×</button>
+            </div>
+            <form id="formReceta" onsubmit="guardarReceta(event)">
+                <div class="form-group">
+                    <label>Nombre de la Receta:</label>
+                    <input type="text" id="nombreReceta" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Observaciones:</label>
+                    <textarea id="observacionesReceta" placeholder="Notas, comentarios, instrucciones especiales..."></textarea>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <label style="font-weight: 600; color: #2d3748; margin-bottom: 12px; display: block;">Tamaños disponibles:</label>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button type="button" class="btn-tamano" data-tamano="C" onclick="toggleTamanoGlobal('C', this)">C</button>
+                        <button type="button" class="btn-tamano" data-tamano="M" onclick="toggleTamanoGlobal('M', this)">M</button>
+                        <button type="button" class="btn-tamano" data-tamano="G" onclick="toggleTamanoGlobal('G', this)">G</button>
+                        <button type="button" class="btn-tamano" data-tamano="XG" onclick="toggleTamanoGlobal('XG', this)">XG</button>
+                    </div>
+                    <input type="hidden" id="tamanosReceta" value="">
+                    <small style="color: #718096; display: block; margin-top: 8px;">Selecciona los tamaños que tendrá la receta. Los tamaños se aplican a todos los bloques.</small>
+                </div>
+
+                <h4 style="margin-top: 20px; color: #D2691E;">Bloques de Ingredientes</h4>
+                <div id="bloquesIngredientes"></div>
+                <button type="button" class="btn btn-success" onclick="agregarBloqueIngredientes()">➕ Agregar Bloque</button>
+
+                <div style="margin-top: 30px; display: flex; gap: 10px; justify-content: space-between;">
+                    <button type="button" class="btn btn-danger" id="btnEliminarReceta" style="display: none;" onclick="eliminarRecetaActual()">🗑️ Eliminar Receta</button>
+                    <div style="display: flex; gap: 10px;">
+                        <button type="button" class="btn btn-secondary" onclick="cerrarModalReceta()">Cancelar</button>
+                        <button type="submit" class="btn">💾 Guardar Receta</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Nuevo Ingrediente -->
+    <div id="modalIngrediente" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Nuevo Ingrediente</h2>
+                <button class="close-modal" onclick="cerrarModalIngrediente()">×</button>
+            </div>
+            <form id="formIngrediente" onsubmit="guardarIngrediente(event)">
+                <div class="form-group">
+                    <label>Nombre del Ingrediente:</label>
+                    <input type="text" id="nombreIngrediente" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Cantidad del Envase (gr o ml):</label>
+                    <input type="number" id="cantidadIngrediente" step="1" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Precio del Envase ($):</label>
+                    <input type="number" id="precioIngrediente" step="1" required>
+                </div>
+
+                <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: flex-end;">
+                    <button type="button" class="btn btn-secondary" onclick="cerrarModalIngrediente()">Cancelar</button>
+                    <button type="submit" class="btn">💾 Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Ver Detalle de Receta -->
+    <div id="modalDetalleReceta" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="tituloDetalleReceta" style="margin: 0;"></h2>
+                <div style="display: flex; gap: 15px; align-items: center;">
+                    <button class="btn" onclick="editarRecetaDesdeDetalle()">✏️ Editar Receta</button>
+                    <button class="close-modal" onclick="cerrarModalDetalleReceta()">×</button>
+                </div>
+            </div>
+            <div class="detalle-receta" id="detalleRecetaContent"></div>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://rdpgokflbghswjwtmlzq.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_L4yEJdwiQw287zZ3eLhCBQ_BZNlk6M5';
+
+        const supa = {
+            async get(tabla) {
+                const r = await fetch(`${SUPABASE_URL}/rest/v1/${tabla}?select=*&order=id`, {
+                    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+                });
+                return r.ok ? r.json() : [];
+            },
+            async upsert(tabla, data) {
+                const r = await fetch(`${SUPABASE_URL}/rest/v1/${tabla}`, {
+                    method: 'POST',
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'resolution=merge-duplicates'
+                    },
+                    body: JSON.stringify(data)
+                });
+                if (!r.ok) {
+                    const err = await r.text();
+                    throw new Error(`Error Supabase (${r.status}): ${err}`);
+                }
+            },
+            async delete(tabla, id) {
+                await fetch(`${SUPABASE_URL}/rest/v1/${tabla}?id=eq.${id}`, {
+                    method: 'DELETE',
+                    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+                });
+            }
+        };
+
+        async function guardarReceta_supa(receta) {
+            await supa.upsert('recetas', receta);
+        }
+
+        async function eliminarReceta_supa(id) {
+            await supa.delete('recetas', id);
+        }
+
+        async function guardarIngrediente_supa(ing) {
+            await supa.upsert('ingredientes', ing);
+        }
+
+        async function eliminarIngrediente_supa(id) {
+            await supa.delete('ingredientes', id);
+        }
+
+        let recetas = [];
+        let ingredientes = [];
+        let recetaEditandoId = null;
+        let recetaDetalleId = null;
+        let tamanoSeleccionado = null;
+        let bloqueIdCounter = 0;
+        let ingredienteIdCounter = 0;
+
+        // Funciones de formato
+        function parsearNumero(str) {
+            if (typeof str === 'number') return str;
+            return parseFloat(String(str).replace(/\./g, '').replace(',', '.')) || 0;
+        }
+
+        function formatearInput(input) {
+            const cursor = input.selectionStart;
+            const raw = input.value.replace(/\./g, '').replace(/[^0-9]/g, '');
+            if (!raw) return;
+            const num = parseInt(raw, 10);
+            const formatted = num.toLocaleString('es-AR');
+            const diff = formatted.length - input.value.length;
+            input.value = formatted;
+            input.setSelectionRange(cursor + diff, cursor + diff);
+        }
+
+        function formatearPrecio(numero) {
+            const redondeado = Math.ceil(numero);
+            return redondeado.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+
+        function formatearNumero(numero) {
+            if (Number.isInteger(numero)) {
+                return numero.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            }
+            const fixed = parseFloat(numero.toFixed(2));
+            return fixed.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+
+        // Datos iniciales
+        // ===== INICIALIZACIÓN SUPABASE =====
+        async function inicializarApp() {
+            mostrarCargando(true);
+            try {
+                const [ings, recs] = await Promise.all([
+                    supa.get('ingredientes'),
+                    supa.get('recetas')
+                ]);
+                ingredientes = ings || [];
+                recetas = (recs || []).map(r => ({
+                    ...r, tamanos: r.tamanos || [], bloques: r.bloques || []
+                }));
+            } catch(e) {
+                console.error('Error Supabase:', e);
+                document.getElementById('loadingOverlay').innerHTML = `
+                    <div style="text-align:center;color:#8B4513;padding:40px;">
+                        <h3 style="font-size:24px;margin-bottom:15px;">❌ Sin conexión</h3>
+                        <p>Verificá tu internet e intentá recargar.</p>
+                        <button onclick="location.reload()" class="btn" style="margin-top:20px;">🔄 Recargar</button>
+                    </div>`;
+                return;
+            }
+            mostrarCargando(false);
+            renderRecetas();
+        }
+
+        function mostrarCargando(show) {
+            document.getElementById('loadingOverlay').style.display = show ? 'flex' : 'none';
+        }
+
+        function cambiarTab(e, tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            e.target.classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+            if (tabName === 'recetas') renderRecetas();
+            if (tabName === 'ingredientes') renderIngredientes();
+            if (tabName === 'calcular') renderSelectRecetas();
+        }
+
+                // ===== RECETAS =====
+        function renderRecetas() {
+            const grid = document.getElementById('recetasGrid');
+            grid.innerHTML = '';
+
+            recetas.forEach(r => {
+                if (r.favorito === undefined) r.favorito = false;
+            });
+
+            const recetasOrdenadas = [...recetas].sort((a, b) => {
+                if (a.favorito && !b.favorito) return -1;
+                if (!a.favorito && b.favorito) return 1;
+                return a.nombre.localeCompare(b.nombre);
+            });
+
+            recetasOrdenadas.forEach(receta => {
+                const card = document.createElement('div');
+                card.className = 'receta-card';
+                const fecha = new Date(receta.fecha).toLocaleDateString('es-AR');
+                const totalIng = receta.bloques ? receta.bloques.reduce((s, b) => s + b.ingredientes.length, 0) : 0;
+                
+                card.innerHTML = `
+                    <button class="star-btn ${receta.favorito ? 'starred' : ''}" onclick="event.stopPropagation(); toggleFavorito(${receta.id})">★</button>
+                    <h3>${receta.nombre}</h3>
+                    <p class="fecha">📅 ${fecha}</p>
+                    <p style="margin-top: 10px; color: #A0522D; font-weight: 500;">${totalIng} ingredientes</p>
+                `;
+                
+                card.addEventListener('click', () => verDetalleReceta(receta.id));
+                grid.appendChild(card);
+            });
+        }
+
+        async function toggleFavorito(recetaId) {
+            const receta = recetas.find(r => r.id === recetaId);
+            receta.favorito = !receta.favorito;
+            await guardarReceta_supa(receta);
+            renderRecetas();
+        }
+
+        function verDetalleReceta(id) {
+            recetaDetalleId = id;
+            const receta = recetas.find(r => r.id === id);
+            document.getElementById('tituloDetalleReceta').textContent = receta.nombre;
+
+            let html = '';
+            
+            const numTamanos = (receta.tamanos && receta.tamanos.length > 0) ? receta.tamanos.length : 1;
+            const anchoColumna = numTamanos === 1 ? '200px' : '150px';
+
+            receta.bloques.forEach((bloque, index) => {
+                html += `<h4 style="margin-top: ${index > 0 ? '25px' : '0'};">${bloque.titulo}:</h4>`;
+                html += `<table style="margin-bottom: 20px; table-layout: fixed;"><colgroup><col style="width: auto;"></colgroup>`;
+                
+                if (receta.tamanos && receta.tamanos.length > 0) {
+                    receta.tamanos.forEach(() => {
+                        html += `<col style="width: ${anchoColumna};">`;
+                    });
+                } else {
+                    html += `<col style="width: ${anchoColumna};">`;
+                }
+                
+                html += '</colgroup><thead><tr><th style="text-align: center;">Ingrediente</th>';
+                
+                if (receta.tamanos && receta.tamanos.length > 0) {
+                    receta.tamanos.forEach(t => html += `<th>${t}</th>`);
+                } else {
+                    html += '<th>Cantidad (gr/ml/unidad)</th>';
+                }
+                
+                html += '</tr></thead><tbody>';
+                
+                bloque.ingredientes.forEach(ing => {
+                    const ingrediente = ingredientes.find(i => i.id === ing.ingredienteId);
+                    if (ingrediente) {
+                        html += `<tr><td style="text-align: center;">${ingrediente.nombre}</td>`;
+                        if (receta.tamanos && receta.tamanos.length > 0) {
+                            receta.tamanos.forEach(t => html += `<td>${formatearNumero(ing.cantidades[t] || 0)}</td>`);
+                        } else {
+                            html += `<td>${formatearNumero(ing.cantidades['Único'] || 0)}</td>`;
+                        }
+                        html += '</tr>';
+                    }
+                });
+                
+                html += '</tbody></table>';
+            });
+
+            html += '<h4 style="margin-top: 25px;">Observaciones:</h4>';
+            html += `<div class="observaciones-box">${receta.observaciones || 'Sin observaciones'}</div>`;
+            
+            document.getElementById('detalleRecetaContent').innerHTML = html;
+            document.getElementById('modalDetalleReceta').classList.add('active');
+        }
+
+        function cerrarModalDetalleReceta() {
+            document.getElementById('modalDetalleReceta').classList.remove('active');
+        }
+
+        function editarRecetaDesdeDetalle() {
+            cerrarModalDetalleReceta();
+            abrirModalEditarReceta(recetaDetalleId);
+        }
+
+        function abrirModalNuevaReceta() {
+            recetaEditandoId = null;
+            bloqueIdCounter = 0;
+            ingredienteIdCounter = 0;
+            document.getElementById('tituloModalReceta').textContent = 'Nueva Receta';
+            document.getElementById('formReceta').reset();
+            document.getElementById('tamanosReceta').value = '';
+            
+            // Resetear botones de tamaño
+            document.querySelectorAll('.btn-tamano').forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById('bloquesIngredientes').innerHTML = '';
+            document.getElementById('btnEliminarReceta').style.display = 'none';
+            agregarBloqueIngredientes();
+            document.getElementById('modalReceta').classList.add('active');
+        }
+
+        function abrirModalEditarReceta(id) {
+            recetaEditandoId = id;
+            bloqueIdCounter = 0;
+            ingredienteIdCounter = 0;
+            const receta = recetas.find(r => r.id === id);
+            
+            document.getElementById('tituloModalReceta').textContent = 'Editar Receta';
+            document.getElementById('nombreReceta').value = receta.nombre;
+            document.getElementById('observacionesReceta').value = receta.observaciones || '';
+            
+            // Resetear botones de tamaño
+            document.querySelectorAll('.btn-tamano').forEach(btn => btn.classList.remove('active'));
+            
+            // Activar botones según tamaños de la receta
+            const tamanosReceta = receta.tamanos && receta.tamanos.length > 0 ? receta.tamanos : [];
+            tamanosReceta.forEach(t => {
+                const btn = document.querySelector(`.btn-tamano[data-tamano="${t}"]`);
+                if (btn) btn.classList.add('active');
+            });
+            
+            document.getElementById('tamanosReceta').value = tamanosReceta.join(', ');
+            document.getElementById('btnEliminarReceta').style.display = 'block';
+            document.getElementById('bloquesIngredientes').innerHTML = '';
+            
+            receta.bloques.forEach(bloque => {
+                agregarBloqueIngredientes(bloque);
+            });
+
+            document.getElementById('modalReceta').classList.add('active');
+        }
+
+        function toggleTamanoGlobal(tamano, btn) {
+            btn.classList.toggle('active');
+            
+            const botonesActivos = Array.from(document.querySelectorAll('.btn-tamano.active'))
+                .map(b => b.dataset.tamano);
+            
+            document.getElementById('tamanosReceta').value = botonesActivos.join(', ');
+            actualizarTodosLosBloques();
+        }
+
+        function cerrarModalReceta() {
+            document.getElementById('modalReceta').classList.remove('active');
+        }
+
+        function actualizarTodosLosBloques() {
+            const bloques = document.querySelectorAll('.bloque-ingredientes');
+            bloques.forEach(bloqueEl => {
+                const bloqueId = parseInt(bloqueEl.dataset.bloqueId);
+                const items = bloqueEl.querySelectorAll('.ingrediente-item');
+                items.forEach(item => {
+                    const ingId = parseInt(item.dataset.ingId);
+                    actualizarInputsTamanos(bloqueId, ingId, item);
+                });
+            });
+            // Sincronizar encabezados después de que el DOM actualice
+            requestAnimationFrame(() => {
+                bloques.forEach(bloqueEl => {
+                    sincronizarEncabezado(parseInt(bloqueEl.dataset.bloqueId));
+                });
+            });
+        }
+
+        function actualizarEncabezadosBloque(bloqueId) {
+            requestAnimationFrame(() => sincronizarEncabezado(bloqueId));
+        }
+
+        function sincronizarEncabezado(bloqueId) {
+            const bloqueEl = document.querySelector(`[data-bloque-id="${bloqueId}"]`);
+            if (!bloqueEl) return;
+            const viejo = bloqueEl.querySelector('.encabezados-columnas');
+            if (viejo) viejo.remove();
+            const tamanos = document.getElementById('tamanosReceta').value.split(',').map(t => t.trim()).filter(t => t);
+            if (tamanos.length === 0) return;
+            const primerItem = bloqueEl.querySelector('.ingrediente-item');
+            if (!primerItem) return;
+            const celdas = primerItem.children;
+            const anchoOrden    = celdas[0].getBoundingClientRect().width;
+            const anchoSelect   = primerItem.querySelector('.ingrediente-select').getBoundingClientRect().width;
+            const anchoInputs   = Array.from(primerItem.querySelectorAll('.inputs-cantidades input')).map(i => i.getBoundingClientRect().width);
+            const anchoEliminar = celdas[celdas.length - 1].getBoundingClientRect().width;
+            const enc = document.createElement('div');
+            enc.className = 'encabezados-columnas';
+            enc.style.cssText = 'display:flex; gap:10px; margin-bottom:10px; padding:0 12px; font-weight:600; color:#8B4513; font-size:14px; align-items:center;';
+            const mk = (w, txt) => {
+                const d = document.createElement('div');
+                d.style.cssText = `width:${w}px; min-width:${w}px; flex-shrink:0; text-align:center;`;
+                if (txt) d.textContent = txt;
+                return d;
+            };
+            enc.appendChild(mk(anchoOrden, ''));
+            enc.appendChild(mk(anchoSelect, 'Ingrediente'));
+            tamanos.forEach((t, i) => enc.appendChild(mk(anchoInputs[i] || 115, t)));
+            enc.appendChild(mk(anchoEliminar, ''));
+            bloqueEl.querySelector('.bloque-header').insertAdjacentElement('afterend', enc);
+        }
+
+        function actualizarInputsTamanos(bloqueId, ingId, itemEl) {
+            const tamanos = document.getElementById('tamanosReceta').value.split(',').map(t => t.trim()).filter(t => t);
+            const numColumnas = tamanos.length > 0 ? tamanos.length : 1;
+            const anchoColumna = numColumnas === 4 ? '115px' : (numColumnas === 3 ? '130px' : (numColumnas === 2 ? '160px' : '200px'));
+            itemEl.style.gridTemplateColumns = `50px minmax(200px, 1fr) ${Array(numColumnas).fill(anchoColumna).join(' ')} 110px`;
+            
+            const inputsContainer = itemEl.querySelector('.inputs-cantidades');
+            if (!inputsContainer) return;
+            
+            const valoresActuales = {};
+            inputsContainer.querySelectorAll('input[type="number"]').forEach(inp => {
+                const nombre = inp.dataset.tamano || 'Único';
+                valoresActuales[nombre] = inp.value;
+            });
+            
+            inputsContainer.innerHTML = '';
+            
+            if (tamanos.length > 0) {
+                tamanos.forEach(t => {
+                    const val = valoresActuales[t] || '';
+                    const input = document.createElement('input');
+                    input.type = 'number';
+                    input.step = '1';
+                    input.value = val;
+                    input.dataset.tamano = t;
+                    input.style.textAlign = 'center';
+                    input.style.padding = '10px';
+                    input.style.border = '2px solid #e2e8f0';
+                    input.style.borderRadius = '8px';
+                    input.style.fontSize = '14px';
+                    inputsContainer.appendChild(input);
+                });
+            } else {
+                const val = valoresActuales['Único'] || '';
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.step = '1';
+                input.value = val;
+                input.dataset.tamano = 'Único';
+                input.style.textAlign = 'center';
+                input.style.padding = '10px';
+                input.style.border = '2px solid #e2e8f0';
+                input.style.borderRadius = '8px';
+                input.style.fontSize = '14px';
+                inputsContainer.appendChild(input);
+            }
+        }
+
+        function agregarBloqueIngredientes(datosBloque = null) {
+            const bloqueId = bloqueIdCounter++;
+            const container = document.getElementById('bloquesIngredientes');
+            const div = document.createElement('div');
+            div.className = 'bloque-ingredientes';
+            div.dataset.bloqueId = bloqueId;
+            const titulo = datosBloque ? datosBloque.titulo : '';
+            div.innerHTML = `
+                <div class="bloque-header">
+                    <input type="text" class="bloque-titulo-input" placeholder="Título (ej: Masa, Relleno)" value="${titulo}" required>
+                    <button type="button" class="btn btn-danger btn-small" onclick="eliminarBloque(${bloqueId})">🗑️</button>
+                </div>
+                <div class="ingredientes-list" data-bloque="${bloqueId}"></div>
+                <button type="button" class="btn btn-success btn-small" onclick="agregarIngredienteABloque(${bloqueId})">➕ Ingrediente</button>
+            `;
+            container.appendChild(div);
+            if (datosBloque && datosBloque.ingredientes) {
+                datosBloque.ingredientes.forEach(ing => agregarIngredienteABloque(bloqueId, ing));
+            } else {
+                agregarIngredienteABloque(bloqueId);
+            }
+            // Encabezado dinámico después de renderizar
+            requestAnimationFrame(() => sincronizarEncabezado(bloqueId));
+        }
+
+        function eliminarBloque(bloqueId) {
+            const bloque = document.querySelector(`[data-bloque-id="${bloqueId}"]`);
+            if (bloque) bloque.remove();
+        }
+
+        function agregarIngredienteABloque(bloqueId, datosIng = null) {
+            const container = document.querySelector(`.ingredientes-list[data-bloque="${bloqueId}"]`);
+            const ingId = ingredienteIdCounter++;
+            
+            const tamanos = document.getElementById('tamanosReceta').value.split(',').map(t => t.trim()).filter(t => t);
+            
+            const ingredientesDelBloque = Array.from(container.querySelectorAll('.ingrediente-select'))
+                .map(s => parseInt(s.value))
+                .filter(v => v);
+            
+            const ingredientesDisponibles = ingredientes.filter(ing => !ingredientesDelBloque.includes(ing.id));
+            
+            const div = document.createElement('div');
+            div.className = 'ingrediente-item';
+            div.dataset.ingId = ingId;
+            div.dataset.bloqueId = bloqueId;
+            
+            const numColumnas = tamanos.length > 0 ? tamanos.length : 1;
+            const anchoColumna = numColumnas === 4 ? '115px' : (numColumnas === 3 ? '130px' : (numColumnas === 2 ? '160px' : '200px'));
+            div.style.gridTemplateColumns = `50px minmax(200px, 1fr) ${Array(numColumnas).fill(anchoColumna).join(' ')} 110px`;
+            
+            let optionsHTML = '<option value="">-- Selecciona --</option>';
+            ingredientesDisponibles.forEach(ing => {
+                const selected = datosIng && ing.id === datosIng.ingredienteId ? 'selected' : '';
+                optionsHTML += `<option value="${ing.id}" ${selected}>${ing.nombre}</option>`;
+            });
+            
+            if (datosIng && !ingredientesDisponibles.find(i => i.id === datosIng.ingredienteId)) {
+                const ingActual = ingredientes.find(i => i.id === datosIng.ingredienteId);
+                if (ingActual) {
+                    optionsHTML += `<option value="${ingActual.id}" selected>${ingActual.nombre}</option>`;
+                }
+            }
+            
+            let inputsHTML = '<div class="inputs-cantidades" style="display: contents;">';
+            if (tamanos.length > 0) {
+                tamanos.forEach(t => {
+                    const val = datosIng && datosIng.cantidades ? (datosIng.cantidades[t] || '') : '';
+                    inputsHTML += `<input type="number" data-tamano="${t}" value="${val}" step="1" style="text-align: center; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 14px;">`;
+                });
+            } else {
+                const val = datosIng && datosIng.cantidades ? (datosIng.cantidades['Único'] || '') : '';
+                inputsHTML += `<input type="number" data-tamano="Único" value="${val}" step="1" style="text-align: center; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 14px;">`;
+            }
+            inputsHTML += '</div>';
+            
+            div.innerHTML = `
+                <div style="display: flex; flex-direction: column; gap: 3px; align-items: center;">
+                    <button type="button" class="btn-orden" onclick="moverIngrediente(${bloqueId}, ${ingId}, 'up')">▲</button>
+                    <button type="button" class="btn-orden" onclick="moverIngrediente(${bloqueId}, ${ingId}, 'down')">▼</button>
+                </div>
+                <select class="ingrediente-select" required onchange="actualizarOpcionesBloque(${bloqueId})">${optionsHTML}</select>
+                ${inputsHTML}
+                <div style="text-align: center;">
+                    <button type="button" class="btn btn-danger btn-small" onclick="eliminarIngredienteDeBloque(${ingId})">🗑️</button>
+                </div>
+            `;
+            
+            container.appendChild(div);
+            actualizarBotonesOrden(bloqueId);
+            // Re-sincronizar encabezado con medidas reales
+            requestAnimationFrame(() => sincronizarEncabezado(bloqueId));
+        }
+
+        function eliminarIngredienteDeBloque(ingId) {
+            const item = document.querySelector(`[data-ing-id="${ingId}"]`);
+            if (item) {
+                const bloqueId = parseInt(item.dataset.bloqueId);
+                item.remove();
+                actualizarOpcionesBloque(bloqueId);
+                actualizarBotonesOrden(bloqueId);
+            }
+        }
+
+        function moverIngrediente(bloqueId, ingId, direccion) {
+            const container = document.querySelector(`.ingredientes-list[data-bloque="${bloqueId}"]`);
+            const item = document.querySelector(`[data-ing-id="${ingId}"]`);
+            
+            if (direccion === 'up' && item.previousElementSibling) {
+                container.insertBefore(item, item.previousElementSibling);
+            } else if (direccion === 'down' && item.nextElementSibling) {
+                container.insertBefore(item.nextElementSibling, item);
+            }
+            
+            actualizarBotonesOrden(bloqueId);
+        }
+
+        function actualizarBotonesOrden(bloqueId) {
+            const container = document.querySelector(`.ingredientes-list[data-bloque="${bloqueId}"]`);
+            const items = Array.from(container.children);
+            
+            items.forEach((item, index) => {
+                const btnUp = item.querySelector('.btn-orden:first-child');
+                const btnDown = item.querySelector('.btn-orden:last-child');
+                
+                btnUp.disabled = index === 0;
+                btnDown.disabled = index === items.length - 1;
+            });
+        }
+
+        function actualizarOpcionesBloque(bloqueId) {
+            const container = document.querySelector(`.ingredientes-list[data-bloque="${bloqueId}"]`);
+            const items = Array.from(container.querySelectorAll('.ingrediente-item'));
+            
+            const seleccionados = items
+                .map(item => parseInt(item.querySelector('.ingrediente-select').value))
+                .filter(v => v);
+            
+            items.forEach(item => {
+                const select = item.querySelector('.ingrediente-select');
+                const valorActual = parseInt(select.value);
+                
+                const disponibles = ingredientes.filter(ing => 
+                    !seleccionados.includes(ing.id) || ing.id === valorActual
+                );
+                
+                let optionsHTML = '<option value="">-- Selecciona --</option>';
+                disponibles.forEach(ing => {
+                    const selected = ing.id === valorActual ? 'selected' : '';
+                    optionsHTML += `<option value="${ing.id}" ${selected}>${ing.nombre}</option>`;
+                });
+                
+                select.innerHTML = optionsHTML;
+            });
+        }
+
+        async function guardarReceta(e) {
+            e.preventDefault();
+
+            const nombre = document.getElementById('nombreReceta').value.trim();
+            const observaciones = document.getElementById('observacionesReceta').value.trim();
+            const tamanosStr = document.getElementById('tamanosReceta').value.trim();
+            const tamanos = tamanosStr ? tamanosStr.split(',').map(t => t.trim()).filter(t => t) : ['Único'];
+            
+            const bloquesData = [];
+            const bloquesElements = document.querySelectorAll('.bloque-ingredientes');
+            
+            bloquesElements.forEach(bloqueEl => {
+                const tituloInput = bloqueEl.querySelector('.bloque-titulo-input');
+                if (!tituloInput) return;
+                
+                const titulo = tituloInput.value.trim();
+                if (!titulo) return;
+                
+                const ingredientesEl = bloqueEl.querySelectorAll('.ingrediente-item');
+                const ingredientesData = [];
+                
+                ingredientesEl.forEach(ingEl => {
+                    const select = ingEl.querySelector('.ingrediente-select');
+                    if (!select) return;
+                    
+                    const ingredienteId = parseInt(select.value);
+                    if (!ingredienteId) return;
+                    
+                    const cantidades = {};
+                    const inputs = ingEl.querySelectorAll('.inputs-cantidades input[type="number"]');
+                    
+                    inputs.forEach(input => {
+                        const tamano = input.dataset.tamano;
+                        const val = parseFloat(input.value);
+                        cantidades[tamano] = isNaN(val) ? 0 : val;
+                    });
+                    
+                    ingredientesData.push({ ingredienteId, cantidades });
+                });
+                
+                if (ingredientesData.length > 0) {
+                    bloquesData.push({ titulo, ingredientes: ingredientesData });
+                }
+            });
+
+            if (bloquesData.length === 0) {
+                alert('Debes agregar al menos un bloque con ingredientes');
+                return;
+            }
+
+            // Mostrar estado guardando
+            const btnGuardar = document.querySelector('#formReceta button[type="submit"]');
+            const textoOriginal = btnGuardar ? btnGuardar.textContent : '';
+            if (btnGuardar) { btnGuardar.textContent = '⏳ Guardando...'; btnGuardar.disabled = true; }
+
+            try {
+                if (recetaEditandoId) {
+                    const receta = recetas.find(r => r.id === recetaEditandoId);
+                    receta.nombre = nombre;
+                    receta.observaciones = observaciones;
+                    receta.tamanos = tamanos;
+                    receta.bloques = bloquesData;
+                    console.log('Guardando receta:', JSON.stringify({id: receta.id, nombre: receta.nombre, bloques: receta.bloques.length}));
+                    await guardarReceta_supa(receta);
+                } else {
+                    const nueva = {
+                        id: Date.now(), nombre, observaciones,
+                        fecha: new Date().toISOString(),
+                        favorito: false, tamanos, bloques: bloquesData
+                    };
+                    recetas.push(nueva);
+                    await guardarReceta_supa(nueva);
+                }
+                renderRecetas();
+                cerrarModalReceta();
+            } catch(err) {
+                console.error('Error guardando:', err);
+                alert('❌ Error al guardar. Verificá tu conexión e intentá de nuevo.');
+                if (btnGuardar) { btnGuardar.textContent = textoOriginal; btnGuardar.disabled = false; }
+            }
+        }
+
+        async function eliminarRecetaActual() {
+            if (confirm('¿Estás seguro de eliminar esta receta?')) {
+                await eliminarReceta_supa(recetaEditandoId);
+                recetas = recetas.filter(r => r.id !== recetaEditandoId);
+                renderRecetas();
+                cerrarModalReceta();
+            }
+        }
+
+        // ===== INGREDIENTES =====
+        function renderIngredientes() {
+            const tbody = document.querySelector('#tablaIngredientes tbody');
+            tbody.innerHTML = '';
+            const ordenados = [...ingredientes].sort((a, b) => a.nombre.localeCompare(b.nombre));
+            ordenados.forEach(ing => {
+                const precioUnit = ing.precio / ing.cantidad;
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${ing.nombre}</td>
+                    <td><input type="text" value="${formatearPrecio(ing.cantidad)}" style="width:110px;text-align:center;padding:6px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:15px;" oninput="formatearInput(this)" onchange="actualizarCampoIngrediente(${ing.id},'cantidad',parsearNumero(this.value))"></td>
+                    <td><input type="text" value="${formatearPrecio(ing.precio)}" style="width:110px;text-align:center;padding:6px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:15px;" oninput="formatearInput(this)" onchange="actualizarCampoIngrediente(${ing.id},'precio',parsearNumero(this.value))"></td>
+                    <td class="precio-unit-${ing.id}">$${formatearNumero(precioUnit)}</td>
+                    <td><button class="btn btn-danger btn-small" onclick="eliminarIngrediente(${ing.id})">🗑️</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        async function actualizarCampoIngrediente(id, campo, valor) {
+            const ing = ingredientes.find(i => i.id === id);
+            if (!ing) return;
+            ing[campo] = parseFloat(valor) || 0;
+            await guardarIngrediente_supa(ing);
+            const cell = document.querySelector('.precio-unit-' + id);
+            if (cell) cell.textContent = '$' + formatearNumero(ing.precio / ing.cantidad);
+        }
+
+                function abrirModalNuevoIngrediente() {
+            document.getElementById('formIngrediente').reset();
+            document.getElementById('formIngrediente').dataset.editId = '';
+            document.getElementById('modalIngrediente').classList.add('active');
+        }
+
+        function editarIngrediente(id) {
+            const ing = ingredientes.find(i => i.id === id);
+            document.getElementById('nombreIngrediente').value = ing.nombre;
+            document.getElementById('cantidadIngrediente').value = ing.cantidad;
+            document.getElementById('precioIngrediente').value = ing.precio;
+            document.getElementById('formIngrediente').dataset.editId = id;
+            document.getElementById('modalIngrediente').classList.add('active');
+        }
+
+        function cerrarModalIngrediente() {
+            document.getElementById('modalIngrediente').classList.remove('active');
+        }
+
+        async function guardarIngrediente(e) {
+            e.preventDefault();
+
+            const nombre = document.getElementById('nombreIngrediente').value;
+            const cantidad = parseFloat(document.getElementById('cantidadIngrediente').value);
+            const precio = parseFloat(document.getElementById('precioIngrediente').value);
+            const editId = document.getElementById('formIngrediente').dataset.editId;
+
+            if (editId) {
+                const ing = ingredientes.find(i => i.id == editId);
+                ing.nombre = nombre; ing.cantidad = cantidad; ing.precio = precio;
+                await guardarIngrediente_supa(ing);
+            } else {
+                const nuevo = { id: Date.now(), nombre, cantidad, precio };
+                ingredientes.push(nuevo);
+                await guardarIngrediente_supa(nuevo);
+            }
+            renderIngredientes();
+            cerrarModalIngrediente();
+        }
+
+        async function eliminarIngrediente(id) {
+            if (confirm('¿Eliminar este ingrediente?')) {
+                await eliminarIngrediente_supa(id);
+                ingredientes = ingredientes.filter(i => i.id !== id);
+                renderIngredientes();
+            }
+        }
+
+        // ===== CALCULAR COSTOS =====
+        let ingredientesTemporales = [];
+        let recetaActual = null;
+
+        function renderSelectRecetas() {
+            const select = document.getElementById('selectRecetaCosto');
+            select.innerHTML = '<option value="">-- Selecciona una receta --</option>';
+            
+            const ordenadas = [...recetas].sort((a, b) => a.nombre.localeCompare(b.nombre));
+            ordenadas.forEach(r => {
+                select.innerHTML += `<option value="${r.id}">${r.nombre}</option>`;
+            });
+        }
+
+        function cargarRecetaParaCosto() {
+            const select = document.getElementById('selectRecetaCosto');
+            const recetaId = parseInt(select.value);
+
+            if (!recetaId) {
+                document.getElementById('areaCalculoCosto').style.display = 'none';
+                document.getElementById('selectorTamano').style.display = 'none';
+                return;
+            }
+
+            recetaActual = recetas.find(r => r.id === recetaId);
+            
+            if (recetaActual.tamanos && recetaActual.tamanos.length > 0 && recetaActual.tamanos[0] !== 'Único') {
+                const selectTamano = document.getElementById('selectTamano');
+                selectTamano.innerHTML = '';
+                recetaActual.tamanos.forEach(t => {
+                    selectTamano.innerHTML += `<option value="${t}">${t}</option>`;
+                });
+                tamanoSeleccionado = recetaActual.tamanos[0];
+                document.getElementById('selectorTamano').style.display = 'block';
+            } else {
+                tamanoSeleccionado = 'Único';
+                document.getElementById('selectorTamano').style.display = 'none';
+            }
+
+            cargarIngredientesDeReceta();
+            document.getElementById('areaCalculoCosto').style.display = 'block';
+        }
+
+        function cambiarTamano() {
+            tamanoSeleccionado = document.getElementById('selectTamano').value;
+            cargarIngredientesDeReceta();
+        }
+
+        function cargarIngredientesDeReceta() {
+            ingredientesTemporales = [];
+            const ingredientesMap = new Map();
+            
+            recetaActual.bloques.forEach(bloque => {
+                bloque.ingredientes.forEach(ing => {
+                    const cantidad = ing.cantidades[tamanoSeleccionado] || 0;
+                    if (ingredientesMap.has(ing.ingredienteId)) {
+                        ingredientesMap.set(ing.ingredienteId, ingredientesMap.get(ing.ingredienteId) + cantidad);
+                    } else {
+                        ingredientesMap.set(ing.ingredienteId, cantidad);
+                    }
+                });
+            });
+            
+            ingredientesMap.forEach((cantidad, ingredienteId) => {
+                ingredientesTemporales.push({
+                    ingredienteId,
+                    cantidad,
+                    esExtra: false
+                });
+            });
+
+            renderTablaCalculoCosto();
+        }
+
+        function agregarIngredienteTemp() {
+            if (ingredientes.length === 0) {
+                alert('Primero debes agregar ingredientes');
+                return;
+            }
+
+            ingredientesTemporales.push({
+                ingredienteId: ingredientes[0].id,
+                cantidad: 0,
+                esExtra: true
+            });
+
+            renderTablaCalculoCosto();
+        }
+
+        function eliminarIngredienteTemp(index) {
+            ingredientesTemporales.splice(index, 1);
+            renderTablaCalculoCosto();
+        }
+
+        function renderTablaCalculoCosto() {
+            const tbody = document.querySelector('#tablaCalculoCosto tbody');
+            tbody.innerHTML = '';
+
+            ingredientesTemporales.forEach((item, index) => {
+                const ingrediente = ingredientes.find(i => i.id === item.ingredienteId);
+                if (!ingrediente) return;
+
+                const precioUnit = ingrediente.precio / ingrediente.cantidad;
+                const costo = item.cantidad * precioUnit;
+
+                let selectOptions = '';
+                ingredientes.forEach(ing => {
+                    const selected = ing.id === item.ingredienteId ? 'selected' : '';
+                    selectOptions += `<option value="${ing.id}" ${selected}>${ing.nombre}</option>`;
+                });
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td>
+                            ${item.esExtra ? 
+                                `<select onchange="actualizarIngredienteTemp(${index}, this.value)">${selectOptions}</select>` :
+                                ingrediente.nombre
+                            }
+                        </td>
+                        <td><input type="text" value="${formatearPrecio(item.cantidad)}" style="text-align:center;" oninput="formatearInput(this)" onchange="actualizarCantidadTemp(${index}, parsearNumero(this.value))"></td>
+                        <td>$${formatearNumero(precioUnit)}</td>
+                        <td id="costo-${index}">$${formatearNumero(costo)}</td>
+                        <td>
+                            <button class="btn btn-danger btn-small" onclick="eliminarIngredienteTemp(${index})">🗑️</button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            calcularCostoTotal();
+        }
+
+        function actualizarIngredienteTemp(index, ingredienteId) {
+            ingredientesTemporales[index].ingredienteId = parseInt(ingredienteId);
+            renderTablaCalculoCosto();
+        }
+
+        function actualizarCantidadTemp(index, cantidad) {
+            ingredientesTemporales[index].cantidad = parseFloat(cantidad) || 0;
+            
+            const ingrediente = ingredientes.find(i => i.id === ingredientesTemporales[index].ingredienteId);
+            if (ingrediente) {
+                const precioUnit = ingrediente.precio / ingrediente.cantidad;
+                const costo = ingredientesTemporales[index].cantidad * precioUnit;
+                const celda = document.getElementById(`costo-${index}`);
+                if (celda) {
+                    celda.textContent = '$' + formatearNumero(costo);
+                }
+            }
+            
+            calcularCostoTotal();
+        }
+
+        function calcularCostoTotal() {
+            let costoMultiplicable = 0;
+            let costoNoMultiplicable = 0;
+
+            ingredientesTemporales.forEach(item => {
+                const ingrediente = ingredientes.find(i => i.id === item.ingredienteId);
+                if (!ingrediente) return;
+
+                const precioUnit = ingrediente.precio / ingrediente.cantidad;
+                const costo = item.cantidad * precioUnit;
+
+                const noMultiplicar = ['bandeja', 'base', 'sticker', 'caja'].some(palabra => 
+                    ingrediente.nombre.toLowerCase().includes(palabra)
+                );
+
+                if (noMultiplicar) {
+                    costoNoMultiplicable += costo;
+                } else {
+                    costoMultiplicable += costo;
+                }
+            });
+
+            const costoBase = costoMultiplicable + costoNoMultiplicable;
+            const costox25 = (costoMultiplicable * 2.5) + costoNoMultiplicable;
+            const costox3 = (costoMultiplicable * 3) + costoNoMultiplicable;
+
+            document.getElementById('costoBase').textContent = '$' + formatearPrecio(costoBase);
+            document.getElementById('costox25').textContent = '$' + formatearPrecio(costox25);
+            document.getElementById('costox3').textContent = '$' + formatearPrecio(costox3);
+        }
+
+        inicializarApp();
+    </script>
+
+    <!-- Modal Cámara -->
+    <div id="modalCamara" class="modal">
+        <div class="modal-content modal-ia">
+            <div class="modal-header">
+                <h2>📷 Actualizar precios con foto</h2>
+                <button class="close-modal" onclick="cerrarCamara()">×</button>
+            </div>
+            <p style="color:#718096;margin-bottom:15px;">Tomá una foto de un producto y la IA reconocerá nombre, cantidad y precio.</p>
+            <div style="display:flex;gap:10px;margin-bottom:15px;flex-wrap:wrap;">
+                <label class="btn" style="cursor:pointer;">📂 Cargar imagen<input type="file" accept="image/*" id="inputImagenIA" style="display:none;" onchange="procesarImagenIA(event)"></label>
+                <button class="btn btn-secondary" onclick="document.getElementById('inputImagenIA').setAttribute('capture','environment');document.getElementById('inputImagenIA').click()">📸 Usar cámara</button>
+            </div>
+            <div id="previewContainer" style="display:none;"><img id="previewImg" style="max-width:100%;border-radius:10px;max-height:220px;object-fit:contain;margin:10px 0;"></div>
+            <div id="camaraStatus" class="ia-status procesando" style="display:none;"></div>
+            <div id="camaraResultado" style="display:none;">
+                <h4 style="color:#D2691E;margin-bottom:10px;">Revisá y editá si es necesario:</h4>
+                <table class="ia-tabla" style="width:100%;border-collapse:collapse;margin:10px 0;">
+                    <thead><tr><th>Nombre</th><th>Cantidad</th><th>Precio ($)</th><th>Estado</th></tr></thead>
+                    <tbody id="camaraResultadoBody"></tbody>
+                </table>
+                <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:15px;">
+                    <button class="btn btn-secondary" onclick="cerrarCamara()">Cancelar</button>
+                    <button class="btn" onclick="confirmarActualizacionIA('camara')">✅ Confirmar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Micrófono -->
+    <div id="modalMicrofono" class="modal">
+        <div class="modal-content modal-ia">
+            <div class="modal-header">
+                <h2>🎤 Actualizar precios por voz</h2>
+                <button class="close-modal" onclick="cerrarMicrofono()">×</button>
+            </div>
+            <p style="color:#718096;margin-bottom:10px;">Decí: <em>"Azúcar 1000 gramos 500 pesos"</em>. Podés mencionar varios productos seguidos.</p>
+            <div id="vozOndas" class="voz-ondas" style="display:none;"><span></span><span></span><span></span><span></span><span></span></div>
+            <div id="micTexto" style="background:#FFF9F0;border:2px solid #e2e8f0;border-radius:10px;padding:15px;min-height:60px;text-align:left;color:#8B4513;font-size:15px;margin:10px 0;">Presioná "Iniciar" para comenzar...</div>
+            <div style="display:flex;justify-content:center;gap:10px;margin-bottom:20px;">
+                <button class="btn btn-success" id="btnIniciarVoz" onclick="iniciarVoz()">🎤 Iniciar</button>
+                <button class="btn btn-danger" id="btnDetenerVoz" onclick="detenerVoz()" style="display:none;">⏹ Detener y procesar</button>
+            </div>
+            <div id="micStatus2" class="ia-status procesando" style="display:none;"></div>
+            <div id="micResultado" style="display:none;">
+                <h4 style="color:#D2691E;margin-bottom:10px;">Revisá y editá si es necesario:</h4>
+                <table class="ia-tabla" style="width:100%;border-collapse:collapse;margin:10px 0;">
+                    <thead><tr><th>Nombre</th><th>Cantidad</th><th>Precio ($)</th><th>Estado</th></tr></thead>
+                    <tbody id="micResultadoBody"></tbody>
+                </table>
+                <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:15px;">
+                    <button class="btn btn-secondary" onclick="cerrarMicrofono()">Cancelar</button>
+                    <button class="btn" onclick="confirmarActualizacionIA('microfono')">✅ Confirmar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== IA CÁMARA Y MICRÓFONO =====
+        let resultadosIA = [];
+        let recognition = null;
+        let transcripcionVoz = '';
+
+        function abrirCamara() {
+            document.getElementById('previewContainer').style.display = 'none';
+            document.getElementById('camaraStatus').style.display = 'none';
+            document.getElementById('camaraResultado').style.display = 'none';
+            document.getElementById('inputImagenIA').value = '';
+            document.getElementById('modalCamara').classList.add('active');
+        }
+        function cerrarCamara() { document.getElementById('modalCamara').classList.remove('active'); }
+
+        async function procesarImagenIA(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = e => { document.getElementById('previewImg').src = e.target.result; document.getElementById('previewContainer').style.display = 'block'; };
+            reader.readAsDataURL(file);
+            const status = document.getElementById('camaraStatus');
+            status.style.display = 'block'; status.className = 'ia-status procesando'; status.innerHTML = '⏳ Analizando con IA...';
+            document.getElementById('camaraResultado').style.display = 'none';
+            const base64 = await new Promise(res => { const r = new FileReader(); r.onload = () => res(r.result.split(',')[1]); r.readAsDataURL(file); });
+            try {
+                const response = await fetch('/api/ai', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        model: 'claude-sonnet-4-5-20250514', max_tokens: 1000,
+                        messages: [{ role: 'user', content: [
+                            { type: 'image', source: { type: 'base64', media_type: file.type || 'image/jpeg', data: base64 } },
+                            { type: 'text', text: 'Analizá esta imagen. Identificá el nombre genérico del producto (sin marca, ej: "Azúcar"), la cantidad en gramos/ml, y el precio en pesos. Respondé ÚNICAMENTE con JSON array sin backticks: [{"nombre":"Azúcar","cantidad":1000,"precio":500}]. Si no podés determinar un campo usá null.' }
+                        ]}]
+                    })
+                });
+                const data = await response.json();
+                const txt = data.content[0].text.trim();
+                let productos; try { productos = JSON.parse(txt); } catch { const m = txt.match(/\[.*\]/s); productos = m ? JSON.parse(m[0]) : []; }
+                if (!productos.length) throw new Error('Sin resultados');
+                status.style.display = 'none';
+                mostrarResultadosIA(productos, 'camara');
+            } catch(e) { status.className = 'ia-status error'; status.innerHTML = '❌ Error al analizar. Intentá con otra foto.'; }
+        }
+
+        function mostrarResultadosIA(productos, origen) {
+            resultadosIA = productos.map(p => ({...p, _origen: origen}));
+            const bodyId = origen === 'camara' ? 'camaraResultadoBody' : 'micResultadoBody';
+            const resultadoId = origen === 'camara' ? 'camaraResultado' : 'micResultado';
+            document.getElementById(bodyId).innerHTML = resultadosIA.map((p, i) => {
+                const existe = ingredientes.find(ing => ing.nombre.toLowerCase() === (p.nombre||'').toLowerCase());
+                return `<tr>
+                    <td><input type="text" id="ia_n_${i}" value="${p.nombre||''}" style="width:130px;padding:6px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:14px;"></td>
+                    <td><input type="number" id="ia_c_${i}" value="${p.cantidad||''}" step="1" style="width:90px;text-align:center;padding:6px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:14px;"></td>
+                    <td><input type="number" id="ia_p_${i}" value="${p.precio||''}" step="1" style="width:90px;text-align:center;padding:6px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:14px;"></td>
+                    <td style="font-size:13px;color:${existe?'#D2691E':'#6B8E23'};">${existe?'✏️ Actualiza':'🆕 Nuevo'}</td>
+                </tr>`;
+            }).join('');
+            document.getElementById(resultadoId).style.display = 'block';
+        }
+
+        async function confirmarActualizacionIA(origen) {
+            let actualizados = 0, nuevos = 0;
+            for (let i = 0; i < resultadosIA.length; i++) {
+                const nombre = document.getElementById(`ia_n_${i}`).value.trim();
+                const cantidad = parseFloat(document.getElementById(`ia_c_${i}`).value);
+                const precio = parseFloat(document.getElementById(`ia_p_${i}`).value);
+                if (!nombre || isNaN(cantidad) || isNaN(precio)) continue;
+                const existe = ingredientes.find(ing => ing.nombre.toLowerCase() === nombre.toLowerCase());
+                if (existe) { existe.cantidad = cantidad; existe.precio = precio; await guardarIngrediente_supa(existe); actualizados++; }
+                else { const n = { id: Date.now()+i, nombre, cantidad, precio }; ingredientes.push(n); await guardarIngrediente_supa(n); nuevos++; }
+            }
+            renderIngredientes();
+            if (origen === 'camara') cerrarCamara(); else cerrarMicrofono();
+            alert(`✅ ${actualizados} actualizado(s), ${nuevos} nuevo(s).`);
+        }
+
+        function abrirMicrofono() {
+            transcripcionVoz = '';
+            document.getElementById('micTexto').textContent = 'Presioná "Iniciar" para comenzar...';
+            document.getElementById('micResultado').style.display = 'none';
+            document.getElementById('micStatus2').style.display = 'none';
+            document.getElementById('btnIniciarVoz').style.display = 'inline-block';
+            document.getElementById('btnDetenerVoz').style.display = 'none';
+            document.getElementById('vozOndas').style.display = 'none';
+            document.getElementById('modalMicrofono').classList.add('active');
+        }
+        function cerrarMicrofono() { if (recognition) try { recognition.stop(); } catch(e){} document.getElementById('modalMicrofono').classList.remove('active'); }
+
+        function iniciarVoz() {
+            const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SR) { alert('Usá Chrome para el reconocimiento de voz.'); return; }
+            recognition = new SR(); recognition.lang = 'es-AR'; recognition.continuous = true; recognition.interimResults = true;
+            let textoFinal = '';
+            recognition.onresult = e => {
+                let interino = '';
+                for (let i = e.resultIndex; i < e.results.length; i++) {
+                    if (e.results[i].isFinal) textoFinal += e.results[i][0].transcript + ' ';
+                    else interino = e.results[i][0].transcript;
+                }
+                document.getElementById('micTexto').textContent = (textoFinal + interino) || 'Escuchando...';
+                transcripcionVoz = textoFinal;
+            };
+            recognition.start();
+            document.getElementById('btnIniciarVoz').style.display = 'none';
+            document.getElementById('btnDetenerVoz').style.display = 'inline-block';
+            document.getElementById('vozOndas').style.display = 'flex';
+        }
+
+        async function detenerVoz() {
+            if (recognition) try { recognition.stop(); } catch(e){}
+            document.getElementById('btnDetenerVoz').style.display = 'none';
+            document.getElementById('vozOndas').style.display = 'none';
+            const texto = transcripcionVoz || document.getElementById('micTexto').textContent;
+            if (!texto || texto.length < 5) { alert('No se detectó texto.'); document.getElementById('btnIniciarVoz').style.display = 'inline-block'; return; }
+            const status = document.getElementById('micStatus2');
+            status.style.display = 'block'; status.className = 'ia-status procesando'; status.innerHTML = '⏳ Procesando con IA...';
+            try {
+                const response = await fetch('/api/ai', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ model: 'claude-sonnet-4-5-20250514', max_tokens: 1000,
+                        messages: [{ role: 'user', content: `El usuario dijo: "${texto}". Extraé ingredientes de pastelería con nombre genérico, cantidad en gr/ml, precio en pesos. Respondé SOLO JSON sin backticks: [{"nombre":"Azúcar","cantidad":1000,"precio":500}]` }]
+                    })
+                });
+                const data = await response.json();
+                const txt = data.content[0].text.trim();
+                let productos; try { productos = JSON.parse(txt); } catch { const m = txt.match(/\[.*\]/s); productos = m ? JSON.parse(m[0]) : []; }
+                if (!productos.length) throw new Error();
+                status.style.display = 'none';
+                mostrarResultadosIA(productos, 'microfono');
+            } catch(e) { status.className = 'ia-status error'; status.innerHTML = '❌ Error. Intentá de nuevo.'; document.getElementById('btnIniciarVoz').style.display = 'inline-block'; }
+        }
+    </script>
+</body>
+</html>

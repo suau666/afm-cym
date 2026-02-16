@@ -516,7 +516,23 @@
             color: white;
             box-shadow: 0 4px 15px rgba(210, 105, 30, 0.5);
         }
-    </style>
+    
+        @media (max-width: 768px) {
+            #ingredientes h2 {
+                font-size: 22px;
+                margin-bottom: 0;
+            }
+            #ingredientes > div:first-child {
+                flex-direction: row;
+                align-items: center;
+            }
+            .btn-ia {
+                padding: 10px 12px;
+                font-size: 13px;
+            }
+        }
+
+        </style>
 </head>
 <body>
     <div id="loadingOverlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(255,245,230,0.97);z-index:9999;display:flex;justify-content:center;align-items:center;">
@@ -526,7 +542,23 @@
             <div style="width:50px;height:50px;border:5px solid #e2e8f0;border-top-color:#D2691E;border-radius:50%;animation:spin 1s linear infinite;margin:20px auto;"></div>
         </div>
     </div>
-    <style>@keyframes spin { to { transform:rotate(360deg); }}</style>
+    <style>@keyframes spin { to { transform:rotate(360deg); }}
+        @media (max-width: 768px) {
+            #ingredientes h2 {
+                font-size: 22px;
+                margin-bottom: 0;
+            }
+            #ingredientes > div:first-child {
+                flex-direction: row;
+                align-items: center;
+            }
+            .btn-ia {
+                padding: 10px 12px;
+                font-size: 13px;
+            }
+        }
+
+        </style>
 <div class="container">
         <div class="tabs">
             <button class="tab active" onclick="cambiarTab(event, 'recetas')">📋 Recetas</button>
@@ -599,9 +631,9 @@
 
         <!-- INGREDIENTES -->
         <div id="ingredientes" class="tab-content">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <h2>Ingredientes</h2>
-                <div style="display:flex;gap:10px;align-items:center;">
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+                <h2 style="margin-bottom:0;">Ingredientes</h2>
+                <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
                     <button class="btn btn-ia" onclick="abrirCamara()" title="Actualizar precios con foto">📷 Cámara</button>
                     <button class="btn btn-ia" onclick="abrirMicrofono()" title="Actualizar precios por voz">🎤 Voz</button>
                     <button class="btn" onclick="abrirModalNuevoIngrediente()">➕ Nuevo Ingrediente</button>
@@ -623,13 +655,18 @@
 
         <!-- COOKIES -->
         <div id="cookies" class="tab-content">
-            <!-- Header -->
             <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:20px;">
                 <h2 style="margin-bottom:0;">🍪 Cookies</h2>
                 <button class="btn" onclick="calcularCookies()">🔄 Actualizar Costos</button>
             </div>
 
-            <!-- Packaging -->
+            <!-- RECETAS PRIMERO -->
+            <div style="margin-bottom:40px;">
+                <h3 style="color:#8B4513;margin-bottom:20px;">📋 Recetas de Cookies</h3>
+                <div id="cookiesRecetasGrid" class="recetas-grid"></div>
+            </div>
+
+            <!-- PACKAGING -->
             <div class="selector-box" style="margin-bottom:25px;">
                 <h3 style="font-size:18px;margin-bottom:15px;text-align:left;color:#8B4513;">📦 Packaging</h3>
                 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:15px;">
@@ -646,34 +683,27 @@
                         <input type="text" id="stickersVal" value="48" oninput="formatearInput(this)" style="width:100%;padding:10px;border:2px solid #e2e8f0;border-radius:8px;font-size:16px;text-align:center;">
                     </div>
                 </div>
-                <p style="font-size:12px;color:#a0aec0;margin-top:10px;">Fórmula: Costo Unitario × 3 + (Caja x3 + Caja x6) ÷ 3</p>
+                <p style="font-size:12px;color:#a0aec0;margin-top:10px;">Fórmula: Costo U. Final = Costo Unit. × 3 + Sticker + (Caja x3 + Caja x6) ÷ 3</p>
             </div>
 
-            <!-- Tabla de costos -->
+            <!-- TABLA DE COSTOS -->
             <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
                 <table>
                     <thead>
                         <tr>
                             <th style="text-align:left;padding-left:15px;">Cookie</th>
-                            <th>Cant.</th>
                             <th>Costo Masa</th>
                             <th>Costo Unit.</th>
                             <th>Costo x3</th>
+                            <th>Costo U. Final</th>
                             <th>Precio Manual</th>
-                            <th>✓</th>
+                            <th>Resultado</th>
                         </tr>
                     </thead>
                     <tbody id="cookiesBody"></tbody>
                 </table>
             </div>
-
-            <!-- Recetas al fondo -->
-            <div style="margin-top:40px;">
-                <h3 style="color:#8B4513;margin-bottom:20px;">📋 Recetas de Cookies</h3>
-                <div id="cookiesRecetasGrid" class="recetas-grid"></div>
-            </div>
-        </div>
-    </div>
+        </div>v>
 
     <!-- Modal: Nueva/Editar Receta -->
     <div id="modalReceta" class="modal">
@@ -1741,13 +1771,12 @@
             const cajaTres    = parsearNumero(document.getElementById('cajaTres').value);
             const cajaSeis    = parsearNumero(document.getElementById('cajaSeis').value);
             const stickersVal = parsearNumero(document.getElementById('stickersVal').value);
-            const packaging   = (cajaTres + cajaSeis) / 3;
 
             const tbody = document.getElementById('cookiesBody');
+            if (!tbody) return;
             tbody.innerHTML = '';
 
-            COOKIES_DATA.forEach((cookie, idx) => {
-                // Buscar receta en memoria
+            COOKIES_DATA.forEach((cookie) => {
                 const receta = recetas.find(r => r.nombre === '🍪 ' + cookie.nombre);
                 let costoMasa = 0;
 
@@ -1757,39 +1786,36 @@
                             const ing = ingredientes.find(i => i.id === item.ingredienteId);
                             if (!ing || !ing.cantidad || !ing.precio) return;
                             const cantUsada = item.cantidades['Único'] || 0;
-                            const precioUnit = ing.precio / ing.cantidad;
-                            costoMasa += cantUsada * precioUnit;
+                            costoMasa += cantUsada * (ing.precio / ing.cantidad);
                         });
                     });
                 }
 
-                const costoUnitario = costoMasa / cookie.cantidad;
-                const costox3       = costoUnitario * 3 + packaging;
-                const precioManual  = preciosManualesCookies[cookie.nombre] || 0;
-                const conviene      = precioManual > 0 && precioManual >= costox3;
+                const costoUnitario  = costoMasa / cookie.cantidad;
+                const costox3        = costoUnitario * 3;
+                const costoUFinal    = costox3 + stickersVal + (cajaTres + cajaSeis) / 3;
+                const precioManual   = preciosManualesCookies[cookie.nombre] || 0;
+                const conviene       = precioManual > 0 && precioManual >= costoUFinal;
 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td style="text-align:left;padding-left:15px;font-weight:600;">${cookie.nombre}</td>
-                    <td>${cookie.cantidad}</td>
+                    <td style="text-align:left;padding-left:15px;font-weight:600;white-space:nowrap;">${cookie.nombre}</td>
                     <td>$${formatearPrecio(costoMasa)}</td>
                     <td>$${formatearPrecio(costoUnitario)}</td>
                     <td>$${formatearPrecio(costox3)}</td>
+                    <td style="font-weight:700;color:#D2691E;">$${formatearPrecio(costoUFinal)}</td>
                     <td>
                         <input type="text" value="${precioManual ? formatearPrecio(precioManual) : ''}"
-                            placeholder="$0"
+                            placeholder="0"
                             oninput="formatearInput(this)"
                             onchange="setPrecioManualCookie('${cookie.nombre}', parsearNumero(this.value))"
-                            style="width:100px;padding:7px;border:2px solid #e2e8f0;border-radius:8px;text-align:center;font-size:15px;font-weight:700;">
+                            style="width:90px;padding:7px;border:2px solid #e2e8f0;border-radius:8px;text-align:center;font-size:15px;font-weight:700;">
                     </td>
-                    <td style="font-size:20px;">
-                        ${precioManual > 0 ? (conviene ? '✅' : '❌') : '—'}
-                    </td>
+                    <td style="font-weight:700;${precioManual > 0 ? (conviene ? 'color:#22863a;' : 'color:#e53e3e;') : 'color:#a0aec0;'}">${precioManual > 0 ? (conviene ? '+$' + formatearPrecio(precioManual - costoUFinal) : '-$' + formatearPrecio(costoUFinal - precioManual)) : '—'}</td>
                 `;
                 tbody.appendChild(tr);
             });
 
-            // Renderizar recetas de cookies al fondo
             renderCookiesRecetas();
         }
 

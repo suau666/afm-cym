@@ -911,10 +911,10 @@
             <table id="tablaIngredientes">
                 <thead>
                     <tr>
-                        <th>Nombre</th>
-                        <th>Cantidad (gr/ml/unidad)</th>
-                        <th>Precio ($)</th>
-                        <th>Precio por gr/ml/unidad</th>
+                        <th style="white-space:nowrap;">Nombre</th>
+                        <th style="white-space:nowrap;">Cantidad</th>
+                        <th style="white-space:nowrap;">Precio</th>
+                        <th style="white-space:nowrap;">Precio por gr/ml/unidad</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -932,25 +932,25 @@
             </div>
 
             <!-- PACKAGING -->
-            <div class="selector-box" style="margin-bottom:20px;">
+            <div class="selector-box" style="margin-bottom:15px;">
                 <h3 style="font-size:16px;margin-bottom:12px;text-align:left;color:#8B4513;">📦 Packaging</h3>
-                <div style="display:flex;gap:10px;align-items:flex-end;">
-                    <div style="flex:1;">
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+                    <div style="text-align:center;">
                         <label style="font-size:12px;color:#718096;font-weight:600;display:block;margin-bottom:5px;">Caja x3 ($)</label>
                         <input type="text" id="cajaTres" value="886" oninput="formatearInput(this)" style="width:100%;padding:9px 6px;border:2px solid #e2e8f0;border-radius:8px;font-size:14px;text-align:center;">
                     </div>
-                    <div style="flex:1;">
+                    <div style="text-align:center;">
                         <label style="font-size:12px;color:#718096;font-weight:600;display:block;margin-bottom:5px;">Caja x6 ($)</label>
                         <input type="text" id="cajaSeis" value="1235" oninput="formatearInput(this)" style="width:100%;padding:9px 6px;border:2px solid #e2e8f0;border-radius:8px;font-size:14px;text-align:center;">
                     </div>
-                    <div style="flex:1;">
+                    <div style="text-align:center;">
                         <label style="font-size:12px;color:#718096;font-weight:600;display:block;margin-bottom:5px;">Stickers ($)</label>
                         <input type="text" id="stickersVal" value="48" oninput="formatearInput(this)" style="width:100%;padding:9px 6px;border:2px solid #e2e8f0;border-radius:8px;font-size:14px;text-align:center;">
                     </div>
                 </div>
-                <div style="text-align:center;margin-top:15px;">
-                    <button class="btn" onclick="calcularCookies()">🔄 Actualizar Costos</button>
-                </div>
+            </div>
+            <div style="text-align:center;margin-bottom:25px;">
+                <button class="btn" onclick="calcularCookies()">🔄 Actualizar Costos</button>
             </div>
 
             <!-- TABLA DE COSTOS -->
@@ -2084,13 +2084,15 @@
                     <td>$${formatearPrecio(costox3)}</td>
                     <td style="font-weight:700;color:#D2691E;">$${formatearPrecio(costoUFinal)}</td>
                     <td>
-                        <input type="text" value="${precioManual ? formatearPrecio(precioManual) : ''}"
+                        <input type="text" 
+                            id="pm_${cookie.nombre.replace(/[^a-zA-Z]/g,'_')}"
+                            value="${precioManual ? formatearPrecio(precioManual) : ''}"
                             placeholder="0"
                             oninput="formatearInput(this)"
-                            onchange="setPrecioManualCookie('${cookie.nombre}', parsearNumero(this.value))"
+                            onblur="actualizarResultadoCookie('${cookie.nombre}', parsearNumero(this.value), ${costoUFinal})"
                             style="width:90px;padding:7px;border:2px solid #e2e8f0;border-radius:8px;text-align:center;font-size:15px;font-weight:700;">
                     </td>
-                    <td style="font-weight:700;${precioManual > 0 ? (conviene ? 'color:#22863a;' : 'color:#e53e3e;') : 'color:#a0aec0;'}">${precioManual > 0 ? (conviene ? '+$' + formatearPrecio(precioManual - costoUFinal) : '-$' + formatearPrecio(costoUFinal - precioManual)) : '—'}</td>
+                    <td id="res_${cookie.nombre.replace(/[^a-zA-Z]/g,'_')}" style="font-weight:700;${precioManual > 0 ? (conviene ? 'color:#22863a;' : 'color:#e53e3e;') : 'color:#a0aec0;'}">${precioManual > 0 ? (conviene ? '+$' + formatearPrecio(precioManual - costoUFinal) : '-$' + formatearPrecio(costoUFinal - precioManual)) : '—'}</td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -2100,7 +2102,21 @@
 
         function setPrecioManualCookie(nombre, valor) {
             preciosManualesCookies[nombre] = valor;
-            calcularCookies();
+        }
+
+        function actualizarResultadoCookie(nombre, valor, costoUFinal) {
+            preciosManualesCookies[nombre] = valor;
+            const key = nombre.replace(/[^a-zA-Z]/g,'_');
+            const celda = document.getElementById('res_' + key);
+            if (!celda) return;
+            if (valor > 0) {
+                const diff = valor - costoUFinal;
+                celda.style.color = diff >= 0 ? '#22863a' : '#e53e3e';
+                celda.textContent = (diff >= 0 ? '+$' : '-$') + formatearPrecio(Math.abs(diff));
+            } else {
+                celda.style.color = '#a0aec0';
+                celda.textContent = '—';
+            }
         }
 
         function renderCookiesRecetas() {

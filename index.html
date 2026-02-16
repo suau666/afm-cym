@@ -516,20 +516,282 @@
             color: white;
             box-shadow: 0 4px 15px rgba(210, 105, 30, 0.5);
         }
-    
-        @media (max-width: 768px) {
-            #ingredientes h2 {
-                font-size: 22px;
-                margin-bottom: 0;
+
+        /* ================================================
+           RESPONSIVE MÓVIL — iPhone 16 (393×852px)
+           ================================================ */
+        @media (max-width: 430px) {
+
+            body {
+                padding: 0;
             }
-            #ingredientes > div:first-child {
-                flex-direction: row;
-                align-items: center;
+
+            .container {
+                border-radius: 0;
+                box-shadow: none;
+                min-height: 100vh;
+            }
+
+            /* ── TABS ── */
+            .tabs {
+                display: flex;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+                padding-top: env(safe-area-inset-top, 0px);
+            }
+            .tabs::-webkit-scrollbar { display: none; }
+
+            .tab {
+                flex: 1;
+                min-width: 70px;
+                padding: 12px 6px;
+                font-size: 12px;
+                font-weight: 600;
+                white-space: nowrap;
+            }
+
+            .tab-short { display: inline; }
+            .tab-full  { display: none; }
+
+            /* ── CONTENIDO ── */
+            .tab-content {
+                padding: 16px 12px;
+            }
+
+            h2 {
+                font-size: 20px;
+                margin-bottom: 12px;
+            }
+
+            h3 {
+                font-size: 16px;
+            }
+
+            /* ── BOTONES ── */
+            .btn {
+                padding: 11px 14px;
+                font-size: 13px;
+                margin: 3px;
+            }
+            .btn-small {
+                padding: 8px 10px;
+                font-size: 12px;
             }
             .btn-ia {
                 padding: 10px 12px;
                 font-size: 13px;
             }
+
+            /* ── RECETAS GRID ── */
+            .recetas-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+                margin-top: 12px;
+            }
+            .receta-card {
+                padding: 15px;
+            }
+            .receta-card h3 {
+                font-size: 16px;
+                padding-right: 30px;
+            }
+
+            /* ── HEADER CON BOTONES ── */
+            .tab-content > div[style*="space-between"] {
+                flex-wrap: wrap !important;
+                gap: 8px !important;
+            }
+
+            /* ── MODALES ── */
+            .modal-content {
+                width: 100%;
+                max-width: 100%;
+                height: 100dvh;
+                max-height: 100dvh;
+                border-radius: 0;
+                padding: 16px 12px;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            .modal-ia {
+                height: auto !important;
+                max-height: 92dvh;
+                border-radius: 20px 20px 0 0;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                width: 100%;
+            }
+            .modal-header h2 {
+                font-size: 17px;
+            }
+
+            /* ── FORMULARIOS ── */
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                font-size: 16px;
+                padding: 11px;
+            }
+
+            /* ── BOTONES TAMAÑO ── */
+            .btn-tamano {
+                padding: 9px 14px;
+                font-size: 14px;
+                min-width: 52px;
+            }
+
+            /* ── BLOQUE INGREDIENTES EN RECETA ── */
+            .bloque-ingredientes { padding: 10px; }
+            .bloque-titulo-input { font-size: 14px; padding: 8px; }
+            .ingrediente-item {
+                grid-template-columns: 36px 1fr 85px 40px !important;
+                gap: 5px;
+                padding: 8px;
+            }
+
+            /* ── TABLA INGREDIENTES: sticky nombre, scroll horizontal ── */
+            #tablaIngredientes {
+                display: block;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                font-size: 14px;
+                white-space: nowrap;
+            }
+            #tablaIngredientes thead,
+            #tablaIngredientes tbody,
+            #tablaIngredientes tr {
+                display: table;
+                width: 100%;
+                table-layout: fixed;
+            }
+            #tablaIngredientes thead { width: calc(100%); }
+
+            /* Columna Nombre: sticky */
+            #tablaIngredientes th:nth-child(1),
+            #tablaIngredientes td:nth-child(1) {
+                position: sticky;
+                left: 0;
+                z-index: 2;
+                background: white;
+                width: 110px;
+                min-width: 110px;
+                max-width: 110px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+            #tablaIngredientes th:nth-child(1) {
+                background: #A0522D;
+                z-index: 3;
+            }
+
+            /* Cantidad y Precio: visibles sin scroll */
+            #tablaIngredientes th:nth-child(2),
+            #tablaIngredientes td:nth-child(2),
+            #tablaIngredientes th:nth-child(3),
+            #tablaIngredientes td:nth-child(3) {
+                width: 100px;
+                min-width: 100px;
+            }
+
+            /* Precio/u y Acciones: fuera de pantalla, se ve al deslizar */
+            #tablaIngredientes th:nth-child(4),
+            #tablaIngredientes td:nth-child(4),
+            #tablaIngredientes th:nth-child(5),
+            #tablaIngredientes td:nth-child(5) {
+                width: 80px;
+                min-width: 80px;
+            }
+
+            #tablaIngredientes input {
+                width: 80px !important;
+                font-size: 13px;
+                padding: 5px 3px;
+            }
+            #tablaIngredientes th,
+            #tablaIngredientes td {
+                padding: 10px 6px;
+                font-size: 13px;
+            }
+
+            /* ── TABLA CALCULAR COSTOS ── */
+            #tablaCalculoCosto {
+                display: block;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                white-space: nowrap;
+            }
+            #tablaCalculoCosto th,
+            #tablaCalculoCosto td {
+                padding: 9px 7px;
+                font-size: 13px;
+            }
+
+            /* ── SELECTOR BOX ── */
+            .selector-box { padding: 14px; }
+
+            /* ── RESUMEN COSTOS ── */
+            .costo-resumen {
+                padding: 16px 12px;
+                margin-top: 16px;
+            }
+            .costo-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            .costo-box .value { font-size: 24px; }
+            .costo-box .label { font-size: 13px; }
+
+            /* ── COOKIES: tabla scroll ── */
+            #cookies table {
+                display: block;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                white-space: nowrap;
+                width: 100%;
+            }
+            #cookies th,
+            #cookies td {
+                padding: 9px 8px;
+                font-size: 13px;
+            }
+            #cookies th:first-child,
+            #cookies td:first-child {
+                position: sticky;
+                left: 0;
+                background: white;
+                z-index: 2;
+                min-width: 130px;
+                max-width: 130px;
+            }
+            #cookies thead th:first-child {
+                background: #A0522D;
+                z-index: 3;
+            }
+            #cookies input[type="text"] {
+                width: 75px !important;
+                font-size: 13px;
+                padding: 5px;
+            }
+
+            /* ── SAFE AREA ── */
+            body {
+                padding-bottom: env(safe-area-inset-bottom, 0px);
+            }
+
+            /* ── IA tablas ── */
+            .ia-tabla { display: block; overflow-x: auto; }
+            .ia-tabla input { width: 75px; }
+        }
+
+        /* iPhone SE y muy chicos */
+        @media (max-width: 375px) {
+            .tab { font-size: 11px; padding: 11px 5px; }
+            .btn { padding: 10px 11px; font-size: 12px; }
+            .costo-box .value { font-size: 20px; }
         }
 
         </style>
@@ -683,7 +945,7 @@
                         <input type="text" id="stickersVal" value="48" oninput="formatearInput(this)" style="width:100%;padding:10px;border:2px solid #e2e8f0;border-radius:8px;font-size:16px;text-align:center;">
                     </div>
                 </div>
-                <p style="font-size:12px;color:#a0aec0;margin-top:10px;">Fórmula: Costo U. Final = Costo Unit. × 3 + Sticker + (Caja x3 + Caja x6) ÷ 3</p>
+                <p style="font-size:12px;color:#a0aec0;margin-top:10px;">Fórmula: Costo U. Final = Costo x3 + Sticker + (Caja x3 + Caja x6) ÷ 9</p>
             </div>
 
             <!-- TABLA DE COSTOS -->
@@ -1793,7 +2055,7 @@
 
                 const costoUnitario  = costoMasa / cookie.cantidad;
                 const costox3        = costoUnitario * 3;
-                const costoUFinal    = costox3 + stickersVal + (cajaTres + cajaSeis) / 3;
+                const costoUFinal    = costox3 + stickersVal + (cajaTres + cajaSeis) / 9;
                 const precioManual   = preciosManualesCookies[cookie.nombre] || 0;
                 const conviene       = precioManual > 0 && precioManual >= costoUFinal;
 

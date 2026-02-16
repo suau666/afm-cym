@@ -520,6 +520,9 @@
         /* ================================================
            RESPONSIVE MÓVIL — iPhone 16 (393×852px)
            ================================================ */
+        .tab-short { display: none; }
+        .tab-full  { display: inline; }
+
         @media (max-width: 430px) {
 
             body {
@@ -824,7 +827,7 @@
 <div class="container">
         <div class="tabs">
             <button class="tab active" onclick="cambiarTab(event, 'recetas')">📋 Recetas</button>
-            <button class="tab" onclick="cambiarTab(event, 'calcular')">💰 Calcular Costos</button>
+            <button class="tab" onclick="cambiarTab(event, 'calcular')"><span class="tab-full">💰 Calcular Costos</span><span class="tab-short">💰 Costos</span></button>
             <button class="tab" onclick="cambiarTab(event, 'ingredientes')">🥄 Ingredientes</button>
             <button class="tab" onclick="cambiarTab(event, 'cookies')">🍪 Cookies</button>
         </div>
@@ -917,35 +920,32 @@
 
         <!-- COOKIES -->
         <div id="cookies" class="tab-content">
-            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:20px;">
-                <h2 style="margin-bottom:0;">🍪 Cookies</h2>
-                <button class="btn" onclick="calcularCookies()">🔄 Actualizar Costos</button>
-            </div>
 
             <!-- RECETAS PRIMERO -->
             <div style="margin-bottom:40px;">
-                <h3 style="color:#8B4513;margin-bottom:20px;">📋 Recetas de Cookies</h3>
                 <div id="cookiesRecetasGrid" class="recetas-grid"></div>
             </div>
 
             <!-- PACKAGING -->
-            <div class="selector-box" style="margin-bottom:25px;">
-                <h3 style="font-size:18px;margin-bottom:15px;text-align:left;color:#8B4513;">📦 Packaging</h3>
-                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:15px;">
-                    <div>
-                        <label style="font-size:13px;color:#718096;font-weight:600;display:block;margin-bottom:5px;">Caja x3 ($)</label>
-                        <input type="text" id="cajaTres" value="886" oninput="formatearInput(this)" style="width:100%;padding:10px;border:2px solid #e2e8f0;border-radius:8px;font-size:16px;text-align:center;">
+            <div class="selector-box" style="margin-bottom:20px;">
+                <h3 style="font-size:16px;margin-bottom:12px;text-align:left;color:#8B4513;">📦 Packaging</h3>
+                <div style="display:flex;gap:10px;align-items:flex-end;">
+                    <div style="flex:1;">
+                        <label style="font-size:12px;color:#718096;font-weight:600;display:block;margin-bottom:5px;">Caja x3 ($)</label>
+                        <input type="text" id="cajaTres" value="886" oninput="formatearInput(this)" style="width:100%;padding:9px 6px;border:2px solid #e2e8f0;border-radius:8px;font-size:14px;text-align:center;">
                     </div>
-                    <div>
-                        <label style="font-size:13px;color:#718096;font-weight:600;display:block;margin-bottom:5px;">Caja x6 ($)</label>
-                        <input type="text" id="cajaSeis" value="1235" oninput="formatearInput(this)" style="width:100%;padding:10px;border:2px solid #e2e8f0;border-radius:8px;font-size:16px;text-align:center;">
+                    <div style="flex:1;">
+                        <label style="font-size:12px;color:#718096;font-weight:600;display:block;margin-bottom:5px;">Caja x6 ($)</label>
+                        <input type="text" id="cajaSeis" value="1235" oninput="formatearInput(this)" style="width:100%;padding:9px 6px;border:2px solid #e2e8f0;border-radius:8px;font-size:14px;text-align:center;">
                     </div>
-                    <div>
-                        <label style="font-size:13px;color:#718096;font-weight:600;display:block;margin-bottom:5px;">Stickers ($)</label>
-                        <input type="text" id="stickersVal" value="48" oninput="formatearInput(this)" style="width:100%;padding:10px;border:2px solid #e2e8f0;border-radius:8px;font-size:16px;text-align:center;">
+                    <div style="flex:1;">
+                        <label style="font-size:12px;color:#718096;font-weight:600;display:block;margin-bottom:5px;">Stickers ($)</label>
+                        <input type="text" id="stickersVal" value="48" oninput="formatearInput(this)" style="width:100%;padding:9px 6px;border:2px solid #e2e8f0;border-radius:8px;font-size:14px;text-align:center;">
                     </div>
                 </div>
-                <p style="font-size:12px;color:#a0aec0;margin-top:10px;">Fórmula: Costo U. Final = Costo x3 + Sticker + (Caja x3 + Caja x6) ÷ 9</p>
+                <div style="text-align:center;margin-top:15px;">
+                    <button class="btn" onclick="calcularCookies()">🔄 Actualizar Costos</button>
+                </div>
             </div>
 
             <!-- TABLA DE COSTOS -->
@@ -965,7 +965,7 @@
                     <tbody id="cookiesBody"></tbody>
                 </table>
             </div>
-        </div>v>
+        </div>
 
     <!-- Modal: Nueva/Editar Receta -->
     <div id="modalReceta" class="modal">

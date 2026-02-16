@@ -547,11 +547,15 @@
 
             .tab {
                 flex: 1;
-                min-width: 70px;
-                padding: 12px 6px;
+                min-width: 60px;
+                padding: 12px 4px;
                 font-size: 12px;
                 font-weight: 600;
                 white-space: nowrap;
+            }
+            /* Ingredientes es más largo, achicarlo un poco más */
+            .tabs button:nth-child(3) {
+                font-size: 11px;
             }
 
             .tab-short { display: inline; }
@@ -923,6 +927,7 @@
 
             <!-- RECETAS PRIMERO -->
             <div style="margin-bottom:40px;">
+                <h3 style="color:#8B4513;margin-bottom:20px;">📋 Recetas de Cookies</h3>
                 <div id="cookiesRecetasGrid" class="recetas-grid"></div>
             </div>
 
@@ -1785,7 +1790,7 @@
             const select = document.getElementById('selectRecetaCosto');
             select.innerHTML = '<option value="">-- Selecciona una receta --</option>';
             
-            const ordenadas = [...recetas].sort((a, b) => a.nombre.localeCompare(b.nombre));
+            const ordenadas = [...recetas].filter(r => !r.nombre.startsWith('🍪')).sort((a, b) => a.nombre.localeCompare(b.nombre));
             ordenadas.forEach(r => {
                 select.innerHTML += `<option value="${r.id}">${r.nombre}</option>`;
             });
@@ -2024,7 +2029,19 @@
     <script>
 
         // ===== COOKIES =====
-        const COOKIES_DATA = [{"nombre": "Chocolate + Cobertura Blanco", "cantidad": 21}, {"nombre": "Vainilla + Cobertura Negro + Nuez", "cantidad": 16}, {"nombre": "Brownie", "cantidad": 25}, {"nombre": "Pistacho + Chocolate Blanco", "cantidad": 18}, {"nombre": "Carrot + Cream Cheese", "cantidad": 33}, {"nombre": "Red Velvet + Cream Cheese", "cantidad": 22}, {"nombre": "Banana + DDL", "cantidad": 21}, {"nombre": "Lemon", "cantidad": 18}, {"nombre": "Chocolate y Sal", "cantidad": 15}, {"nombre": "Marroc", "cantidad": 18}, {"nombre": "Oreo", "cantidad": 24}];
+        const COOKIES_DATA = [
+            {"nombre": "Chocolate + Cobertura Blanco", "nombreCorto": "Chocolate", "cantidad": 21},
+            {"nombre": "Vainilla + Cobertura Negro + Nuez", "nombreCorto": "Vainilla", "cantidad": 16},
+            {"nombre": "Brownie", "nombreCorto": "Brownie", "cantidad": 25},
+            {"nombre": "Pistacho + Chocolate Blanco", "nombreCorto": "Pistacho", "cantidad": 18},
+            {"nombre": "Carrot + Cream Cheese", "nombreCorto": "Carrot", "cantidad": 33},
+            {"nombre": "Red Velvet + Cream Cheese", "nombreCorto": "Red Velvet", "cantidad": 22},
+            {"nombre": "Banana + DDL", "nombreCorto": "Banana + DDL", "cantidad": 21},
+            {"nombre": "Lemon", "nombreCorto": "Lemon", "cantidad": 18},
+            {"nombre": "Chocolate y Sal", "nombreCorto": "Chocolate y Sal", "cantidad": 15},
+            {"nombre": "Marroc", "nombreCorto": "Marroc", "cantidad": 18},
+            {"nombre": "Oreo", "nombreCorto": "Oreo", "cantidad": 24}
+        ];
 
         // Precios manuales en memoria
         const preciosManualesCookies = {};
@@ -2061,7 +2078,7 @@
 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td style="text-align:left;padding-left:15px;font-weight:600;white-space:nowrap;">${cookie.nombre}</td>
+                    <td style="text-align:left;padding-left:15px;font-weight:600;white-space:nowrap;">${cookie.nombreCorto || cookie.nombre}</td>
                     <td>$${formatearPrecio(costoMasa)}</td>
                     <td>$${formatearPrecio(costoUnitario)}</td>
                     <td>$${formatearPrecio(costox3)}</td>

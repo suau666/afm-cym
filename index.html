@@ -2182,7 +2182,12 @@
         ];
 
         // Precios manuales en memoria
-        const preciosManualesCookies = {};
+        // Precios manuales con persistencia
+        const preciosManualesCookies = JSON.parse(localStorage.getItem('preciosManualesCookies') || '{}');
+        
+        function guardarPreciosManuales() {
+            localStorage.setItem('preciosManualesCookies', JSON.stringify(preciosManualesCookies));
+        }
 
         function calcularCookies() {
             const cajaTres    = parsearNumero(document.getElementById('cajaTres').value);
@@ -2246,6 +2251,7 @@
 
         function actualizarResultadoCookie(nombre, valor, costoUnitario) {
             preciosManualesCookies[nombre] = valor;
+            guardarPreciosManuales();
             const cajaTres    = parsearNumero(document.getElementById('cajaTres').value);
             const cajaSeis    = parsearNumero(document.getElementById('cajaSeis').value);
             const packaging9  = (cajaTres + cajaSeis) / 9;

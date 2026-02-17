@@ -654,9 +654,34 @@
             .bloque-ingredientes { padding: 10px; }
             .bloque-titulo-input { font-size: 14px; padding: 8px; }
             .ingrediente-item {
-                grid-template-columns: 36px 1fr 85px 40px !important;
-                gap: 5px;
-                padding: 8px;
+                display: flex !important;
+                flex-direction: column;
+                gap: 8px;
+                padding: 10px;
+                background: white;
+                border: 2px solid #e2e8f0;
+                border-radius: 10px;
+            }
+            .ingrediente-item > div:first-child {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+            .ingrediente-item .ingrediente-select {
+                flex: 1;
+                min-width: 0;
+            }
+            .ingrediente-item .inputs-cantidades {
+                display: grid !important;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 6px;
+                width: 100%;
+            }
+            .ingrediente-item .inputs-cantidades input {
+                width: 100% !important;
+                padding: 8px 4px;
+                font-size: 13px;
+                text-align: center;
             }
 
             /* ── TABLA INGREDIENTES: sticky nombre, scroll horizontal ── */
@@ -1557,15 +1582,15 @@
             inputsHTML += '</div>';
             
             div.innerHTML = `
-                <div style="display: flex; flex-direction: column; gap: 3px; align-items: center;">
-                    <button type="button" class="btn-orden" onclick="moverIngrediente(${bloqueId}, ${ingId}, 'up')">▲</button>
-                    <button type="button" class="btn-orden" onclick="moverIngrediente(${bloqueId}, ${ingId}, 'down')">▼</button>
+                <div>
+                    <div style="display:flex;flex-direction:column;gap:2px;margin-right:5px;">
+                        <button type="button" class="btn-orden" onclick="moverIngrediente(${bloqueId}, ${ingId}, 'up')" style="font-size:12px;padding:2px 4px;">▲</button>
+                        <button type="button" class="btn-orden" onclick="moverIngrediente(${bloqueId}, ${ingId}, 'down')" style="font-size:12px;padding:2px 4px;">▼</button>
+                    </div>
+                    <select class="ingrediente-select" required onchange="actualizarOpcionesBloque(${bloqueId})">${optionsHTML}</select>
+                    <button type="button" class="btn btn-danger btn-small" onclick="eliminarIngredienteDeBloque(${ingId})" style="margin-left:5px;">🗑️</button>
                 </div>
-                <select class="ingrediente-select" required onchange="actualizarOpcionesBloque(${bloqueId})">${optionsHTML}</select>
                 ${inputsHTML}
-                <div style="text-align: center;">
-                    <button type="button" class="btn btn-danger btn-small" onclick="eliminarIngredienteDeBloque(${ingId})">🗑️</button>
-                </div>
             `;
             
             container.appendChild(div);

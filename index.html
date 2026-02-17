@@ -1353,7 +1353,7 @@
             let html = '';
             
             const numTamanos = (receta.tamanos && receta.tamanos.length > 0) ? receta.tamanos.length : 1;
-            const anchoColumna = numTamanos === 1 ? '200px' : '150px';
+            const anchoColumna = numTamanos === 1 ? '120px' : (numTamanos === 2 ? '100px' : (numTamanos === 3 ? '90px' : '80px'));
 
             receta.bloques.forEach((bloque, index) => {
                 html += `<h4 style="margin-top: ${index > 0 ? '25px' : '0'};">${bloque.titulo}:</h4>`;
@@ -1468,6 +1468,12 @@
         }
 
         function cerrarModalReceta() {
+            // Resetear botón de guardar
+            const btnGuardar = document.querySelector('#formReceta button[type="submit"]');
+            if (btnGuardar) {
+                btnGuardar.textContent = '💾 Guardar Receta';
+                btnGuardar.disabled = false;
+            }
             document.getElementById('modalReceta').classList.remove('active');
         }
 
@@ -1545,6 +1551,10 @@
             if (tamanos.length > 0) {
                 tamanos.forEach(t => {
                     const val = valoresActuales[t] || '';
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'input-con-label';
+                    const label = document.createElement('label');
+                    label.textContent = t;
                     const input = document.createElement('input');
                     input.type = 'number';
                     input.step = '1';
@@ -1555,10 +1565,16 @@
                     input.style.border = '2px solid #e2e8f0';
                     input.style.borderRadius = '8px';
                     input.style.fontSize = '14px';
-                    inputsContainer.appendChild(input);
+                    wrapper.appendChild(label);
+                    wrapper.appendChild(input);
+                    inputsContainer.appendChild(wrapper);
                 });
             } else {
                 const val = valoresActuales['Único'] || '';
+                const wrapper = document.createElement('div');
+                wrapper.className = 'input-con-label';
+                const label = document.createElement('label');
+                label.textContent = 'Cantidad';
                 const input = document.createElement('input');
                 input.type = 'number';
                 input.step = '1';
@@ -1569,7 +1585,9 @@
                 input.style.border = '2px solid #e2e8f0';
                 input.style.borderRadius = '8px';
                 input.style.fontSize = '14px';
-                inputsContainer.appendChild(input);
+                wrapper.appendChild(label);
+                wrapper.appendChild(input);
+                inputsContainer.appendChild(wrapper);
             }
         }
 

@@ -2234,7 +2234,7 @@
                             value="${precioManual ? formatearPrecio(precioManual) : ''}"
                             placeholder="0"
                             oninput="formatearInput(this)"
-                            onblur="actualizarResultadoCookie('${cookie.nombre}', parsearNumero(this.value), ${costoUFinal})"
+                            onblur="actualizarResultadoCookie('${cookie.nombre}', parsearNumero(this.value), ${costoUnitario})"
                             style="width:90px;padding:7px;border:2px solid #e2e8f0;border-radius:8px;text-align:center;font-size:15px;font-weight:700;">
                     </td>
                     <td id="res_${cookie.nombre.replace(/[^a-zA-Z]/g,'_')}" style="font-weight:700;${precioManual > 0 ? (conviene ? 'color:#22863a;' : 'color:#e53e3e;') : 'color:#a0aec0;'}">${precioManual > 0 ? (conviene ? '+$' + formatearPrecio(resultado) : '-$' + formatearPrecio(Math.abs(resultado))) : '—'}</td>

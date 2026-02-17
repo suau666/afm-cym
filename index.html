@@ -678,10 +678,36 @@
                 width: 100%;
                 flex-wrap: wrap;
             }
-            .ingrediente-item .inputs-cantidades input {
-                flex: 0 0 calc(25% - 5px);
-                min-width: 60px;
-                max-width: 90px;
+            .ingrediente-item .input-con-label {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 4px;
+            }
+            .ingrediente-item .input-con-label label {
+                font-size: 11px;
+                font-weight: 700;
+                color: #8B4513;
+            }
+            .ingrediente-item .input-con-label input {
+                width: 70px !important;
+                padding: 8px 4px;
+                font-size: 13px;
+                text-align: center;
+            }
+            /* Header "Ingrediente" sobre el select */
+            .ingrediente-item > div:first-child {
+                position: relative;
+                padding-top: 18px;
+            }
+            .ingrediente-item > div:first-child::before {
+                content: 'Ingrediente';
+                position: absolute;
+                top: 0;
+                left: 40px;
+                font-size: 11px;
+                font-weight: 700;
+                color: #8B4513;
             }
             .ingrediente-item .inputs-cantidades input {
                 width: 100% !important;
@@ -834,6 +860,42 @@
                 width: 75px !important;
                 font-size: 13px;
                 padding: 5px;
+            }
+
+
+            /* ── TABLA DETALLE RECETA ── */
+            .detalle-receta table {
+                display: block;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                width: 100%;
+            }
+            .detalle-receta thead,
+            .detalle-receta tbody {
+                display: table;
+                width: 100%;
+            }
+            .detalle-receta th:first-child,
+            .detalle-receta td:first-child {
+                position: sticky;
+                left: 0;
+                background: white;
+                z-index: 2;
+                min-width: 110px;
+                max-width: 150px;
+                white-space: normal;
+                word-wrap: break-word;
+            }
+            .detalle-receta th:first-child {
+                background: #A0522D;
+                z-index: 3;
+            }
+            .detalle-receta th,
+            .detalle-receta td {
+                padding: 10px 8px;
+                font-size: 13px;
+                white-space: nowrap;
+                min-width: 70px;
             }
 
             /* ── SAFE AREA ── */
@@ -1001,9 +1063,7 @@
                     </div>
                 </div>
             </div>
-            <div style="text-align:center;margin-bottom:25px;">
-                <button class="btn" onclick="calcularCookies()">🔄 Actualizar Costos</button>
-            </div>
+
 
             <!-- TABLA DE COSTOS -->
             <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
@@ -1434,6 +1494,8 @@
         }
 
         function sincronizarEncabezado(bloqueId) {
+            // No sincronizar en móvil (flex vertical)
+            if (window.innerWidth <= 430) return;
             const bloqueEl = document.querySelector(`[data-bloque-id="${bloqueId}"]`);
             if (!bloqueEl) return;
             const viejo = bloqueEl.querySelector('.encabezados-columnas');
@@ -1579,11 +1641,11 @@
             if (tamanos.length > 0) {
                 tamanos.forEach(t => {
                     const val = datosIng && datosIng.cantidades ? (datosIng.cantidades[t] || '') : '';
-                    inputsHTML += `<input type="number" data-tamano="${t}" value="${val}" step="1" style="text-align: center; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 14px;">`;
+                    inputsHTML += `<div class="input-con-label"><label>${t}</label><input type="number" data-tamano="${t}" value="${val}" step="1" style="text-align: center; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 14px;"></div>`;
                 });
             } else {
                 const val = datosIng && datosIng.cantidades ? (datosIng.cantidades['Único'] || '') : '';
-                inputsHTML += `<input type="number" data-tamano="Único" value="${val}" step="1" style="text-align: center; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 14px;">`;
+                inputsHTML += `<div class="input-con-label"><label>Cantidad</label><input type="number" data-tamano="Único" value="${val}" step="1" style="text-align: center; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 14px;"></div>`;
             }
             inputsHTML += '</div>';
             

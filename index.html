@@ -672,10 +672,16 @@
                 min-width: 0;
             }
             .ingrediente-item .inputs-cantidades {
-                display: grid !important;
-                grid-template-columns: repeat(4, 1fr);
+                display: flex !important;
+                justify-content: center;
                 gap: 6px;
                 width: 100%;
+                flex-wrap: wrap;
+            }
+            .ingrediente-item .inputs-cantidades input {
+                flex: 0 0 calc(25% - 5px);
+                min-width: 60px;
+                max-width: 90px;
             }
             .ingrediente-item .inputs-cantidades input {
                 width: 100% !important;
@@ -1762,8 +1768,8 @@
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td>${ing.nombre}</td>
-                    <td><input type="text" value="${formatearPrecio(ing.cantidad)}" style="width:110px;text-align:center;padding:6px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:15px;" oninput="formatearInput(this)" onchange="actualizarCampoIngrediente(${ing.id},'cantidad',parsearNumero(this.value))"></td>
-                    <td><input type="text" value="${formatearPrecio(ing.precio)}" style="width:110px;text-align:center;padding:6px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:15px;" oninput="formatearInput(this)" onchange="actualizarCampoIngrediente(${ing.id},'precio',parsearNumero(this.value))"></td>
+                    <td><input type="text" value="${formatearPrecio(ing.cantidad)}" style="width:110px;text-align:center;padding:6px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:15px;" oninput="formatearInput(this)" onblur="actualizarCampoIngrediente(${ing.id},'cantidad',parsearNumero(this.value))"></td>
+                    <td><input type="text" value="${formatearPrecio(ing.precio)}" style="width:110px;text-align:center;padding:6px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:15px;" oninput="formatearInput(this)" onblur="actualizarCampoIngrediente(${ing.id},'precio',parsearNumero(this.value))"></td>
                     <td class="precio-unit-${ing.id}">$${formatearNumero(precioUnit)}</td>
                     <td><button class="btn btn-danger btn-small" onclick="eliminarIngrediente(${ing.id})">🗑️</button></td>
                 `;
@@ -1772,12 +1778,25 @@
         }
 
         async function actualizarCampoIngrediente(id, campo, valor) {
-            const ing = ingredientes.find(i => i.id === id);
-            if (!ing) return;
-            ing[campo] = parseFloat(valor) || 0;
-            await guardarIngrediente_supa(ing);
-            const cell = document.querySelector('.precio-unit-' + id);
-            if (cell) cell.textContent = '$' + formatearNumero(ing.precio / ing.cantidad);
+            try {
+                const ing = ingredientes.find(i => i.id === id);
+                if (!ing) { console.error('Ingrediente no encontrado:', id); return; }
+                const valorNum = parseFloat(valor);
+                if (isNaN(valorNum)) { console.error('Valor inválido:', valor); return; }
+                ing[campo] = valorNum;
+                console.log('Guardando ingrediente:', ing.nombre, campo, '=', valorNum);
+                await guardarIngrediente_supa(ing);
+                console.log('✓ Guardado OK');
+                const cell = document.querySelector('.precio-unit-' + id);
+                if (cell) {
+                    const precioUnit = ing.precio / ing.cantidad;
+                    cell.textContent = '$' + formatearNumero(precioUnit);
+                    console.log('✓ Precio unitario actualizado:', precioUnit);
+                }
+            } catch(err) {
+                console.error('❌ Error en actualizarCampoIngrediente:', err);
+                alert('Error al guardar. Verificá la consola.');
+            }
         }
 
                 function abrirModalNuevoIngrediente() {

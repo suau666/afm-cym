@@ -1357,7 +1357,8 @@
 
             receta.bloques.forEach((bloque, index) => {
                 html += `<h4 style="margin-top: ${index > 0 ? '25px' : '0'};">${bloque.titulo}:</h4>`;
-                html += `<table style="margin-bottom: 20px; table-layout: fixed;"><colgroup><col style="width: auto;"></colgroup>`;
+                const anchoIngrediente = numTamanos === 1 ? '60%' : (numTamanos === 2 ? '50%' : (numTamanos === 3 ? '45%' : '40%'));
+                html += `<table style="margin-bottom: 20px; table-layout: fixed;"><colgroup><col style="width: ${anchoIngrediente};"></colgroup>`;
                 
                 if (receta.tamanos && receta.tamanos.length > 0) {
                     receta.tamanos.forEach(() => {
@@ -2421,7 +2422,20 @@
                 const response = await fetch('/api/ai', {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ model: 'claude-sonnet-4-5-20250514', max_tokens: 1000,
-                        messages: [{ role: 'user', content: `El usuario dijo: "${texto}". Extraé ingredientes de pastelería con nombre genérico, cantidad en gr/ml, precio en pesos. Respondé SOLO JSON sin backticks: [{"nombre":"Azúcar","cantidad":1000,"precio":500}]` }]
+                        messages: [{ role: 'user', content: `Analizá este texto dicho por voz sobre ingredientes de pastelería: "${texto}"
+
+Extraé TODOS los ingredientes mencionados con su:
+- nombre (genérico, sin marca, ej: "Aceite" no "Aceite Cocinero")  
+- cantidad (en gramos o ml como número, NO unidades como "botella")
+- precio (en pesos argentinos como número)
+
+Si dice "gramos" o "mililitros" convertí a número (ej: "mil quinientos" → 1500).
+Si dice "pesos" convertí a número (ej: "seis mil" → 6000).
+
+Respondé ÚNICAMENTE con JSON array sin markdown, sin explicación:
+[{"nombre":"Aceite","cantidad":1500,"precio":6000}]
+
+Si no podés extraer algún campo usá null.` }]
                     })
                 });
                 const data = await response.json();
@@ -2430,7 +2444,12 @@
                 if (!productos.length) throw new Error();
                 status.style.display = 'none';
                 mostrarResultadosIA(productos, 'microfono');
-            } catch(e) { status.className = 'ia-status error'; status.innerHTML = '❌ Error. Intentá de nuevo.'; document.getElementById('btnIniciarVoz').style.display = 'inline-block'; }
+            } catch(e) { 
+                console.error('Error IA voz:', e); 
+                status.className = 'ia-status error'; 
+                status.innerHTML = '❌ Error procesando. Verificá que dijiste claramente: "Ingrediente, cantidad gramos/ml, precio pesos". Ejemplo: "Aceite mil quinientos gramos seis mil pesos"'; 
+                document.getElementById('btnIniciarVoz').style.display = 'inline-block'; 
+            }
         }
     </script>
 </body>

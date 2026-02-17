@@ -865,37 +865,28 @@
 
             /* ── TABLA DETALLE RECETA ── */
             .detalle-receta table {
-                display: block;
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
                 width: 100%;
-            }
-            .detalle-receta thead,
-            .detalle-receta tbody {
-                display: table;
-                width: 100%;
-            }
-            .detalle-receta th:first-child,
-            .detalle-receta td:first-child {
-                position: sticky;
-                left: 0;
-                background: white;
-                z-index: 2;
-                white-space: normal;
-                word-wrap: break-word;
-                text-align: left;
-                padding-left: 10px;
-            }
-            .detalle-receta th:first-child {
-                background: #A0522D;
-                z-index: 3;
+                border-collapse: collapse;
             }
             .detalle-receta th,
             .detalle-receta td {
                 padding: 10px 8px;
                 font-size: 13px;
-                white-space: nowrap;
-                min-width: 70px;
+                border-bottom: 1px solid #f0e0d0;
+            }
+            .detalle-receta th {
+                background: #A0522D;
+                color: white;
+                position: sticky;
+                top: 0;
+                z-index: 2;
+            }
+            .detalle-receta td:first-child {
+                text-align: left;
+            }
+            .detalle-receta th:not(:first-child),
+            .detalle-receta td:not(:first-child) {
+                text-align: center;
             }
 
             /* ── SAFE AREA ── */

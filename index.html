@@ -668,8 +668,21 @@
             }
             .ingrediente-item > div:first-child {
                 display: flex;
+                flex-direction: row;
                 align-items: center;
-                gap: 8px;
+                gap: 6px;
+            }
+            /* Botones ▲▼ en columna compacta a la izquierda del select */
+            .ingrediente-item > div:first-child > div:first-child {
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 2px !important;
+                align-items: center;
+                flex-shrink: 0;
+            }
+            .ingrediente-item > div:first-child > div:first-child .btn-orden {
+                font-size: 10px;
+                padding: 2px 5px;
             }
             .ingrediente-item .ingrediente-select {
                 flex: 1;
@@ -699,20 +712,7 @@
                 font-size: 13px;
                 text-align: center;
             }
-            /* Header "Ingrediente" sobre el select */
-            .ingrediente-item > div:first-child {
-                position: relative;
-                padding-top: 18px;
-            }
-            .ingrediente-item > div:first-child::before {
-                content: 'Ingrediente';
-                position: absolute;
-                top: 0;
-                left: 40px;
-                font-size: 11px;
-                font-weight: 700;
-                color: #9b3060;
-            }
+            /* Sin header "Ingrediente" en mobile */
             .ingrediente-item .inputs-cantidades input {
                 width: 100% !important;
                 padding: 8px 4px;
@@ -1201,8 +1201,8 @@
         };
 
         const supa = {
-            async get(tabla) {
-                const r = await fetch(`${SUPABASE_URL}/rest/v1/${tabla}?select=*&order=id`, {
+            async get(tabla, orderBy = 'id') {
+                const r = await fetch(`${SUPABASE_URL}/rest/v1/${tabla}?select=*&order=${orderBy}`, {
                     headers: HEADERS
                 });
                 return r.ok ? r.json() : [];
@@ -1308,17 +1308,45 @@
             return parseFloat(numero.toFixed(2)).toLocaleString('es-AR', {minimumFractionDigits: 0, maximumFractionDigits: 2});
         }
 
+        // ===== PRECIOS MANUALES COOKIES =====
+        let preciosManualesCookies = {};   // { nombre: precio }
+        let preciosCookiesRows = [];        // filas completas de Supabase { id, nombre, precio }
+
+        async function cargarPreciosManuales() {
+            try {
+                const rows = await supa.get('precios_cookies', 'nombre');
+                preciosCookiesRows = rows || [];
+                preciosManualesCookies = {};
+                preciosCookiesRows.forEach(r => { preciosManualesCookies[r.nombre] = r.precio; });
+            } catch(e) { console.error('Error cargando precios cookies:', e); }
+        }
+
+        async function guardarPreciosManuales(nombre, precio) {
+            // Buscar si ya existe una fila para este nombre
+            const existente = preciosCookiesRows.find(r => r.nombre === nombre);
+            if (existente) {
+                // Actualizar fila existente — igual que ingredientes con supa.upsert por id
+                existente.precio = precio;
+                supa.upsert('precios_cookies', existente);
+            } else {
+                // Crear nueva fila con id numérico — igual que ingredientes
+                const nueva = { id: Date.now(), nombre, precio };
+                preciosCookiesRows.push(nueva);
+                supa.upsert('precios_cookies', nueva);
+            }
+        }
+
         // Datos iniciales
         // ===== INICIALIZACIÓN SUPABASE =====
         async function inicializarApp() {
             mostrarCargando(true);
             try {
-                const [ings, recs] = await Promise.all([
+                const [ings, recs, _precios] = await Promise.all([
                     supa.get('ingredientes'),
-                    supa.get('recetas')
+                    supa.get('recetas'),
+                    cargarPreciosManuales()
                 ]);
                 ingredientes = ings || [];
-                await cargarPreciosManuales();
                 recetas = (recs || []).map(r => ({
                     ...r, tamanos: r.tamanos || [], bloques: r.bloques || []
                 }));
@@ -1371,6 +1399,14 @@
         }
 
                 // ===== RECETAS =====
+        async function toggleFavorito(id) {
+            const receta = recetas.find(r => r.id === id);
+            if (!receta) return;
+            receta.favorito = !receta.favorito;
+            renderRecetas();
+            supa.upsert('recetas', receta);
+        }
+
         function renderRecetas() {
             const grid = document.getElementById('recetasGrid');
             grid.innerHTML = '';
@@ -1400,7 +1436,7 @@
                     <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px;">
                         <h3 style="margin: 0; padding-right: 10px;">${r.nombre}</h3>
                         <button class="btn-favorito" onclick="event.stopPropagation(); toggleFavorito(${r.id})" style="font-size: 24px; background: none; border: none; cursor: pointer; flex-shrink: 0;">
-                            ${r.favorito ? '⭐' : '☆'}
+                            ${r.favorito ? '<span style="color:#f5c518;font-size:26px;">★</span>' : '<span style="color:#ccc;font-size:26px;">★</span>'}
                         </button>
                     </div>
                     <p style="color: #718096; margin: 0; font-size: 14px;">${ingredientesCount} ingrediente${ingredientesCount !== 1 ? 's' : ''}</p>
@@ -1432,7 +1468,7 @@
                         <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px;">
                             <h3 style="margin: 0; padding-right: 10px;">${r.nombre}</h3>
                             <button class="btn-favorito" onclick="event.stopPropagation(); toggleFavorito(${r.id})" style="font-size: 24px; background: none; border: none; cursor: pointer; flex-shrink: 0;">
-                                ${r.favorito ? '⭐' : '☆'}
+                                ${r.favorito ? '<span style="color:#f5c518;font-size:26px;">★</span>' : '<span style="color:#ccc;font-size:26px;">★</span>'}
                             </button>
                         </div>
                         <p style="color: #718096; margin: 0; font-size: 14px;">${ingredientesCount} ingrediente${ingredientesCount !== 1 ? 's' : ''}</p>
@@ -2440,23 +2476,7 @@
             {"nombre": "Oreo", "nombreCorto": "Oreo", "cantidad": 24}
         ];
 
-        // Precios manuales en memoria
-        // Precios manuales con persistencia
-        let preciosManualesCookies = {};
 
-        async function cargarPreciosManuales() {
-            try {
-                const rows = await supa.get('precios_cookies');
-                preciosManualesCookies = {};
-                (rows || []).forEach(r => { preciosManualesCookies[r.nombre] = r.precio; });
-            } catch(e) { console.error('Error cargando precios cookies:', e); }
-        }
-
-        async function guardarPreciosManuales(nombre, precio) {
-            try {
-                await supa.upsertByField('precios_cookies', { nombre, precio }, 'nombre');
-            } catch(e) { console.error('Error guardando precio cookie:', e); }
-        }
 
         function calcularCookies() {
             const cajaTres    = parsearNumero(document.getElementById('cajaTres').value);

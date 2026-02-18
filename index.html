@@ -1561,8 +1561,6 @@
         }
 
         function sincronizarEncabezado(bloqueId) {
-            // No sincronizar en móvil (flex vertical)
-            if (window.innerWidth <= 430) return;
             const bloqueEl = document.querySelector(`[data-bloque-id="${bloqueId}"]`);
             if (!bloqueEl) return;
             const viejo = bloqueEl.querySelector('.encabezados-columnas');
@@ -1591,7 +1589,6 @@
             enc.appendChild(mk(anchoEliminar, ''));
             bloqueEl.querySelector('.bloque-header').insertAdjacentElement('afterend', enc);
         }
-
         function actualizarInputsTamanos(bloqueId, ingId, itemEl) {
             const tamanos = document.getElementById('tamanosReceta').value.split(',').map(t => t.trim()).filter(t => t);
             const numColumnas = tamanos.length > 0 ? tamanos.length : 1;

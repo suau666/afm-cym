@@ -1116,7 +1116,7 @@
 
                 <div style="margin-top: 30px; display: flex; gap: 10px; justify-content: space-between;">
                     <button type="button" class="btn btn-danger" id="btnEliminarReceta" style="display: none;" onclick="eliminarRecetaActual()">🗑️ Eliminar Receta</button>
-                    <div style="display: flex; gap: 10px;">
+                    <div style="display: flex; gap: 10px; justify-content: flex-end;">
                         <button type="button" class="btn btn-secondary" onclick="cerrarModalReceta()">Cancelar</button>
                         <button type="submit" class="btn">💾 Guardar Receta</button>
                     </div>
@@ -1527,10 +1527,12 @@
             const inputsContainer = itemEl.querySelector('.inputs-cantidades');
             if (!inputsContainer) return;
             
+            // PRESERVAR TODOS LOS VALORES, incluso los de tamaños que ya no están visibles
             const valoresActuales = {};
             inputsContainer.querySelectorAll('input[type="number"]').forEach(inp => {
                 const nombre = inp.dataset.tamano || 'Único';
-                valoresActuales[nombre] = inp.value;
+                const val = inp.value;
+                if (val) valoresActuales[nombre] = val;
             });
             
             inputsContainer.innerHTML = '';

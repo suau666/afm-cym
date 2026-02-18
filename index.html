@@ -1104,7 +1104,6 @@
                     <input type="text" id="rindeUnidades" inputmode="numeric" placeholder="Ej: 20"
                            style="width: 140px; padding: 12px; border: 2px solid #c9547a; border-radius: 10px; font-size: 16px; font-weight: 600; text-align: center;"
                            oninput="formatearInput(this)">
-                    <small style="color: #718096; display: block; margin-top: 6px;">Se usa para calcular el costo por unidad en la tabla de Cookies.</small>
                 </div>
 
                 <div style="margin-bottom: 20px;">
@@ -2003,9 +2002,11 @@
                 receta.rinde = rinde;
                 receta.tamanos = tamanos;
                 receta.bloques = bloquesData;
-                await guardarReceta_supa(receta);
+                renderRecetas();
+                cerrarModalReceta();
+                guardarReceta_supa(receta);
             } else {
-                recetas.push({
+                const nueva = {
                     id: Date.now(),
                     nombre,
                     observaciones,
@@ -2014,11 +2015,12 @@
                     favorito: false,
                     tamanos,
                     bloques: bloquesData
-                });
-                await guardarReceta_supa(recetas[recetas.length-1]);
+                };
+                recetas.push(nueva);
+                renderRecetas();
+                cerrarModalReceta();
+                guardarReceta_supa(nueva);
             }
-            renderRecetas();
-            cerrarModalReceta();
         }
 
         async function eliminarRecetaActual() {

@@ -1100,23 +1100,21 @@
 
                 <div style="margin-bottom: 20px;">
                     <label style="font-weight: 600; color: #2d3748; margin-bottom: 12px; display: block;">Tamaños disponibles:</label>
-                    <!-- Fila única: botones estándar + especiales intercalados -->
+                    <!-- Fila única: botones estándar + especiales intercalados + input a la derecha -->
                     <div id="tamanosBotonesRow" style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
                         <button type="button" class="btn-tamano" data-tamano="C" data-estandar="1" onclick="toggleTamanoGlobal('C', this)">C</button>
                         <button type="button" class="btn-tamano" data-tamano="M" data-estandar="1" onclick="toggleTamanoGlobal('M', this)">M</button>
                         <button type="button" class="btn-tamano" data-tamano="G" data-estandar="1" onclick="toggleTamanoGlobal('G', this)">G</button>
                         <button type="button" class="btn-tamano" data-tamano="XG" data-estandar="1" onclick="toggleTamanoGlobal('XG', this)">XG</button>
-                    </div>
-                    <!-- Input para agregar tamaño especial -->
-                    <div style="display: flex; gap: 8px; align-items: center; margin-top: 10px;">
-                        <input type="text" id="inputNuevoTamano" placeholder="Ej: 20x28, Familiar..." 
-                               style="padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 14px; width: 180px;"
-                               onkeydown="if(event.key==='Enter'){event.preventDefault();agregarTamanoEspecial();}">
-                        <button type="button" onclick="agregarTamanoEspecial()" 
-                                class="btn-tamano" style="min-width:unset; padding: 10px 16px; font-size:14px;">+ Agregar</button>
+                        <div id="inputTamanoWrapper" style="display: flex; gap: 8px; align-items: center; margin-left: auto;">
+                            <input type="text" id="inputNuevoTamano" placeholder="Ej: 20x28..." 
+                                   style="padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 14px; width: 140px; height: 100%;"
+                                   onkeydown="if(event.key==='Enter'){event.preventDefault();agregarTamanoEspecial();}">
+                            <button type="button" onclick="agregarTamanoEspecial()" 
+                                    class="btn-tamano" style="min-width:unset; padding: 10px 16px; font-size:14px;">+ Agregar</button>
+                        </div>
                     </div>
                     <input type="hidden" id="tamanosReceta" value="">
-                    <small style="color: #718096; display: block; margin-top: 8px;">Activá los tamaños estándar o agregaá uno especial. Usá ◀▶ para reordenar.</small>
                 </div>
 
                 <h4 style="margin-top: 20px; color: #c9547a;">Bloques de Ingredientes</h4>
@@ -2394,31 +2392,46 @@
             const grid = document.getElementById('cookiesRecetasGrid');
             if (!grid) return;
             grid.innerHTML = '';
-            COOKIES_DATA.forEach(cookie => {
-                const receta = recetas.find(r => r.nombre === '🍪 ' + cookie.nombre);
-                if (!receta) return;
+            // Usar directamente las recetas de Supabase que empiecen con 🍪
+            const cookiesRecetas = [...recetas]
+                .filter(r => r.nombre.startsWith('🍪'))
+                .sort((a, b) => a.nombre.localeCompare(b.nombre));
+
+            cookiesRecetas.forEach(receta => {
+                // Buscar en COOKIES_DATA para obtener "cantidad" si existe
+                const nombreSinEmoji = receta.nombre.replace(/^🍪\s*/, '');
+                const cookieData = COOKIES_DATA.find(c => c.nombre === nombreSinEmoji);
+
                 const card = document.createElement('div');
                 card.className = 'receta-card';
-                card.style.cursor = 'default';
+                card.onclick = () => verDetalleReceta(receta.id);
                 let ingHtml = '';
-                if (receta.bloques && receta.bloques[0]) {
-                    receta.bloques[0].ingredientes.forEach(item => {
-                        const ing = ingredientes.find(i => i.id === item.ingredienteId);
-                        if (!ing) return;
-                        const cant = item.cantidades['Único'] || 0;
-                        ingHtml += `<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f5d0e8;font-size:14px;color:#9b3060;">
-                            <span>${ing.nombre}</span>
-                            <span style="font-weight:600;">${cant > 0 ? formatearNumero(cant) : '—'}</span>
-                        </div>`;
+                if (receta.bloques) {
+                    receta.bloques.forEach(bloque => {
+                        bloque.ingredientes.forEach(item => {
+                            const ing = ingredientes.find(i => i.id === item.ingredienteId);
+                            if (!ing) return;
+                            // Intentar obtener cantidad por tamaño o 'Único'
+                            const tamanos = receta.tamanos && receta.tamanos.length > 0 ? receta.tamanos : ['Único'];
+                            const cant = item.cantidades[tamanos[0]] || item.cantidades['Único'] || 0;
+                            ingHtml += `<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f5d0e8;font-size:14px;color:#9b3060;">
+                                <span>${ing.nombre}</span>
+                                <span style="font-weight:600;">${cant > 0 ? formatearNumero(cant) + 'g' : '—'}</span>
+                            </div>`;
+                        });
                     });
                 }
                 card.innerHTML = `
-                    <h3 style="font-size:17px;margin-bottom:5px;padding-right:10px;">${cookie.nombre}</h3>
-                    <p style="font-size:13px;color:#b05480;margin-bottom:12px;">Rinde ${cookie.cantidad} cookies</p>
+                    <h3 style="font-size:17px;margin-bottom:5px;padding-right:10px;">${nombreSinEmoji}</h3>
+                    ${cookieData ? `<p style="font-size:13px;color:#b05480;margin-bottom:12px;">Rinde ${cookieData.cantidad} cookies</p>` : ''}
                     <div>${ingHtml}</div>
                 `;
                 grid.appendChild(card);
             });
+
+            if (cookiesRecetas.length === 0) {
+                grid.innerHTML = '<p style="color:#b05480;text-align:center;padding:20px;">No hay recetas de cookies cargadas.</p>';
+            }
         }
 
         // ===== IA CÁMARA Y MICRÓFONO =====

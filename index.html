@@ -1090,12 +1090,21 @@
             <form id="formReceta" onsubmit="guardarReceta(event)">
                 <div class="form-group">
                     <label>Nombre de la Receta:</label>
-                    <input type="text" id="nombreReceta" required>
+                    <input type="text" id="nombreReceta" required oninput="toggleCampoRinde(this.value)">
                 </div>
 
                 <div class="form-group">
                     <label>Observaciones:</label>
                     <textarea id="observacionesReceta" placeholder="Notas, comentarios, instrucciones especiales..."></textarea>
+                </div>
+
+                <!-- Campo rinde: solo visible para recetas de cookies (🍪) -->
+                <div id="campoRinde" style="display:none; margin-bottom: 20px;">
+                    <label style="font-weight: 600; color: #2d3748; margin-bottom: 10px; display: block;">🍪 ¿Cuántas unidades rinde la masa?</label>
+                    <input type="text" id="rindeUnidades" inputmode="numeric" placeholder="Ej: 20"
+                           style="width: 140px; padding: 12px; border: 2px solid #c9547a; border-radius: 10px; font-size: 16px; font-weight: 600; text-align: center;"
+                           oninput="formatearInput(this)">
+                    <small style="color: #718096; display: block; margin-top: 6px;">Se usa para calcular el costo por unidad en la tabla de Cookies.</small>
                 </div>
 
                 <div style="margin-bottom: 20px;">
@@ -1497,6 +1506,8 @@
             document.getElementById('tituloModalReceta').textContent = 'Nueva Receta';
             document.getElementById('formReceta').reset();
             document.getElementById('tamanosReceta').value = '';
+            document.getElementById('rindeUnidades').value = '';
+            document.getElementById('campoRinde').style.display = 'none';
             
             // Resetear botones de tamaño y chips especiales
             document.querySelectorAll('.btn-tamano').forEach(btn => btn.classList.remove('active'));
@@ -1519,6 +1530,9 @@
             document.getElementById('tituloModalReceta').textContent = 'Editar Receta';
             document.getElementById('nombreReceta').value = receta.nombre;
             document.getElementById('observacionesReceta').value = receta.observaciones || '';
+            const rindeVal = receta.rinde || '';
+            document.getElementById('rindeUnidades').value = rindeVal ? parseInt(rindeVal).toLocaleString('es-AR') : '';
+            toggleCampoRinde(receta.nombre);
             
             // Resetear botones de tamaño
             document.querySelectorAll('.btn-tamano').forEach(btn => btn.classList.remove('active'));
@@ -1633,6 +1647,50 @@
         function cerrarModalReceta() {
             document.getElementById('modalReceta').classList.remove('active');
         }
+
+        function toggleCampoRinde(nombre) {
+            const campo = document.getElementById('campoRinde');
+            if (campo) campo.style.display = nombre.startsWith('🍪') ? 'block' : 'none';
+        }
+
+        // ── Atajos de teclado globales ──
+        document.addEventListener('keydown', function(e) {
+            const modalReceta  = document.getElementById('modalReceta');
+            const modalDetalle = document.getElementById('modalDetalleReceta');
+            const modalIng     = document.getElementById('modalIngrediente');
+
+            const recetaAbierta  = modalReceta  && modalReceta.classList.contains('active');
+            const detalleAbierto = modalDetalle && modalDetalle.classList.contains('active');
+            const ingAbierto     = modalIng     && modalIng.classList.contains('active');
+
+            // ESC: cerrar cualquier modal abierto
+            if (e.key === 'Escape') {
+                if (recetaAbierta)  { cerrarModalReceta(); return; }
+                if (detalleAbierto) { cerrarModalDetalleReceta(); return; }
+                if (ingAbierto)     { cerrarModalIngrediente(); return; }
+            }
+
+            // Enter en detalle de receta → editar
+            if (e.key === 'Enter' && detalleAbierto) {
+                // Solo si el foco no está en un botón/input dentro del modal
+                if (document.activeElement.tagName !== 'BUTTON' && document.activeElement.tagName !== 'INPUT') {
+                    e.preventDefault();
+                    editarRecetaDesdeDetalle();
+                }
+                return;
+            }
+
+            // Enter en modal de edición/creación → guardar (solo si foco NO está en textarea o input de tamaño)
+            if (e.key === 'Enter' && recetaAbierta) {
+                const tag = document.activeElement.tagName;
+                const isTextarea = tag === 'TEXTAREA';
+                const isTamanoInput = document.activeElement.id === 'inputNuevoTamano';
+                if (!isTextarea && !isTamanoInput) {
+                    e.preventDefault();
+                    document.getElementById('formReceta').requestSubmit();
+                }
+            }
+        });
 
         function actualizarTodosLosBloques() {
             const bloques = document.querySelectorAll('.bloque-ingredientes');
@@ -1892,6 +1950,7 @@
 
             const nombre = document.getElementById('nombreReceta').value.trim();
             const observaciones = document.getElementById('observacionesReceta').value.trim();
+            const rinde = nombre.startsWith('🍪') ? parsearNumero(document.getElementById('rindeUnidades').value) || null : null;
             const tamanosStr = document.getElementById('tamanosReceta').value.trim();
             const tamanos = tamanosStr ? tamanosStr.split(',').map(t => t.trim()).filter(t => t) : ['Único'];
             
@@ -1941,6 +2000,7 @@
                 const receta = recetas.find(r => r.id === recetaEditandoId);
                 receta.nombre = nombre;
                 receta.observaciones = observaciones;
+                receta.rinde = rinde;
                 receta.tamanos = tamanos;
                 receta.bloques = bloquesData;
                 await guardarReceta_supa(receta);
@@ -1949,6 +2009,7 @@
                     id: Date.now(),
                     nombre,
                     observaciones,
+                    rinde,
                     fecha: new Date().toISOString(),
                     favorito: false,
                     tamanos,
@@ -2346,8 +2407,16 @@
             if (!tbody) return;
             tbody.innerHTML = '';
 
-            COOKIES_DATA.forEach((cookie) => {
-                const receta = recetas.find(r => r.nombre === '🍪 ' + cookie.nombre);
+            const cookiesOrdenadas = [...recetas]
+                .filter(r => r.nombre.startsWith('🍪'))
+                .sort((a, b) => a.nombre.localeCompare(b.nombre))
+                .map(r => {
+                    const nombreSinEmoji = r.nombre.replace(/^🍪\s*/, '');
+                    const cd = COOKIES_DATA.find(c => c.nombre === nombreSinEmoji);
+                    return { nombre: nombreSinEmoji, cantidad: cd ? cd.cantidad : 1, nombreCorto: cd ? cd.nombreCorto : nombreSinEmoji, receta: r };
+                });
+            cookiesOrdenadas.forEach((cookie) => {
+                const receta = cookie.receta;
                 let costoMasa = 0;
 
                 if (receta && receta.bloques) {
@@ -2367,7 +2436,8 @@
                     });
                 }
 
-                const costoUnitario  = costoMasa / cookie.cantidad;
+                const rindeCookie = (cookie.receta && cookie.receta.rinde) ? cookie.receta.rinde : (cookie.cantidad || 1);
+                const costoUnitario  = rindeCookie > 0 ? costoMasa / rindeCookie : 0;
                 const costox3        = costoUnitario * 3;
                 const costoUFinal    = costox3 + stickersVal + (cajaTres + cajaSeis) / 9;
                 const precioManual   = preciosManualesCookies[cookie.nombre] || 0;
@@ -2456,7 +2526,7 @@
                 }
                 card.innerHTML = `
                     <h3 style="font-size:17px;margin-bottom:5px;padding-right:10px;">${nombreSinEmoji}</h3>
-                    ${cookieData ? `<p style="font-size:13px;color:#b05480;margin-bottom:12px;">Rinde ${cookieData.cantidad} cookies</p>` : ''}
+                    ${receta.rinde ? `<p style="font-size:13px;color:#b05480;margin-bottom:12px;">Rinde ${receta.rinde} cookies</p>` : (cookieData ? `<p style="font-size:13px;color:#b05480;margin-bottom:12px;">Rinde ${cookieData.cantidad} cookies</p>` : '')}
                     <div>${ingHtml}</div>
                 `;
                 grid.appendChild(card);

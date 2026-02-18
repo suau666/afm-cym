@@ -909,14 +909,13 @@
         
         /* ── DESKTOP: EDICIÓN DE RECETAS ── */
         @media (min-width: 769px) {
-            /* Ocultar el encabezado que genera sincronizarEncabezado */
             .encabezados-columnas {
                 display: none !important;
             }
             
             .ingrediente-item {
-                display: grid !important;
-                grid-template-columns: 40px 350px auto 80px;
+                display: flex !important;
+                flex-direction: row;
                 gap: 15px;
                 padding: 12px;
                 align-items: center;
@@ -925,6 +924,59 @@
                 border-radius: 10px;
                 margin-bottom: 10px;
             }
+            
+            .ingrediente-item > div:first-child {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                flex-shrink: 0;
+            }
+            
+            .ingrediente-item > div:first-child > div:first-child {
+                display: flex;
+                flex-direction: column;
+                gap: 3px;
+            }
+            
+            .ingrediente-item .ingrediente-select {
+                width: 350px;
+                flex-shrink: 0;
+            }
+            
+            .ingrediente-item .inputs-cantidades {
+                display: flex !important;
+                justify-content: center;
+                gap: 12px;
+                flex: 1;
+            }
+            
+            .ingrediente-item .input-con-label {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 5px;
+            }
+            
+            .ingrediente-item .input-con-label label {
+                font-size: 12px;
+                font-weight: 700;
+                color: #9b3060;
+                min-height: 18px;
+            }
+            
+            .ingrediente-item .input-con-label input {
+                width: 90px !important;
+                padding: 10px 8px;
+                text-align: center;
+                border: 2px solid #e2e8f0;
+                border-radius: 8px;
+                font-size: 14px;
+            }
+            
+            .ingrediente-item > div:first-child::before {
+                display: none;
+            }
+        }
             
             /* Botones de orden */
             .ingrediente-item > div:first-child > div:first-child {

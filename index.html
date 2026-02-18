@@ -1452,9 +1452,7 @@
                     <button class="btn-favorito" onclick="event.stopPropagation(); toggleFavorito(${r.id}, this)" style="position:absolute;top:50%;right:16px;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:0;">
                         <span style="color:${r.favorito ? '#f5c518' : '#aaa'};font-size:44px;line-height:1;display:block;">★</span>
                     </button>
-                    <div style="margin-bottom: 10px; padding-right: 50px;">
-                        <h3 style="margin: 0;">${r.nombre}</h3>
-                    </div>
+                    <h3 style="margin-bottom: 12px; padding-right: 50px;">${r.nombre}</h3>
                     <p style="color: #718096; margin: 0; font-size: 14px;">${ingredientesCount} ingrediente${ingredientesCount !== 1 ? 's' : ''}</p>
                 `;
                 grid.appendChild(card);
@@ -1481,12 +1479,7 @@
                     const ingredientesCount = r.bloques ? r.bloques.reduce((sum, b) => sum + (b.ingredientes?.length || 0), 0) : 0;
                     
                     card.innerHTML = `
-                        <button class="btn-favorito" onclick="event.stopPropagation(); toggleFavorito(${r.id}, this)" style="position:absolute;top:50%;right:16px;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:0;">
-                            <span style="color:${r.favorito ? '#f5c518' : '#aaa'};font-size:44px;line-height:1;display:block;">★</span>
-                        </button>
-                        <div style="margin-bottom: 10px; padding-right: 50px;">
-                            <h3 style="margin: 0;">${r.nombre}</h3>
-                        </div>
+                        <h3 style="margin-bottom: 12px;">${r.nombre}</h3>
                         <p style="color: #718096; margin: 0; font-size: 14px;">${ingredientesCount} ingrediente${ingredientesCount !== 1 ? 's' : ''}</p>
                     `;
                     cookiesGrid.appendChild(card);

@@ -1309,37 +1309,75 @@
                 if (r.favorito === undefined) r.favorito = false;
             });
 
-            const recetasOrdenadas = [...recetas].sort((a, b) => {
+            // Separar cookies del resto
+            const cookies = recetas.filter(r => r.nombre.startsWith('🍪'));
+            const normales = recetas.filter(r => !r.nombre.startsWith('🍪'));
+
+            const recetasOrdenadas = [...normales].sort((a, b) => {
                 if (a.favorito && !b.favorito) return -1;
                 if (!a.favorito && b.favorito) return 1;
                 return a.nombre.localeCompare(b.nombre);
             });
 
-            recetasOrdenadas.forEach(receta => {
+            recetasOrdenadas.forEach(r => {
                 const card = document.createElement('div');
                 card.className = 'receta-card';
-                const fecha = new Date(receta.fecha).toLocaleDateString('es-AR');
-                const totalIng = receta.bloques ? receta.bloques.reduce((s, b) => s + b.ingredientes.length, 0) : 0;
+                card.onclick = () => verDetalleReceta(r.id);
+                
+                const fechaStr = new Date(r.fecha).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+                const ingredientesCount = r.bloques ? r.bloques.reduce((sum, b) => sum + (b.ingredientes?.length || 0), 0) : 0;
                 
                 card.innerHTML = `
-                    <button class="star-btn ${receta.favorito ? 'starred' : ''}" onclick="event.stopPropagation(); toggleFavorito(${receta.id})">★</button>
-                    <h3>${receta.nombre}</h3>
-                    <p class="fecha">📅 ${fecha}</p>
-                    <p style="margin-top: 10px; color: #b05480; font-weight: 500;">${totalIng} ingredientes</p>
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px;">
+                        <h3 style="margin: 0; padding-right: 10px;">${r.nombre}</h3>
+                        <button class="btn-favorito" onclick="event.stopPropagation(); toggleFavorito(${r.id})" style="font-size: 24px; background: none; border: none; cursor: pointer; flex-shrink: 0;">
+                            ${r.favorito ? '⭐' : '☆'}
+                        </button>
+                    </div>
+                    <p style="color: #718096; margin: 8px 0; font-size: 14px;">📅 ${fechaStr}</p>
+                    <p style="color: #718096; margin: 0; font-size: 14px;">${ingredientesCount} ingrediente${ingredientesCount !== 1 ? 's' : ''}</p>
                 `;
-                
-                card.addEventListener('click', () => verDetalleReceta(receta.id));
                 grid.appendChild(card);
             });
-        }
 
-        async function toggleFavorito(recetaId) {
-            const receta = recetas.find(r => r.id === recetaId);
-            receta.favorito = !receta.favorito;
-            await guardarReceta_supa(receta);
-            renderRecetas();
-        }
+            // SECCIÓN COOKIES
+            if (cookies.length > 0) {
+                const cookiesSection = document.createElement('div');
+                cookiesSection.style.cssText = 'margin-top: 40px; padding-top: 30px; border-top: 3px solid #e2e8f0;';
+                
+                const titulo = document.createElement('h2');
+                titulo.textContent = '🍪 Recetas de Cookies';
+                titulo.style.cssText = 'color: #c9547a; margin-bottom: 20px; font-size: 24px;';
+                cookiesSection.appendChild(titulo);
 
+                const cookiesGrid = document.createElement('div');
+                cookiesGrid.style.cssText = 'display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px;';
+
+                cookies.sort((a, b) => a.nombre.localeCompare(b.nombre)).forEach(r => {
+                    const card = document.createElement('div');
+                    card.className = 'receta-card';
+                    card.onclick = () => verDetalleReceta(r.id);
+                    
+                    const fechaStr = new Date(r.fecha).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+                    const ingredientesCount = r.bloques ? r.bloques.reduce((sum, b) => sum + (b.ingredientes?.length || 0), 0) : 0;
+                    
+                    card.innerHTML = `
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px;">
+                            <h3 style="margin: 0; padding-right: 10px;">${r.nombre}</h3>
+                            <button class="btn-favorito" onclick="event.stopPropagation(); toggleFavorito(${r.id})" style="font-size: 24px; background: none; border: none; cursor: pointer; flex-shrink: 0;">
+                                ${r.favorito ? '⭐' : '☆'}
+                            </button>
+                        </div>
+                        <p style="color: #718096; margin: 8px 0; font-size: 14px;">📅 ${fechaStr}</p>
+                        <p style="color: #718096; margin: 0; font-size: 14px;">${ingredientesCount} ingrediente${ingredientesCount !== 1 ? 's' : ''}</p>
+                    `;
+                    cookiesGrid.appendChild(card);
+                });
+
+                cookiesSection.appendChild(cookiesGrid);
+                grid.appendChild(cookiesSection);
+            }
+        }
         function verDetalleReceta(id) {
             recetaDetalleId = id;
             const receta = recetas.find(r => r.id === id);
@@ -1801,6 +1839,24 @@
             if (confirm('¿Estás seguro de eliminar esta receta?')) {
                 await eliminarReceta_supa(recetaEditandoId);
                 recetas = recetas.filter(r => r.id !== recetaEditandoId);
+                // Asignar tamaño M a recetas sin tamaño
+                recetas.forEach(r => {
+                    if (!r.tamanos || r.tamanos.length === 0 || (r.tamanos.length === 1 && r.tamanos[0] === 'Único')) {
+                        r.tamanos = ['M'];
+                        if (r.bloques) {
+                            r.bloques.forEach(b => {
+                                if (b.ingredientes) {
+                                    b.ingredientes.forEach(ing => {
+                                        if (ing.cantidades && ing.cantidades['Único'] !== undefined) {
+                                            ing.cantidades['M'] = ing.cantidades['Único'];
+                                            delete ing.cantidades['Único'];
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    }
+                });
                 renderRecetas();
                 cerrarModalReceta();
             }

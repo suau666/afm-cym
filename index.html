@@ -1210,7 +1210,11 @@
         const SUPABASE_URL = 'https://rdpgokflbghswjwtmlzq.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_L4yEJdwiQw287zZ3eLhCBQ_BZNlk6M5';
 
-        const HEADERS = {
+        const HEADERS_READ = {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`
+        };
+        const HEADERS_WRITE = {
             'apikey': SUPABASE_KEY,
             'Authorization': `Bearer ${SUPABASE_KEY}`,
             'Content-Type': 'application/json',
@@ -1220,29 +1224,33 @@
         const supa = {
             async get(tabla, orderBy = 'id') {
                 const r = await fetch(`${SUPABASE_URL}/rest/v1/${tabla}?select=*&order=${orderBy}`, {
-                    headers: HEADERS
+                    headers: HEADERS_READ
                 });
-                return r.ok ? r.json() : [];
+                if (!r.ok) { console.error('GET error', tabla, r.status, await r.text()); return []; }
+                return r.json();
             },
             async upsert(tabla, data) {
-                // Verificar si el registro existe
+                // Verificar si existe por id
                 const checkR = await fetch(`${SUPABASE_URL}/rest/v1/${tabla}?id=eq.${data.id}&select=id`, {
-                    headers: HEADERS
+                    headers: HEADERS_READ
                 });
-                const rows = checkR.ok ? await checkR.json() : [];
+                if (!checkR.ok) { throw new Error(`Check failed (${checkR.status}): ${await checkR.text()}`); }
+                const rows = await checkR.json();
                 const method = rows.length > 0 ? 'PATCH' : 'POST';
                 const url = rows.length > 0
                     ? `${SUPABASE_URL}/rest/v1/${tabla}?id=eq.${data.id}`
                     : `${SUPABASE_URL}/rest/v1/${tabla}`;
+                console.log(`supa.upsert ${tabla} → ${method}`, data);
                 const r = await fetch(url, {
                     method,
-                    headers: HEADERS,
+                    headers: HEADERS_WRITE,
                     body: JSON.stringify(data)
                 });
                 if (!r.ok) {
                     const err = await r.text();
-                    throw new Error(`Error Supabase ${method} (${r.status}): ${err}`);
+                    throw new Error(`${method} (${r.status}): ${err}`);
                 }
+                console.log(`✓ supa.upsert ${tabla} OK`);
             },
             async delete(tabla, id) {
                 await fetch(`${SUPABASE_URL}/rest/v1/${tabla}?id=eq.${id}`, {
@@ -1251,24 +1259,7 @@
                 });
             },
             async upsertByField(tabla, data, field) {
-                const val = encodeURIComponent(data[field]);
-                // Intentar PATCH primero
-                const patchR = await fetch(`${SUPABASE_URL}/rest/v1/${tabla}?${field}=eq.${val}`, {
-                    method: 'PATCH',
-                    headers: { ...HEADERS, 'Prefer': 'return=representation' },
-                    body: JSON.stringify(data)
-                });
-                if (!patchR.ok) { console.error('upsertByField PATCH error:', await patchR.text()); return; }
-                const patched = await patchR.json();
-                // Si PATCH no actualizó nada (array vacío), hacer POST
-                if (!patched || patched.length === 0) {
-                    const postR = await fetch(`${SUPABASE_URL}/rest/v1/${tabla}`, {
-                        method: 'POST',
-                        headers: HEADERS,
-                        body: JSON.stringify(data)
-                    });
-                    if (!postR.ok) { console.error('upsertByField POST error:', await postR.text()); }
-                }
+                // No usado - usar supa.upsert con id
             }
         };
 

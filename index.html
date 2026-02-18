@@ -1673,42 +1673,35 @@
             
             // PRESERVAR TODOS LOS VALORES, incluso los de tamaños que ya no están visibles
             const valoresActuales = {};
-            inputsContainer.querySelectorAll('input[type="number"]').forEach(inp => {
+            inputsContainer.querySelectorAll('input[data-tamano]').forEach(inp => {
                 const nombre = inp.dataset.tamano || 'Único';
-                const val = inp.value;
+                const val = parsearNumero(inp.value);
                 if (val) valoresActuales[nombre] = val;
             });
             
             inputsContainer.innerHTML = '';
             
-            if (tamanos.length > 0) {
-                tamanos.forEach(t => {
-                    const val = valoresActuales[t] || '';
-                    const input = document.createElement('input');
-                    input.type = 'number';
-                    input.step = '1';
-                    input.value = val;
-                    input.dataset.tamano = t;
-                    input.style.textAlign = 'center';
-                    input.style.padding = '10px';
-                    input.style.border = '2px solid #e2e8f0';
-                    input.style.borderRadius = '8px';
-                    input.style.fontSize = '14px';
-                    inputsContainer.appendChild(input);
-                });
-            } else {
-                const val = valoresActuales['Único'] || '';
+            const crearInputTexto = (tamano, valorNum) => {
                 const input = document.createElement('input');
-                input.type = 'number';
-                input.step = '1';
-                input.value = val;
-                input.dataset.tamano = 'Único';
+                input.type = 'text';
+                input.inputMode = 'numeric';
+                input.value = valorNum ? parseInt(valorNum).toLocaleString('es-AR') : '';
+                input.dataset.tamano = tamano;
                 input.style.textAlign = 'center';
                 input.style.padding = '10px';
                 input.style.border = '2px solid #e2e8f0';
                 input.style.borderRadius = '8px';
                 input.style.fontSize = '14px';
-                inputsContainer.appendChild(input);
+                input.addEventListener('input', () => formatearInput(input));
+                return input;
+            };
+
+            if (tamanos.length > 0) {
+                tamanos.forEach(t => {
+                    inputsContainer.appendChild(crearInputTexto(t, valoresActuales[t] || ''));
+                });
+            } else {
+                inputsContainer.appendChild(crearInputTexto('Único', valoresActuales['Único'] || ''));
             }
         }
 
@@ -1780,11 +1773,13 @@
             if (tamanos.length > 0) {
                 tamanos.forEach(t => {
                     const val = datosIng && datosIng.cantidades ? (datosIng.cantidades[t] || '') : '';
-                    inputsHTML += `<input type="number" data-tamano="${t}" value="${val}" step="1" style="text-align: center; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 14px;">`;
+                    const valFmt1 = val ? parseInt(val).toLocaleString('es-AR') : '';
+                    inputsHTML += `<input type="text" inputmode="numeric" data-tamano="${t}" value="${valFmt1}" oninput="formatearInput(this)" style="text-align: center; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 14px;">`;
                 });
             } else {
                 const val = datosIng && datosIng.cantidades ? (datosIng.cantidades['Único'] || '') : '';
-                inputsHTML += `<input type="number" data-tamano="Único" value="${val}" step="1" style="text-align: center; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 14px;">`;
+                const valFmt2 = val ? parseInt(val).toLocaleString('es-AR') : '';
+                inputsHTML += `<input type="text" inputmode="numeric" data-tamano="Único" value="${valFmt2}" oninput="formatearInput(this)" style="text-align: center; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 14px;">`;
             }
             inputsHTML += '</div>';
             
@@ -1897,11 +1892,11 @@
                     if (!ingredienteId) return;
                     
                     const cantidades = {};
-                    const inputs = ingEl.querySelectorAll('.inputs-cantidades input[type="number"]');
+                    const inputs = ingEl.querySelectorAll('.inputs-cantidades input[data-tamano]');
                     
                     inputs.forEach(input => {
                         const tamano = input.dataset.tamano;
-                        const val = parseFloat(input.value);
+                        const val = parsearNumero(input.value);
                         cantidades[tamano] = isNaN(val) ? 0 : val;
                     });
                     
@@ -2326,7 +2321,13 @@
                         bloque.ingredientes.forEach(item => {
                             const ing = ingredientes.find(i => i.id === item.ingredienteId);
                             if (!ing || !ing.cantidad || !ing.precio) return;
-                            const cantUsada = item.cantidades['Único'] || 0;
+                            // Tomar el primer tamaño disponible o 'Único'
+                            const cantUsada = (() => {
+                                if (!item.cantidades) return 0;
+                                if (item.cantidades['Único']) return item.cantidades['Único'];
+                                const vals = Object.values(item.cantidades).filter(v => v > 0);
+                                return vals.length > 0 ? vals[0] : 0;
+                            })();
                             costoMasa += cantUsada * (ing.precio / ing.cantidad);
                         });
                     });
@@ -2416,7 +2417,7 @@
                             const cant = item.cantidades[tamanos[0]] || item.cantidades['Único'] || 0;
                             ingHtml += `<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f5d0e8;font-size:14px;color:#9b3060;">
                                 <span>${ing.nombre}</span>
-                                <span style="font-weight:600;">${cant > 0 ? formatearNumero(cant) + 'g' : '—'}</span>
+                                <span style="font-weight:600;">${cant > 0 ? formatearNumero(cant) : '—'}</span>
                             </div>`;
                         });
                     });

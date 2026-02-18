@@ -916,21 +916,33 @@
             
             .ingrediente-item {
                 display: grid !important;
-                gap: 10px;
+                grid-template-columns: 40px minmax(250px, 1fr) auto 80px;
+                gap: 15px;
                 padding: 12px;
-                align-items: start;
+                align-items: center;
                 background: white;
                 border: 2px solid #e2e8f0;
                 border-radius: 10px;
                 margin-bottom: 10px;
             }
             
-            /* Los inputs de cantidades en desktop: grid horizontal */
+            /* Botones de orden */
+            .ingrediente-item > div:first-child > div:first-child {
+                display: flex;
+                flex-direction: column;
+                gap: 3px;
+            }
+            
+            /* Selector de ingrediente */
+            .ingrediente-item .ingrediente-select {
+                width: 100%;
+            }
+            
+            /* Los inputs de cantidades: centrados y ajustados según cantidad */
             .ingrediente-item .inputs-cantidades {
-                display: grid !important;
-                grid-auto-flow: column;
-                gap: 10px;
-                grid-column: span 1;
+                display: flex !important;
+                justify-content: center;
+                gap: 12px;
             }
             
             .ingrediente-item .input-con-label {
@@ -956,17 +968,9 @@
                 font-size: 14px;
             }
             
-            /* Ajustar el primer div (botones orden + select + eliminar) */
-            .ingrediente-item > div:first-child {
-                display: grid;
-                grid-template-columns: 40px 1fr 80px;
-                gap: 10px;
-                align-items: center;
-                grid-column: 1 / -1;
-            }
-            
+            /* Ocultar label "Ingrediente" en desktop */
             .ingrediente-item > div:first-child::before {
-                display: none; /* Ocultar label "Ingrediente" en desktop */
+                display: none;
             }
         }
 
@@ -1006,21 +1010,33 @@
             
             .ingrediente-item {
                 display: grid !important;
-                gap: 10px;
+                grid-template-columns: 40px minmax(250px, 1fr) auto 80px;
+                gap: 15px;
                 padding: 12px;
-                align-items: start;
+                align-items: center;
                 background: white;
                 border: 2px solid #e2e8f0;
                 border-radius: 10px;
                 margin-bottom: 10px;
             }
             
-            /* Los inputs de cantidades en desktop: grid horizontal */
+            /* Botones de orden */
+            .ingrediente-item > div:first-child > div:first-child {
+                display: flex;
+                flex-direction: column;
+                gap: 3px;
+            }
+            
+            /* Selector de ingrediente */
+            .ingrediente-item .ingrediente-select {
+                width: 100%;
+            }
+            
+            /* Los inputs de cantidades: centrados y ajustados según cantidad */
             .ingrediente-item .inputs-cantidades {
-                display: grid !important;
-                grid-auto-flow: column;
-                gap: 10px;
-                grid-column: span 1;
+                display: flex !important;
+                justify-content: center;
+                gap: 12px;
             }
             
             .ingrediente-item .input-con-label {
@@ -1046,17 +1062,9 @@
                 font-size: 14px;
             }
             
-            /* Ajustar el primer div (botones orden + select + eliminar) */
-            .ingrediente-item > div:first-child {
-                display: grid;
-                grid-template-columns: 40px 1fr 80px;
-                gap: 10px;
-                align-items: center;
-                grid-column: 1 / -1;
-            }
-            
+            /* Ocultar label "Ingrediente" en desktop */
             .ingrediente-item > div:first-child::before {
-                display: none; /* Ocultar label "Ingrediente" en desktop */
+                display: none;
             }
         }
 

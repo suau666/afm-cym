@@ -75,6 +75,10 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
         h2 {
             color: #9b3060;
             margin-bottom: 25px;
@@ -1197,13 +1201,13 @@
                 return r.ok ? r.json() : [];
             },
             async upsert(tabla, data) {
-                const r = await fetch(`${SUPABASE_URL}/rest/v1/${tabla}`, {
+                const r = await fetch(`${SUPABASE_URL}/rest/v1/${tabla}?on_conflict=id`, {
                     method: 'POST',
                     headers: {
                         'apikey': SUPABASE_KEY,
                         'Authorization': `Bearer ${SUPABASE_KEY}`,
                         'Content-Type': 'application/json',
-                        'Prefer': 'resolution=merge-duplicates'
+                        'Prefer': 'resolution=merge-duplicates,return=minimal'
                     },
                     body: JSON.stringify(data)
                 });
@@ -1219,25 +1223,20 @@
                 });
             },
             async upsertByField(tabla, data, field) {
-                const val = encodeURIComponent(data[field]);
-                // Intentar update primero, luego insert si no existe
-                const checkR = await fetch(`${SUPABASE_URL}/rest/v1/${tabla}?${field}=eq.${val}`, {
-                    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
-                });
-                const existing = checkR.ok ? await checkR.json() : [];
-                const method = existing.length > 0 ? 'PATCH' : 'POST';
-                const url = existing.length > 0
-                    ? `${SUPABASE_URL}/rest/v1/${tabla}?${field}=eq.${val}`
-                    : `${SUPABASE_URL}/rest/v1/${tabla}`;
-                await fetch(url, {
-                    method,
+                const r = await fetch(`${SUPABASE_URL}/rest/v1/${tabla}?on_conflict=${field}`, {
+                    method: 'POST',
                     headers: {
                         'apikey': SUPABASE_KEY,
                         'Authorization': `Bearer ${SUPABASE_KEY}`,
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Prefer': 'resolution=merge-duplicates,return=minimal'
                     },
                     body: JSON.stringify(data)
                 });
+                if (!r.ok) {
+                    const err = await r.text();
+                    console.error('Error upsertByField:', err);
+                }
             }
         };
 
@@ -1652,6 +1651,25 @@
             if (campo) campo.style.display = nombre.startsWith('🍪') ? 'block' : 'none';
         }
 
+        function mostrarSpinnerGuardado(show) {
+            let spinner = document.getElementById('spinnerGuardado');
+            if (show) {
+                if (!spinner) {
+                    spinner = document.createElement('div');
+                    spinner.id = 'spinnerGuardado';
+                    spinner.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,0.7);z-index:9999;display:flex;align-items:center;justify-content:center;';
+                    spinner.innerHTML = `<div style="text-align:center;">
+                        <div style="width:48px;height:48px;border:5px solid #fde8f3;border-top-color:#c9547a;border-radius:50%;animation:spin 0.7s linear infinite;margin:0 auto 14px;"></div>
+                        <span style="color:#9b3060;font-weight:600;font-size:16px;">Guardando...</span>
+                    </div>`;
+                    document.body.appendChild(spinner);
+                }
+                spinner.style.display = 'flex';
+            } else {
+                if (spinner) spinner.style.display = 'none';
+            }
+        }
+
         // ── Atajos de teclado globales ──
         document.addEventListener('keydown', function(e) {
             const modalReceta  = document.getElementById('modalReceta');
@@ -1995,40 +2013,54 @@
                 return;
             }
 
-            if (recetaEditandoId) {
-                const receta = recetas.find(r => r.id === recetaEditandoId);
-                receta.nombre = nombre;
-                receta.observaciones = observaciones;
-                receta.rinde = rinde;
-                receta.tamanos = tamanos;
-                receta.bloques = bloquesData;
-                renderRecetas();
-                cerrarModalReceta();
-                guardarReceta_supa(receta);
-            } else {
-                const nueva = {
-                    id: Date.now(),
-                    nombre,
-                    observaciones,
-                    rinde,
-                    fecha: new Date().toISOString(),
-                    favorito: false,
-                    tamanos,
-                    bloques: bloquesData
-                };
-                recetas.push(nueva);
-                renderRecetas();
-                cerrarModalReceta();
-                guardarReceta_supa(nueva);
+            renderRecetas();
+            cerrarModalReceta();
+            mostrarSpinnerGuardado(true);
+            try {
+                if (recetaEditandoId) {
+                    const receta = recetas.find(r => r.id === recetaEditandoId);
+                    receta.nombre = nombre;
+                    receta.observaciones = observaciones;
+                    receta.rinde = rinde;
+                    receta.tamanos = tamanos;
+                    receta.bloques = bloquesData;
+                    await guardarReceta_supa(receta);
+                } else {
+                    const nueva = {
+                        id: Date.now(),
+                        nombre,
+                        observaciones,
+                        rinde,
+                        fecha: new Date().toISOString(),
+                        favorito: false,
+                        tamanos,
+                        bloques: bloquesData
+                    };
+                    recetas.push(nueva);
+                    await guardarReceta_supa(nueva);
+                }
+            } catch(e) {
+                console.error('Error guardando receta:', e);
+                alert('⚠️ Hubo un error al guardar en la nube. Reintentá en un momento.');
+            } finally {
+                mostrarSpinnerGuardado(false);
             }
         }
 
         async function eliminarRecetaActual() {
             if (confirm('¿Estás seguro de eliminar esta receta?')) {
-                await eliminarReceta_supa(recetaEditandoId);
-                recetas = recetas.filter(r => r.id !== recetaEditandoId);
-                renderRecetas();
+                const idAEliminar = recetaEditandoId;
+                recetas = recetas.filter(r => r.id !== idAEliminar);
                 cerrarModalReceta();
+                renderRecetas();
+                mostrarSpinnerGuardado(true);
+                try {
+                    await eliminarReceta_supa(idAEliminar);
+                } catch(e) {
+                    console.error('Error eliminando receta:', e);
+                } finally {
+                    mostrarSpinnerGuardado(false);
+                }
             }
         }
 
@@ -2100,24 +2132,39 @@
             const precio = parseFloat(document.getElementById('precioIngrediente').value);
             const editId = document.getElementById('formIngrediente').dataset.editId;
 
-            if (editId) {
-                const ing = ingredientes.find(i => i.id == editId);
-                ing.nombre = nombre; ing.cantidad = cantidad; ing.precio = precio;
-                await guardarIngrediente_supa(ing);
-            } else {
-                const nuevo = { id: Date.now(), nombre, cantidad, precio };
-                ingredientes.push(nuevo);
-                await guardarIngrediente_supa(nuevo);
-            }
             renderIngredientes();
             cerrarModalIngrediente();
+            mostrarSpinnerGuardado(true);
+            try {
+                if (editId) {
+                    const ing = ingredientes.find(i => i.id == editId);
+                    ing.nombre = nombre; ing.cantidad = cantidad; ing.precio = precio;
+                    await guardarIngrediente_supa(ing);
+                } else {
+                    const nuevo = { id: Date.now(), nombre, cantidad, precio };
+                    ingredientes.push(nuevo);
+                    await guardarIngrediente_supa(nuevo);
+                }
+            } catch(e) {
+                console.error('Error guardando ingrediente:', e);
+                alert('⚠️ Hubo un error al guardar en la nube. Reintentá en un momento.');
+            } finally {
+                mostrarSpinnerGuardado(false);
+            }
         }
 
         async function eliminarIngrediente(id) {
             if (confirm('¿Eliminar este ingrediente?')) {
-                await eliminarIngrediente_supa(id);
                 ingredientes = ingredientes.filter(i => i.id !== id);
                 renderIngredientes();
+                mostrarSpinnerGuardado(true);
+                try {
+                    await eliminarIngrediente_supa(id);
+                } catch(e) {
+                    console.error('Error eliminando ingrediente:', e);
+                } finally {
+                    mostrarSpinnerGuardado(false);
+                }
             }
         }
 

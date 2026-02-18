@@ -1209,6 +1209,27 @@
                     method: 'DELETE',
                     headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
                 });
+            },
+            async upsertByField(tabla, data, field) {
+                const val = encodeURIComponent(data[field]);
+                // Intentar update primero, luego insert si no existe
+                const checkR = await fetch(`${SUPABASE_URL}/rest/v1/${tabla}?${field}=eq.${val}`, {
+                    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+                });
+                const existing = checkR.ok ? await checkR.json() : [];
+                const method = existing.length > 0 ? 'PATCH' : 'POST';
+                const url = existing.length > 0
+                    ? `${SUPABASE_URL}/rest/v1/${tabla}?${field}=eq.${val}`
+                    : `${SUPABASE_URL}/rest/v1/${tabla}`;
+                await fetch(url, {
+                    method,
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
             }
         };
 
@@ -1275,6 +1296,7 @@
                     supa.get('recetas')
                 ]);
                 ingredientes = ings || [];
+                await cargarPreciosManuales();
                 recetas = (recs || []).map(r => ({
                     ...r, tamanos: r.tamanos || [], bloques: r.bloques || []
                 }));
@@ -1535,6 +1557,7 @@
 
         function renderChipEspecial(tamano) {
             const row = document.getElementById('tamanosBotonesRow');
+            const wrapper = document.getElementById('inputTamanoWrapper');
             const btn = document.createElement('div');
             btn.className = 'btn-tamano active';
             btn.dataset.tamano = tamano;
@@ -1548,7 +1571,8 @@
                     style="background:none;border:none;cursor:pointer;color:white;font-size:12px;padding:0;opacity:0.8;line-height:1;">▶</button>
                 <button type="button" onclick="eliminarTamanoEspecial('${tamano}')"
                     style="background:none;border:none;cursor:pointer;color:white;font-size:14px;padding:0;opacity:0.7;margin-left:2px;line-height:1;">×</button>`;
-            row.appendChild(btn);
+            // Insertar ANTES del wrapper de input, no al final
+            row.insertBefore(btn, wrapper);
         }
 
         function agregarTamanoEspecial() {
@@ -2297,10 +2321,20 @@
 
         // Precios manuales en memoria
         // Precios manuales con persistencia
-        const preciosManualesCookies = JSON.parse(localStorage.getItem('preciosManualesCookies') || '{}');
-        
-        function guardarPreciosManuales() {
-            localStorage.setItem('preciosManualesCookies', JSON.stringify(preciosManualesCookies));
+        let preciosManualesCookies = {};
+
+        async function cargarPreciosManuales() {
+            try {
+                const rows = await supa.get('precios_cookies');
+                preciosManualesCookies = {};
+                (rows || []).forEach(r => { preciosManualesCookies[r.nombre] = r.precio; });
+            } catch(e) { console.error('Error cargando precios cookies:', e); }
+        }
+
+        async function guardarPreciosManuales(nombre, precio) {
+            try {
+                await supa.upsertByField('precios_cookies', { nombre, precio }, 'nombre');
+            } catch(e) { console.error('Error guardando precio cookie:', e); }
         }
 
         function calcularCookies() {
@@ -2366,13 +2400,11 @@
             renderCookiesRecetas();
         }
 
-        function setPrecioManualCookie(nombre, valor) {
-            preciosManualesCookies[nombre] = valor;
-        }
+
 
         function actualizarResultadoCookie(nombre, valor, costoUnitario) {
             preciosManualesCookies[nombre] = valor;
-            guardarPreciosManuales();
+            guardarPreciosManuales(nombre, valor);
             const cajaTres    = parsearNumero(document.getElementById('cajaTres').value);
             const cajaSeis    = parsearNumero(document.getElementById('cajaSeis').value);
             const packaging9  = (cajaTres + cajaSeis) / 9;

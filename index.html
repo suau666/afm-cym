@@ -1340,12 +1340,17 @@
 
         async function guardarPreciosManuales(nombre, precio) {
             try {
-                await supa.upsertByField('precios_cookies', { nombre, precio }, 'nombre');
-                // Actualizar cache local
                 const existente = preciosCookiesRows.find(r => r.nombre === nombre);
-                if (existente) { existente.precio = precio; }
-                else { preciosCookiesRows.push({ nombre, precio }); }
-            } catch(e) { console.error('Error guardando precio:', e); }
+                if (existente) {
+                    existente.precio = precio;
+                    await supa.upsert('precios_cookies', existente);
+                } else {
+                    const nueva = { id: Date.now(), nombre, precio };
+                    preciosCookiesRows.push(nueva);
+                    await supa.upsert('precios_cookies', nueva);
+                }
+                console.log('✓ Precio guardado OK:', nombre, precio);
+            } catch(e) { console.error('❌ Error guardando precio:', e); }
         }
 
         // Datos iniciales
@@ -2562,9 +2567,9 @@
 
 
 
-        function actualizarResultadoCookie(nombre, valor, costoUnitario) {
+        async function actualizarResultadoCookie(nombre, valor, costoUnitario) {
             preciosManualesCookies[nombre] = valor;
-            guardarPreciosManuales(nombre, valor);
+            await guardarPreciosManuales(nombre, valor);
             const cajaTres    = parsearNumero(document.getElementById('cajaTres').value);
             const cajaSeis    = parsearNumero(document.getElementById('cajaSeis').value);
             const packaging9  = (cajaTres + cajaSeis) / 9;

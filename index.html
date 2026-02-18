@@ -79,6 +79,22 @@
             to { transform: rotate(360deg); }
         }
 
+        @keyframes starPop {
+            0%   { transform: scale(1); }
+            40%  { transform: scale(1.4); }
+            70%  { transform: scale(0.88); }
+            100% { transform: scale(1); }
+        }
+
+        .btn-favorito { display: flex; align-items: center; }
+        .btn-favorito span {
+            transition: color 0.2s;
+            display: inline-flex;
+            align-items: center;
+        }
+        .btn-favorito:hover span { color: #f5c518 !important; transform: scale(1.15); transition: transform 0.15s; }
+        .btn-favorito.animating span { animation: starPop 0.35s ease; }
+
         h2 {
             color: #9b3060;
             margin-bottom: 25px;
@@ -1394,9 +1410,14 @@
         }
 
                 // ===== RECETAS =====
-        async function toggleFavorito(id) {
+        async function toggleFavorito(id, btn) {
             const receta = recetas.find(r => r.id === id);
             if (!receta) return;
+            // Animación antes de re-render
+            if (btn) {
+                btn.classList.add('animating');
+                btn.addEventListener('animationend', () => btn.classList.remove('animating'), { once: true });
+            }
             receta.favorito = !receta.favorito;
             renderRecetas();
             supa.upsert('recetas', receta);
@@ -1430,8 +1451,8 @@
                 card.innerHTML = `
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                         <h3 style="margin: 0;">${r.nombre}</h3>
-                        <button class="btn-favorito" onclick="event.stopPropagation(); toggleFavorito(${r.id})" style="background: none; border: none; cursor: pointer; flex-shrink: 0; padding: 0 0 0 10px; line-height: 1;">
-                            <span style="color:${r.favorito ? '#f5c518' : '#ddd'};font-size:32px;display:block;">★</span>
+                        <button class="btn-favorito" onclick="event.stopPropagation(); toggleFavorito(${r.id}, this)" style="background: none; border: none; cursor: pointer; flex-shrink: 0; padding: 0 0 0 10px;">
+                            <span style="color:${r.favorito ? '#f5c518' : '#aaa'};font-size:32px;">★</span>
                         </button>
                     </div>
                     <p style="color: #718096; margin: 0; font-size: 14px;">${ingredientesCount} ingrediente${ingredientesCount !== 1 ? 's' : ''}</p>
@@ -1462,8 +1483,8 @@
                     card.innerHTML = `
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                             <h3 style="margin: 0;">${r.nombre}</h3>
-                            <button class="btn-favorito" onclick="event.stopPropagation(); toggleFavorito(${r.id})" style="background: none; border: none; cursor: pointer; flex-shrink: 0; padding: 0 0 0 10px; line-height: 1;">
-                                <span style="color:${r.favorito ? '#f5c518' : '#ddd'};font-size:32px;display:block;">★</span>
+                            <button class="btn-favorito" onclick="event.stopPropagation(); toggleFavorito(${r.id}, this)" style="background: none; border: none; cursor: pointer; flex-shrink: 0; padding: 0 0 0 10px;">
+                                <span style="color:${r.favorito ? '#f5c518' : '#aaa'};font-size:32px;">★</span>
                             </button>
                         </div>
                         <p style="color: #718096; margin: 0; font-size: 14px;">${ingredientesCount} ingrediente${ingredientesCount !== 1 ? 's' : ''}</p>

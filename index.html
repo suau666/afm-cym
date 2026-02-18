@@ -894,49 +894,31 @@
             .detalle-receta .tabla-wrapper {
                 overflow-x: auto;
                 -webkit-overflow-scrolling: touch;
-                border-radius: 10px;
                 margin-bottom: 20px;
             }
             .detalle-receta table {
-                width: max-content;
-                min-width: 100%;
+                width: 100%;
                 border-collapse: collapse;
+                table-layout: fixed;
             }
             .detalle-receta th,
             .detalle-receta td {
-                padding: 10px 12px;
+                padding: 10px 6px;
                 font-size: 13px;
                 border-bottom: 1px solid #f5d0e8;
-                white-space: nowrap;
             }
             .detalle-receta th {
                 background: #b05480;
                 color: white;
-                position: sticky;
-                top: 0;
-                z-index: 2;
             }
-            /* Columna ingrediente: sticky a la izquierda */
             .detalle-receta th:first-child,
             .detalle-receta td:first-child {
-                position: sticky;
-                left: 0;
-                z-index: 3;
-                background: #fde8f3;
                 text-align: left;
-                min-width: 130px;
-                max-width: 160px;
-                white-space: normal;
-                border-right: 2px solid #e2b4d4;
-            }
-            .detalle-receta th:first-child {
-                background: #9b3060;
-                z-index: 4;
+                width: 45%;
             }
             .detalle-receta th:not(:first-child),
             .detalle-receta td:not(:first-child) {
                 text-align: center;
-                min-width: 70px;
             }
 
             /* ── SAFE AREA ── */

@@ -1193,48 +1193,61 @@
         const SUPABASE_URL = 'https://rdpgokflbghswjwtmlzq.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_L4yEJdwiQw287zZ3eLhCBQ_BZNlk6M5';
 
+        const HEADERS = {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Content-Type': 'application/json'
+        };
+
         const supa = {
             async get(tabla) {
                 const r = await fetch(`${SUPABASE_URL}/rest/v1/${tabla}?select=*&order=id`, {
-                    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+                    headers: HEADERS
                 });
                 return r.ok ? r.json() : [];
             },
+            // Guarda un registro: PATCH si tiene id existente, POST si es nuevo
             async upsert(tabla, data) {
-                const r = await fetch(`${SUPABASE_URL}/rest/v1/${tabla}?on_conflict=id`, {
-                    method: 'POST',
-                    headers: {
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${SUPABASE_KEY}`,
-                        'Content-Type': 'application/json',
-                        'Prefer': 'resolution=merge-duplicates,return=minimal'
-                    },
+                // Intentar PATCH primero (update por id)
+                const patchR = await fetch(`${SUPABASE_URL}/rest/v1/${tabla}?id=eq.${data.id}`, {
+                    method: 'PATCH',
+                    headers: { ...HEADERS, 'Prefer': 'return=minimal' },
                     body: JSON.stringify(data)
                 });
-                if (!r.ok) {
-                    const err = await r.text();
-                    throw new Error(`Error Supabase (${r.status}): ${err}`);
+                if (patchR.ok) return; // update exitoso
+                // Si PATCH falla (registro no existe), hacer POST
+                const postR = await fetch(`${SUPABASE_URL}/rest/v1/${tabla}`, {
+                    method: 'POST',
+                    headers: { ...HEADERS, 'Prefer': 'return=minimal' },
+                    body: JSON.stringify(data)
+                });
+                if (!postR.ok) {
+                    const err = await postR.text();
+                    throw new Error(`Error Supabase (${postR.status}): ${err}`);
                 }
             },
             async delete(tabla, id) {
                 await fetch(`${SUPABASE_URL}/rest/v1/${tabla}?id=eq.${id}`, {
                     method: 'DELETE',
-                    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+                    headers: HEADERS
                 });
             },
+            // Para tablas con PK distinta a id (ej: precios_cookies con PK nombre)
             async upsertByField(tabla, data, field) {
-                const r = await fetch(`${SUPABASE_URL}/rest/v1/${tabla}?on_conflict=${field}`, {
-                    method: 'POST',
-                    headers: {
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${SUPABASE_KEY}`,
-                        'Content-Type': 'application/json',
-                        'Prefer': 'resolution=merge-duplicates,return=minimal'
-                    },
+                const val = encodeURIComponent(data[field]);
+                const patchR = await fetch(`${SUPABASE_URL}/rest/v1/${tabla}?${field}=eq.${val}`, {
+                    method: 'PATCH',
+                    headers: { ...HEADERS, 'Prefer': 'return=minimal' },
                     body: JSON.stringify(data)
                 });
-                if (!r.ok) {
-                    const err = await r.text();
+                if (patchR.ok) return;
+                const postR = await fetch(`${SUPABASE_URL}/rest/v1/${tabla}`, {
+                    method: 'POST',
+                    headers: { ...HEADERS, 'Prefer': 'return=minimal' },
+                    body: JSON.stringify(data)
+                });
+                if (!postR.ok) {
+                    const err = await postR.text();
                     console.error('Error upsertByField:', err);
                 }
             }

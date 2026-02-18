@@ -1505,21 +1505,17 @@
             let html = '';
             
             const numTamanos = (receta.tamanos && receta.tamanos.length > 0) ? receta.tamanos.length : 1;
-            const anchoColumna = numTamanos === 1 ? '200px' : '150px';
+            // Ingrediente ocupa 45%, tamaños se reparten el resto en partes iguales
+            const anchoPrimera = 45;
+            const anchoTamano = Math.floor((100 - anchoPrimera) / numTamanos);
 
             receta.bloques.forEach((bloque, index) => {
                 html += `<h4 style="margin-top: ${index > 0 ? '25px' : '0'};margin-bottom:10px;">${bloque.titulo}:</h4>`;
-                html += `<div class="tabla-wrapper"><table><colgroup><col style="min-width:130px;max-width:160px;"></colgroup>`;
+                let cols = `<col style="width:${anchoPrimera}%;">`;
+                for (let i = 0; i < numTamanos; i++) cols += `<col style="width:${anchoTamano}%;">`;
+                html += `<div class="tabla-wrapper"><table><colgroup>${cols}</colgroup>`;
                 
-                if (receta.tamanos && receta.tamanos.length > 0) {
-                    receta.tamanos.forEach(() => {
-                        html += `<col style="width: ${anchoColumna};">`;
-                    });
-                } else {
-                    html += `<col style="width: ${anchoColumna};">`;
-                }
-                
-                html += '</colgroup><thead><tr><th style="text-align: center;">Ingrediente</th>';
+                html += '<thead><tr><th style="text-align: center;">Ingrediente</th>';
                 
                 if (receta.tamanos && receta.tamanos.length > 0) {
                     receta.tamanos.forEach(t => html += `<th>${t}</th>`);

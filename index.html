@@ -1717,24 +1717,24 @@
             if (tamanos.length > 0) {
                 tamanos.forEach(t => {
                     const val = datosIng && datosIng.cantidades ? (datosIng.cantidades[t] || '') : '';
-                    inputsHTML += `<div class="input-con-label"><label>${t}</label><input type="number" data-tamano="${t}" value="${val}" step="1" style="text-align: center; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 14px;"></div>`;
+                    inputsHTML += `<input type="number" data-tamano="${t}" value="${val}" step="1" style="text-align: center; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 14px;">`;
                 });
             } else {
                 const val = datosIng && datosIng.cantidades ? (datosIng.cantidades['Único'] || '') : '';
-                inputsHTML += `<div class="input-con-label"><label>Cantidad</label><input type="number" data-tamano="Único" value="${val}" step="1" style="text-align: center; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 14px;"></div>`;
+                inputsHTML += `<input type="number" data-tamano="Único" value="${val}" step="1" style="text-align: center; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 14px;">`;
             }
             inputsHTML += '</div>';
             
             div.innerHTML = `
-                <div>
-                    <div style="display:flex;flex-direction:column;gap:2px;margin-right:5px;">
-                        <button type="button" class="btn-orden" onclick="moverIngrediente(${bloqueId}, ${ingId}, 'up')" style="font-size:12px;padding:2px 4px;">▲</button>
-                        <button type="button" class="btn-orden" onclick="moverIngrediente(${bloqueId}, ${ingId}, 'down')" style="font-size:12px;padding:2px 4px;">▼</button>
-                    </div>
-                    <select class="ingrediente-select" required onchange="actualizarOpcionesBloque(${bloqueId})">${optionsHTML}</select>
-                    <button type="button" class="btn btn-danger btn-small" onclick="eliminarIngredienteDeBloque(${ingId})" style="margin-left:5px;">🗑️</button>
+                <div style="display: flex; flex-direction: column; gap: 3px; align-items: center;">
+                    <button type="button" class="btn-orden" onclick="moverIngrediente(${bloqueId}, ${ingId}, 'up')">▲</button>
+                    <button type="button" class="btn-orden" onclick="moverIngrediente(${bloqueId}, ${ingId}, 'down')">▼</button>
                 </div>
+                <select class="ingrediente-select" required onchange="actualizarOpcionesBloque(${bloqueId})">${optionsHTML}</select>
                 ${inputsHTML}
+                <div style="text-align: center;">
+                    <button type="button" class="btn btn-danger btn-small" onclick="eliminarIngredienteDeBloque(${ingId})">🗑️</button>
+                </div>
             `;
             
             container.appendChild(div);

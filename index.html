@@ -1368,8 +1368,7 @@
                 if (r.favorito === undefined) r.favorito = false;
             });
 
-            const recetasFiltradas = recetas.filter(r => !r.nombre.startsWith('🍪'));
-            const recetasOrdenadas = [...recetasFiltradas].sort((a, b) => {
+            const recetasOrdenadas = [...recetas].sort((a, b) => {
                 if (a.favorito && !b.favorito) return -1;
                 if (!a.favorito && b.favorito) return 1;
                 return a.nombre.localeCompare(b.nombre);
@@ -1408,13 +1407,11 @@
             let html = '';
             
             const numTamanos = (receta.tamanos && receta.tamanos.length > 0) ? receta.tamanos.length : 1;
-            const anchoColumna = numTamanos === 1 ? '120px' : (numTamanos === 2 ? '100px' : (numTamanos === 3 ? '90px' : '80px'));
+            const anchoColumna = numTamanos === 1 ? '200px' : '150px';
 
             receta.bloques.forEach((bloque, index) => {
                 html += `<h4 style="margin-top: ${index > 0 ? '25px' : '0'};">${bloque.titulo}:</h4>`;
-                // Anchos fijos para que coincidan en móvil
-                const anchoIngrediente = numTamanos === 1 ? '200px' : (numTamanos === 2 ? '180px' : (numTamanos === 3 ? '150px' : '130px'));
-                html += `<table style="margin-bottom: 20px; table-layout: fixed; width: 100%;"><colgroup><col style="width: ${anchoIngrediente};"></colgroup>`;
+                html += `<table style="margin-bottom: 20px; table-layout: fixed;"><colgroup><col style="width: auto;"></colgroup>`;
                 
                 if (receta.tamanos && receta.tamanos.length > 0) {
                     receta.tamanos.forEach(() => {
@@ -1439,9 +1436,9 @@
                     if (ingrediente) {
                         html += `<tr><td style="text-align: center;">${ingrediente.nombre}</td>`;
                         if (receta.tamanos && receta.tamanos.length > 0) {
-                            receta.tamanos.forEach(t => html += `<td style="text-align:center;">${formatearNumero(ing.cantidades[t] || 0)}</td>`);
+                            receta.tamanos.forEach(t => html += `<td>${formatearNumero(ing.cantidades[t] || 0)}</td>`);
                         } else {
-                            html += `<td style="text-align:center;">${formatearNumero(ing.cantidades['Único'] || 0)}</td>`;
+                            html += `<td>${formatearNumero(ing.cantidades['Único'] || 0)}</td>`;
                         }
                         html += '</tr>';
                     }
@@ -1525,12 +1522,6 @@
         }
 
         function cerrarModalReceta() {
-            // Resetear botón de guardar
-            const btnGuardar = document.querySelector('#formReceta button[type="submit"]');
-            if (btnGuardar) {
-                btnGuardar.textContent = '💾 Guardar Receta';
-                btnGuardar.disabled = false;
-            }
             document.getElementById('modalReceta').classList.remove('active');
         }
 
@@ -1585,6 +1576,7 @@
             enc.appendChild(mk(anchoEliminar, ''));
             bloqueEl.querySelector('.bloque-header').insertAdjacentElement('afterend', enc);
         }
+
         function actualizarInputsTamanos(bloqueId, ingId, itemEl) {
             const tamanos = document.getElementById('tamanosReceta').value.split(',').map(t => t.trim()).filter(t => t);
             const numColumnas = tamanos.length > 0 ? tamanos.length : 1;
@@ -1605,10 +1597,6 @@
             if (tamanos.length > 0) {
                 tamanos.forEach(t => {
                     const val = valoresActuales[t] || '';
-                    const wrapper = document.createElement('div');
-                    wrapper.className = 'input-con-label';
-                    const label = document.createElement('label');
-                    label.textContent = t;
                     const input = document.createElement('input');
                     input.type = 'number';
                     input.step = '1';
@@ -1619,16 +1607,10 @@
                     input.style.border = '2px solid #e2e8f0';
                     input.style.borderRadius = '8px';
                     input.style.fontSize = '14px';
-                    wrapper.appendChild(label);
-                    wrapper.appendChild(input);
-                    inputsContainer.appendChild(wrapper);
+                    inputsContainer.appendChild(input);
                 });
             } else {
                 const val = valoresActuales['Único'] || '';
-                const wrapper = document.createElement('div');
-                wrapper.className = 'input-con-label';
-                const label = document.createElement('label');
-                label.textContent = 'Cantidad';
                 const input = document.createElement('input');
                 input.type = 'number';
                 input.step = '1';
@@ -1639,9 +1621,7 @@
                 input.style.border = '2px solid #e2e8f0';
                 input.style.borderRadius = '8px';
                 input.style.fontSize = '14px';
-                wrapper.appendChild(label);
-                wrapper.appendChild(input);
-                inputsContainer.appendChild(wrapper);
+                inputsContainer.appendChild(input);
             }
         }
 
@@ -1851,36 +1831,27 @@
                 return;
             }
 
-            // Mostrar estado guardando
-            const btnGuardar = document.querySelector('#formReceta button[type="submit"]');
-            const textoOriginal = btnGuardar ? btnGuardar.textContent : '';
-            if (btnGuardar) { btnGuardar.textContent = '⏳ Guardando...'; btnGuardar.disabled = true; }
-
-            try {
-                if (recetaEditandoId) {
-                    const receta = recetas.find(r => r.id === recetaEditandoId);
-                    receta.nombre = nombre;
-                    receta.observaciones = observaciones;
-                    receta.tamanos = tamanos;
-                    receta.bloques = bloquesData;
-                    console.log('Guardando receta:', JSON.stringify({id: receta.id, nombre: receta.nombre, bloques: receta.bloques.length}));
-                    await guardarReceta_supa(receta);
-                } else {
-                    const nueva = {
-                        id: Date.now(), nombre, observaciones,
-                        fecha: new Date().toISOString(),
-                        favorito: false, tamanos, bloques: bloquesData
-                    };
-                    recetas.push(nueva);
-                    await guardarReceta_supa(nueva);
-                }
-                renderRecetas();
-                cerrarModalReceta();
-            } catch(err) {
-                console.error('Error guardando:', err);
-                alert('❌ Error al guardar. Verificá tu conexión e intentá de nuevo.');
-                if (btnGuardar) { btnGuardar.textContent = textoOriginal; btnGuardar.disabled = false; }
+            if (recetaEditandoId) {
+                const receta = recetas.find(r => r.id === recetaEditandoId);
+                receta.nombre = nombre;
+                receta.observaciones = observaciones;
+                receta.tamanos = tamanos;
+                receta.bloques = bloquesData;
+                await guardarReceta_supa(receta);
+            } else {
+                recetas.push({
+                    id: Date.now(),
+                    nombre,
+                    observaciones,
+                    fecha: new Date().toISOString(),
+                    favorito: false,
+                    tamanos,
+                    bloques: bloquesData
+                });
+                await guardarReceta_supa(recetas[recetas.length-1]);
             }
+            renderRecetas();
+            cerrarModalReceta();
         }
 
         async function eliminarRecetaActual() {

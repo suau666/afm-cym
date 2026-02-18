@@ -1235,22 +1235,22 @@
             },
             async upsertByField(tabla, data, field) {
                 const val = encodeURIComponent(data[field]);
-                const checkR = await fetch(`${SUPABASE_URL}/rest/v1/${tabla}?${field}=eq.${val}&select=${field}`, {
-                    headers: HEADERS
-                });
-                const rows = checkR.ok ? await checkR.json() : [];
-                const method = rows.length > 0 ? 'PATCH' : 'POST';
-                const url = rows.length > 0
-                    ? `${SUPABASE_URL}/rest/v1/${tabla}?${field}=eq.${val}`
-                    : `${SUPABASE_URL}/rest/v1/${tabla}`;
-                const r = await fetch(url, {
-                    method,
-                    headers: HEADERS,
+                // Intentar PATCH primero
+                const patchR = await fetch(`${SUPABASE_URL}/rest/v1/${tabla}?${field}=eq.${val}`, {
+                    method: 'PATCH',
+                    headers: { ...HEADERS, 'Prefer': 'return=representation' },
                     body: JSON.stringify(data)
                 });
-                if (!r.ok) {
-                    const err = await r.text();
-                    console.error('Error upsertByField:', err);
+                if (!patchR.ok) { console.error('upsertByField PATCH error:', await patchR.text()); return; }
+                const patched = await patchR.json();
+                // Si PATCH no actualizó nada (array vacío), hacer POST
+                if (!patched || patched.length === 0) {
+                    const postR = await fetch(`${SUPABASE_URL}/rest/v1/${tabla}`, {
+                        method: 'POST',
+                        headers: HEADERS,
+                        body: JSON.stringify(data)
+                    });
+                    if (!postR.ok) { console.error('upsertByField POST error:', await postR.text()); }
                 }
             }
         };
@@ -1322,18 +1322,13 @@
         }
 
         async function guardarPreciosManuales(nombre, precio) {
-            // Buscar si ya existe una fila para este nombre
-            const existente = preciosCookiesRows.find(r => r.nombre === nombre);
-            if (existente) {
-                // Actualizar fila existente — igual que ingredientes con supa.upsert por id
-                existente.precio = precio;
-                supa.upsert('precios_cookies', existente);
-            } else {
-                // Crear nueva fila con id numérico — igual que ingredientes
-                const nueva = { id: Date.now(), nombre, precio };
-                preciosCookiesRows.push(nueva);
-                supa.upsert('precios_cookies', nueva);
-            }
+            try {
+                await supa.upsertByField('precios_cookies', { nombre, precio }, 'nombre');
+                // Actualizar cache local
+                const existente = preciosCookiesRows.find(r => r.nombre === nombre);
+                if (existente) { existente.precio = precio; }
+                else { preciosCookiesRows.push({ nombre, precio }); }
+            } catch(e) { console.error('Error guardando precio:', e); }
         }
 
         // Datos iniciales
@@ -1433,10 +1428,10 @@
                 const ingredientesCount = r.bloques ? r.bloques.reduce((sum, b) => sum + (b.ingredientes?.length || 0), 0) : 0;
                 
                 card.innerHTML = `
-                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px;">
-                        <h3 style="margin: 0; padding-right: 10px;">${r.nombre}</h3>
-                        <button class="btn-favorito" onclick="event.stopPropagation(); toggleFavorito(${r.id})" style="font-size: 24px; background: none; border: none; cursor: pointer; flex-shrink: 0;">
-                            ${r.favorito ? '<span style="color:#f5c518;font-size:26px;">★</span>' : '<span style="color:#ccc;font-size:26px;">★</span>'}
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <h3 style="margin: 0;">${r.nombre}</h3>
+                        <button class="btn-favorito" onclick="event.stopPropagation(); toggleFavorito(${r.id})" style="background: none; border: none; cursor: pointer; flex-shrink: 0; padding: 0 0 0 10px; line-height: 1;">
+                            <span style="color:${r.favorito ? '#f5c518' : '#ddd'};font-size:32px;display:block;">★</span>
                         </button>
                     </div>
                     <p style="color: #718096; margin: 0; font-size: 14px;">${ingredientesCount} ingrediente${ingredientesCount !== 1 ? 's' : ''}</p>
@@ -1465,10 +1460,10 @@
                     const ingredientesCount = r.bloques ? r.bloques.reduce((sum, b) => sum + (b.ingredientes?.length || 0), 0) : 0;
                     
                     card.innerHTML = `
-                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px;">
-                            <h3 style="margin: 0; padding-right: 10px;">${r.nombre}</h3>
-                            <button class="btn-favorito" onclick="event.stopPropagation(); toggleFavorito(${r.id})" style="font-size: 24px; background: none; border: none; cursor: pointer; flex-shrink: 0;">
-                                ${r.favorito ? '<span style="color:#f5c518;font-size:26px;">★</span>' : '<span style="color:#ccc;font-size:26px;">★</span>'}
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <h3 style="margin: 0;">${r.nombre}</h3>
+                            <button class="btn-favorito" onclick="event.stopPropagation(); toggleFavorito(${r.id})" style="background: none; border: none; cursor: pointer; flex-shrink: 0; padding: 0 0 0 10px; line-height: 1;">
+                                <span style="color:${r.favorito ? '#f5c518' : '#ddd'};font-size:32px;display:block;">★</span>
                             </button>
                         </div>
                         <p style="color: #718096; margin: 0; font-size: 14px;">${ingredientesCount} ingrediente${ingredientesCount !== 1 ? 's' : ''}</p>

@@ -909,16 +909,28 @@
         
         /* ── DESKTOP: EDICIÓN DE RECETAS ── */
         @media (min-width: 769px) {
+            /* Ocultar el encabezado que genera sincronizarEncabezado */
+            .encabezados-columnas {
+                display: none !important;
+            }
+            
             .ingrediente-item {
                 display: grid !important;
                 gap: 10px;
                 padding: 12px;
-                align-items: center;
+                align-items: start;
+                background: white;
+                border: 2px solid #e2e8f0;
+                border-radius: 10px;
+                margin-bottom: 10px;
             }
             
-            /* Los inputs de cantidades en desktop se distribuyen equitativamente */
+            /* Los inputs de cantidades en desktop: grid horizontal */
             .ingrediente-item .inputs-cantidades {
-                display: contents !important;
+                display: grid !important;
+                grid-auto-flow: column;
+                gap: 10px;
+                grid-column: span 1;
             }
             
             .ingrediente-item .input-con-label {
@@ -932,15 +944,29 @@
                 font-size: 12px;
                 font-weight: 700;
                 color: #9b3060;
+                min-height: 18px;
             }
             
             .ingrediente-item .input-con-label input {
-                width: 100% !important;
-                padding: 10px;
+                width: 90px !important;
+                padding: 10px 8px;
                 text-align: center;
                 border: 2px solid #e2e8f0;
                 border-radius: 8px;
                 font-size: 14px;
+            }
+            
+            /* Ajustar el primer div (botones orden + select + eliminar) */
+            .ingrediente-item > div:first-child {
+                display: grid;
+                grid-template-columns: 40px 1fr 80px;
+                gap: 10px;
+                align-items: center;
+                grid-column: 1 / -1;
+            }
+            
+            .ingrediente-item > div:first-child::before {
+                display: none; /* Ocultar label "Ingrediente" en desktop */
             }
         }
 
@@ -973,16 +999,28 @@
         
         /* ── DESKTOP: EDICIÓN DE RECETAS ── */
         @media (min-width: 769px) {
+            /* Ocultar el encabezado que genera sincronizarEncabezado */
+            .encabezados-columnas {
+                display: none !important;
+            }
+            
             .ingrediente-item {
                 display: grid !important;
                 gap: 10px;
                 padding: 12px;
-                align-items: center;
+                align-items: start;
+                background: white;
+                border: 2px solid #e2e8f0;
+                border-radius: 10px;
+                margin-bottom: 10px;
             }
             
-            /* Los inputs de cantidades en desktop se distribuyen equitativamente */
+            /* Los inputs de cantidades en desktop: grid horizontal */
             .ingrediente-item .inputs-cantidades {
-                display: contents !important;
+                display: grid !important;
+                grid-auto-flow: column;
+                gap: 10px;
+                grid-column: span 1;
             }
             
             .ingrediente-item .input-con-label {
@@ -996,15 +1034,29 @@
                 font-size: 12px;
                 font-weight: 700;
                 color: #9b3060;
+                min-height: 18px;
             }
             
             .ingrediente-item .input-con-label input {
-                width: 100% !important;
-                padding: 10px;
+                width: 90px !important;
+                padding: 10px 8px;
                 text-align: center;
                 border: 2px solid #e2e8f0;
                 border-radius: 8px;
                 font-size: 14px;
+            }
+            
+            /* Ajustar el primer div (botones orden + select + eliminar) */
+            .ingrediente-item > div:first-child {
+                display: grid;
+                grid-template-columns: 40px 1fr 80px;
+                gap: 10px;
+                align-items: center;
+                grid-column: 1 / -1;
+            }
+            
+            .ingrediente-item > div:first-child::before {
+                display: none; /* Ocultar label "Ingrediente" en desktop */
             }
         }
 

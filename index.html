@@ -619,10 +619,16 @@
             }
             .receta-card {
                 padding: 15px;
+                border: none;
+                box-shadow: 0 4px 12px rgba(155,48,96,0.13), 0 1px 3px rgba(155,48,96,0.10);
+                background: linear-gradient(145deg, #fde8f3 80%, #f5c8e8 100%);
             }
             .receta-card h3 {
                 font-size: 19px;
                 padding-right: 30px;
+            }
+            .btn-favorito span {
+                font-size: 26px !important;
             }
 
             /* ── HEADER CON BOTONES ── */
@@ -885,15 +891,23 @@
 
 
             /* ── TABLA DETALLE RECETA ── */
+            .detalle-receta .tabla-wrapper {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                border-radius: 10px;
+                margin-bottom: 20px;
+            }
             .detalle-receta table {
-                width: 100%;
+                width: max-content;
+                min-width: 100%;
                 border-collapse: collapse;
             }
             .detalle-receta th,
             .detalle-receta td {
-                padding: 10px 8px;
+                padding: 10px 12px;
                 font-size: 13px;
                 border-bottom: 1px solid #f5d0e8;
+                white-space: nowrap;
             }
             .detalle-receta th {
                 background: #b05480;
@@ -902,12 +916,27 @@
                 top: 0;
                 z-index: 2;
             }
+            /* Columna ingrediente: sticky a la izquierda */
+            .detalle-receta th:first-child,
             .detalle-receta td:first-child {
+                position: sticky;
+                left: 0;
+                z-index: 3;
+                background: #fde8f3;
                 text-align: left;
+                min-width: 130px;
+                max-width: 160px;
+                white-space: normal;
+                border-right: 2px solid #e2b4d4;
+            }
+            .detalle-receta th:first-child {
+                background: #9b3060;
+                z-index: 4;
             }
             .detalle-receta th:not(:first-child),
             .detalle-receta td:not(:first-child) {
                 text-align: center;
+                min-width: 70px;
             }
 
             /* ── SAFE AREA ── */
@@ -1497,8 +1526,8 @@
             const anchoColumna = numTamanos === 1 ? '200px' : '150px';
 
             receta.bloques.forEach((bloque, index) => {
-                html += `<h4 style="margin-top: ${index > 0 ? '25px' : '0'};">${bloque.titulo}:</h4>`;
-                html += `<table style="margin-bottom: 20px; table-layout: fixed;"><colgroup><col style="width: auto;"></colgroup>`;
+                html += `<h4 style="margin-top: ${index > 0 ? '25px' : '0'};margin-bottom:10px;">${bloque.titulo}:</h4>`;
+                html += `<div class="tabla-wrapper"><table><colgroup><col style="min-width:130px;max-width:160px;"></colgroup>`;
                 
                 if (receta.tamanos && receta.tamanos.length > 0) {
                     receta.tamanos.forEach(() => {
@@ -1531,7 +1560,7 @@
                     }
                 });
                 
-                html += '</tbody></table>';
+                html += '</tbody></table></div>';
             });
 
             html += '<h4 style="margin-top: 25px;">Observaciones:</h4>';

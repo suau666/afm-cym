@@ -1100,36 +1100,33 @@
 
                 <div style="margin-bottom: 20px;">
                     <label style="font-weight: 600; color: #2d3748; margin-bottom: 12px; display: block;">Tamaños disponibles:</label>
-                    <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
-                        <button type="button" class="btn-tamano" data-tamano="C" onclick="toggleTamanoGlobal('C', this)">C</button>
-                        <button type="button" class="btn-tamano" data-tamano="M" onclick="toggleTamanoGlobal('M', this)">M</button>
-                        <button type="button" class="btn-tamano" data-tamano="G" onclick="toggleTamanoGlobal('G', this)">G</button>
-                        <button type="button" class="btn-tamano" data-tamano="XG" onclick="toggleTamanoGlobal('XG', this)">XG</button>
+                    <!-- Fila única: botones estándar + especiales intercalados -->
+                    <div id="tamanosBotonesRow" style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+                        <button type="button" class="btn-tamano" data-tamano="C" data-estandar="1" onclick="toggleTamanoGlobal('C', this)">C</button>
+                        <button type="button" class="btn-tamano" data-tamano="M" data-estandar="1" onclick="toggleTamanoGlobal('M', this)">M</button>
+                        <button type="button" class="btn-tamano" data-tamano="G" data-estandar="1" onclick="toggleTamanoGlobal('G', this)">G</button>
+                        <button type="button" class="btn-tamano" data-tamano="XG" data-estandar="1" onclick="toggleTamanoGlobal('XG', this)">XG</button>
                     </div>
-                    <!-- Chips de tamaños especiales (no estándar) -->
-                    <div id="tamanosEspecialesContainer" style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px;"></div>
                     <!-- Input para agregar tamaño especial -->
                     <div style="display: flex; gap: 8px; align-items: center; margin-top: 10px;">
                         <input type="text" id="inputNuevoTamano" placeholder="Ej: 20x28, Familiar..." 
-                               style="padding: 8px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 14px; width: 180px;"
+                               style="padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 14px; width: 180px;"
                                onkeydown="if(event.key==='Enter'){event.preventDefault();agregarTamanoEspecial();}">
                         <button type="button" onclick="agregarTamanoEspecial()" 
-                                style="padding: 8px 14px; background: #c9547a; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600;">+ Agregar</button>
+                                class="btn-tamano" style="min-width:unset; padding: 10px 16px; font-size:14px;">+ Agregar</button>
                     </div>
                     <input type="hidden" id="tamanosReceta" value="">
-                    <small style="color: #718096; display: block; margin-top: 8px;">Selecciona los tamaños estándar o agregaá uno especial (ej: 20x28). Se aplican a todos los bloques.</small>
+                    <small style="color: #718096; display: block; margin-top: 8px;">Activá los tamaños estándar o agregaá uno especial. Usá ◀▶ para reordenar.</small>
                 </div>
 
                 <h4 style="margin-top: 20px; color: #c9547a;">Bloques de Ingredientes</h4>
                 <div id="bloquesIngredientes"></div>
                 <button type="button" class="btn btn-success" onclick="agregarBloqueIngredientes()">➕ Agregar Bloque</button>
 
-                <div style="margin-top: 30px; display: flex; gap: 10px; justify-content: space-between;">
-                    <button type="button" class="btn btn-danger" id="btnEliminarReceta" style="display: none;" onclick="eliminarRecetaActual()">🗑️ Eliminar Receta</button>
-                    <div style="display: flex; gap: 10px; justify-content: flex-end;">
-                        <button type="button" class="btn btn-secondary" onclick="cerrarModalReceta()">Cancelar</button>
-                        <button type="submit" class="btn">💾 Guardar Receta</button>
-                    </div>
+                <div id="botonesFooterReceta" style="margin-top: 30px; display: flex; gap: 10px; justify-content: flex-end;">
+                    <button type="button" class="btn btn-danger" id="btnEliminarReceta" style="display: none; margin-right: auto;" onclick="eliminarRecetaActual()">🗑️ Eliminar Receta</button>
+                    <button type="button" class="btn btn-secondary" onclick="cerrarModalReceta()">Cancelar</button>
+                    <button type="submit" class="btn">💾 Guardar Receta</button>
                 </div>
             </form>
         </div>
@@ -1483,7 +1480,8 @@
             
             // Resetear botones de tamaño y chips especiales
             document.querySelectorAll('.btn-tamano').forEach(btn => btn.classList.remove('active'));
-            document.getElementById('tamanosEspecialesContainer').innerHTML = '';
+            // Limpiar especiales del row
+            document.getElementById('tamanosBotonesRow').querySelectorAll('[data-estandar="0"]').forEach(el => el.remove());
             document.getElementById('inputNuevoTamano').value = '';
             
             document.getElementById('bloquesIngredientes').innerHTML = '';
@@ -1504,7 +1502,8 @@
             
             // Resetear botones de tamaño
             document.querySelectorAll('.btn-tamano').forEach(btn => btn.classList.remove('active'));
-            document.getElementById('tamanosEspecialesContainer').innerHTML = '';
+            // Limpiar especiales del row
+            document.getElementById('tamanosBotonesRow').querySelectorAll('[data-estandar="0"]').forEach(el => el.remove());
             
             // Separar tamaños estándar de especiales
             const TAMANOS_ESTANDAR = ['C', 'M', 'G', 'XG'];
@@ -1532,26 +1531,26 @@
 
         function toggleTamanoGlobal(tamano, btn) {
             btn.classList.toggle('active');
-            
-            const TAMANOS_ESTANDAR = ['C', 'M', 'G', 'XG'];
-            const botonesActivos = Array.from(document.querySelectorAll('.btn-tamano.active'))
-                .map(b => b.dataset.tamano);
-            
-            // Preservar tamaños especiales existentes
-            const actuales = document.getElementById('tamanosReceta').value.split(',').map(t => t.trim()).filter(t => t);
-            const especiales = actuales.filter(t => !TAMANOS_ESTANDAR.includes(t));
-            
-            document.getElementById('tamanosReceta').value = [...botonesActivos, ...especiales].join(', ');
+            sincronizarTamanos();
             actualizarTodosLosBloques();
         }
 
         function renderChipEspecial(tamano) {
-            const container = document.getElementById('tamanosEspecialesContainer');
-            const chip = document.createElement('div');
-            chip.style.cssText = 'display:inline-flex; align-items:center; gap:5px; background:#fde8f3; border:2px solid #c9547a; border-radius:8px; padding:5px 12px; font-size:14px; font-weight:600; color:#9b3060;';
-            chip.dataset.tamano = tamano;
-            chip.innerHTML = `${tamano} <button type="button" onclick="eliminarTamanoEspecial('${tamano}')" style="background:none;border:none;cursor:pointer;color:#c9547a;font-size:16px;line-height:1;padding:0;margin-left:2px;">×</button>`;
-            container.appendChild(chip);
+            const row = document.getElementById('tamanosBotonesRow');
+            const btn = document.createElement('div');
+            btn.className = 'btn-tamano active';
+            btn.dataset.tamano = tamano;
+            btn.dataset.estandar = '0';
+            btn.style.cssText = 'display:inline-flex; align-items:center; gap:4px; position:relative; padding-left:8px; padding-right:8px;';
+            btn.innerHTML = `
+                <button type="button" onclick="moverTamanoEspecial('${tamano}', -1)" title="Mover izquierda"
+                    style="background:none;border:none;cursor:pointer;color:white;font-size:12px;padding:0;opacity:0.8;line-height:1;">◀</button>
+                <span style="font-size:15px;font-weight:700;">${tamano}</span>
+                <button type="button" onclick="moverTamanoEspecial('${tamano}', 1)" title="Mover derecha"
+                    style="background:none;border:none;cursor:pointer;color:white;font-size:12px;padding:0;opacity:0.8;line-height:1;">▶</button>
+                <button type="button" onclick="eliminarTamanoEspecial('${tamano}')"
+                    style="background:none;border:none;cursor:pointer;color:white;font-size:14px;padding:0;opacity:0.7;margin-left:2px;line-height:1;">×</button>`;
+            row.appendChild(btn);
         }
 
         function agregarTamanoEspecial() {
@@ -1560,25 +1559,52 @@
             if (!nuevo) return;
             
             // Verificar que no exista ya
-            const actuales = document.getElementById('tamanosReceta').value.split(',').map(t => t.trim()).filter(t => t);
-            if (actuales.includes(nuevo)) { input.value = ''; return; }
+            const row = document.getElementById('tamanosBotonesRow');
+            const existentes = Array.from(row.querySelectorAll('[data-tamano]')).map(el => el.dataset.tamano);
+            if (existentes.includes(nuevo)) { input.value = ''; return; }
             
-            actuales.push(nuevo);
-            document.getElementById('tamanosReceta').value = actuales.join(', ');
             renderChipEspecial(nuevo);
+            sincronizarTamanos();
             input.value = '';
-            actualizarTodosLosBloques();
         }
 
         function eliminarTamanoEspecial(tamano) {
-            // Quitar del hidden
             const actuales = document.getElementById('tamanosReceta').value.split(',').map(t => t.trim()).filter(t => t && t !== tamano);
             document.getElementById('tamanosReceta').value = actuales.join(', ');
-            // Quitar el chip
-            const container = document.getElementById('tamanosEspecialesContainer');
-            container.querySelectorAll('[data-tamano]').forEach(chip => {
-                if (chip.dataset.tamano === tamano) chip.remove();
+            const row = document.getElementById('tamanosBotonesRow');
+            row.querySelectorAll('[data-estandar="0"]').forEach(el => {
+                if (el.dataset.tamano === tamano) el.remove();
             });
+            actualizarTodosLosBloques();
+        }
+
+        function moverTamanoEspecial(tamano, dir) {
+            // dir: -1 = izquierda, 1 = derecha
+            const row = document.getElementById('tamanosBotonesRow');
+            const hijos = Array.from(row.children);
+            const idx = hijos.findIndex(el => el.dataset && el.dataset.tamano === tamano);
+            if (idx < 0) return;
+            const nuevoIdx = idx + dir;
+            if (nuevoIdx < 0 || nuevoIdx >= hijos.length) return;
+            if (dir === -1) {
+                row.insertBefore(hijos[idx], hijos[nuevoIdx]);
+            } else {
+                row.insertBefore(hijos[nuevoIdx], hijos[idx]);
+            }
+            // Sincronizar el orden en tamanosReceta
+            sincronizarTamanos();
+        }
+
+        function sincronizarTamanos() {
+            const row = document.getElementById('tamanosBotonesRow');
+            const tamanos = [];
+            row.querySelectorAll('[data-tamano]').forEach(el => {
+                const t = el.dataset.tamano;
+                const esEstandar = el.dataset.estandar === '1';
+                if (esEstandar && el.classList.contains('active')) tamanos.push(t);
+                if (!esEstandar) tamanos.push(t);
+            });
+            document.getElementById('tamanosReceta').value = tamanos.join(', ');
             actualizarTodosLosBloques();
         }
 

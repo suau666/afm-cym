@@ -742,13 +742,16 @@
             .ingrediente-item .ing-fila-top {
                 display: flex !important;
                 flex-direction: row !important;
-                align-items: center;
+                align-items: stretch;
                 gap: 6px;
                 width: 100%;
-                overflow: hidden;
             }
             .ingrediente-item .ing-botones-orden {
                 flex-shrink: 0;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                gap: 2px;
             }
             .ingrediente-item .ing-botones-orden .btn-orden {
                 font-size: 30px;
@@ -757,16 +760,19 @@
                 line-height: 1;
                 color: #9b3060;
             }
-            .ingrediente-item .ing-fila-top .combobox-wrapper,
-            .ingrediente-item .ing-fila-top .ingrediente-select {
+            .ingrediente-item .ing-fila-top .combobox-wrapper {
                 flex: 1;
                 min-width: 0;
+                width: 0;
+                display: flex;
+                flex-direction: column;
             }
             .ingrediente-item .ing-fila-top .combobox-wrapper .combobox-input {
-                font-size: 13px;
-                padding: 8px 10px;
+                flex: 1;
                 width: 100%;
                 box-sizing: border-box;
+                font-size: 13px;
+                padding: 8px 10px;
             }
             .ingrediente-item .ingrediente-select {
                 flex: 1;

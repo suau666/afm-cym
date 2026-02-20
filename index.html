@@ -79,6 +79,34 @@
             to { transform: rotate(360deg); }
         }
 
+        /* ── COMBOBOX ── */
+        .combobox-wrapper { position: relative; width: 100%; }
+        .combobox-dropdown {
+            position: absolute;
+            top: calc(100% + 2px);
+            left: 0; right: 0;
+            background: white;
+            border: 2px solid #c9547a;
+            border-radius: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 9999;
+            box-shadow: 0 8px 24px rgba(155,48,96,0.15);
+            display: none;
+        }
+        .combobox-dropdown.open { display: block; }
+        .combobox-option {
+            padding: 9px 14px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #2d3748;
+            border-bottom: 1px solid #fde8f3;
+        }
+        .combobox-option:last-child { border-bottom: none; }
+        .combobox-option:hover { background: #fde8f3; color: #9b3060; font-weight: 600; }
+        .combobox-option.cb-selected { background: #c9547a; color: white; font-weight: 700; }
+        .combobox-empty { padding: 9px 14px; color: #a0aec0; font-size: 13px; font-style: italic; }
+
         @keyframes starPop {
             0%   { transform: scale(1); }
             40%  { transform: scale(1.4); }
@@ -993,9 +1021,8 @@
             <div class="selector-box" style="display: flex; gap: 20px; align-items: flex-end; flex-wrap: wrap;">
                 <div class="form-group" style="flex: 1; min-width: 300px; margin-bottom: 0;">
                     <label style="font-weight: 700; color: #9b3060; font-size: 16px; margin-bottom: 10px; display: block;">📋 Selecciona una Receta:</label>
-                    <select id="selectRecetaCosto" onchange="cargarRecetaParaCosto()" style="font-size: 16px; padding: 14px; border: 2px solid #c9547a; font-weight: 600;">
-                        <option value="">-- Selecciona una receta --</option>
-                    </select>
+                    <input type="text" id="selectRecetaCosto" data-receta-value="" placeholder="Buscar receta..." autocomplete="off"
+                        style="font-size: 16px; padding: 14px; border: 2px solid #c9547a; font-weight: 600; width: 100%; box-sizing: border-box; border-radius: 10px;">
                 </div>
                 <div class="form-group" style="width: 250px; margin-bottom: 0; display: none;" id="selectorTamano">
                     <label style="font-weight: 700; color: #9b3060; font-size: 16px; margin-bottom: 10px; display: block;">📏 Tamaño:</label>
@@ -1706,6 +1733,84 @@
             document.getElementById('modalReceta').classList.remove('active');
         }
 
+        // ── COMBOBOX REUTILIZABLE ──
+        // Crea un combobox sobre un elemento existente
+        // opciones: [{value, label}], onSelect(value), inputEl: el input existente a reemplazar
+        function mountCombobox(inputEl, opciones, onSelect, selectedValue = null) {
+            // Envolver en wrapper
+            const wrapper = document.createElement('div');
+            wrapper.className = 'combobox-wrapper';
+            inputEl.parentNode.insertBefore(wrapper, inputEl);
+            wrapper.appendChild(inputEl);
+
+            const dropdown = document.createElement('div');
+            dropdown.className = 'combobox-dropdown';
+            wrapper.appendChild(dropdown);
+
+            // Mantener valor interno seleccionado
+            let currentValue = selectedValue;
+            let currentLabel = selectedValue
+                ? (opciones.find(o => String(o.value) === String(selectedValue))?.label || '')
+                : '';
+            inputEl.value = currentLabel;
+
+            function renderOpciones(filtro = '') {
+                dropdown.innerHTML = '';
+                const f = filtro.toLowerCase();
+                const filtradas = f ? opciones.filter(o => o.label.toLowerCase().includes(f)) : opciones;
+                if (filtradas.length === 0) {
+                    dropdown.innerHTML = '<div class="combobox-empty">Sin resultados</div>';
+                    return;
+                }
+                filtradas.forEach(op => {
+                    const div = document.createElement('div');
+                    div.className = 'combobox-option' + (String(op.value) === String(currentValue) ? ' cb-selected' : '');
+                    div.textContent = op.label;
+                    div.addEventListener('mousedown', e => {
+                        e.preventDefault();
+                        currentValue = op.value;
+                        currentLabel = op.label;
+                        inputEl.value = op.label;
+                        dropdown.classList.remove('open');
+                        onSelect(op.value);
+                    });
+                    dropdown.appendChild(div);
+                });
+            }
+
+            inputEl.addEventListener('focus', () => {
+                renderOpciones(inputEl.value === currentLabel ? '' : inputEl.value);
+                dropdown.classList.add('open');
+            });
+            inputEl.addEventListener('input', () => {
+                currentValue = null; // deseleccionar hasta que elija
+                renderOpciones(inputEl.value);
+                dropdown.classList.add('open');
+            });
+            inputEl.addEventListener('blur', () => {
+                setTimeout(() => {
+                    dropdown.classList.remove('open');
+                    // Si no hay selección válida, restaurar el label anterior
+                    if (!currentValue) inputEl.value = currentLabel;
+                }, 150);
+            });
+            inputEl.addEventListener('keydown', e => {
+                if (e.key === 'Escape') { dropdown.classList.remove('open'); inputEl.value = currentLabel; }
+            });
+
+            // Exponer método para actualizar opciones (ej: cuando cambia la lista)
+            wrapper._updateOpciones = (newOps, newSelected = null) => {
+                opciones = newOps;
+                if (newSelected !== null) {
+                    currentValue = newSelected;
+                    currentLabel = newSelected ? (newOps.find(o => String(o.value) === String(newSelected))?.label || '') : '';
+                    inputEl.value = currentLabel;
+                }
+            };
+
+            return wrapper;
+        }
+
         function toggleCampoRinde(nombre) {
             const campo = document.getElementById('campoRinde');
             if (campo) campo.style.display = nombre.startsWith('🍪') ? 'block' : 'none';
@@ -1901,7 +2006,7 @@
             const tamanos = document.getElementById('tamanosReceta').value.split(',').map(t => t.trim()).filter(t => t);
             
             const ingredientesDelBloque = Array.from(container.querySelectorAll('.ingrediente-select'))
-                .map(s => parseInt(s.value))
+                .map(s => parseInt(s.getAttribute('data-ing-value') || '0'))
                 .filter(v => v);
             
             const ingredientesDisponibles = ingredientes.filter(ing => !ingredientesDelBloque.includes(ing.id));
@@ -1947,7 +2052,8 @@
                     <button type="button" class="btn-orden" onclick="moverIngrediente(${bloqueId}, ${ingId}, 'up')">▲</button>
                     <button type="button" class="btn-orden" onclick="moverIngrediente(${bloqueId}, ${ingId}, 'down')">▼</button>
                 </div>
-                <select class="ingrediente-select" required onchange="actualizarOpcionesBloque(${bloqueId})">${optionsHTML}</select>
+                <input type="text" class="ingrediente-select" data-ing-value="" placeholder="Buscar ingrediente..." autocomplete="off"
+                    style="padding:10px;border:2px solid #e2e8f0;border-radius:8px;font-size:14px;width:100%;box-sizing:border-box;">
                 ${inputsHTML}
                 <div style="text-align: center;">
                     <button type="button" class="btn btn-danger btn-small" onclick="eliminarIngredienteDeBloque(${ingId})">🗑️</button>
@@ -1955,6 +2061,22 @@
             `;
             
             container.appendChild(div);
+
+            // Montar combobox sobre el input de ingrediente
+            const inputIng = div.querySelector('.ingrediente-select');
+            const opcionesIng = ingredientesDisponibles.map(i => ({ value: i.id, label: i.nombre }));
+            // Agregar el actual si no estaba en disponibles
+            if (datosIng && !ingredientesDisponibles.find(i => i.id === datosIng.ingredienteId)) {
+                const ingActual = ingredientes.find(i => i.id === datosIng.ingredienteId);
+                if (ingActual) opcionesIng.push({ value: ingActual.id, label: ingActual.nombre });
+            }
+            const selectedVal = datosIng ? datosIng.ingredienteId : null;
+            if (selectedVal) inputIng.setAttribute('data-ing-value', selectedVal);
+            mountCombobox(inputIng, opcionesIng, (val) => {
+                inputIng.setAttribute('data-ing-value', val);
+                actualizarOpcionesBloque(bloqueId);
+            }, selectedVal);
+
             actualizarBotonesOrden(bloqueId);
             // Re-sincronizar encabezado con medidas reales
             requestAnimationFrame(() => sincronizarEncabezado(bloqueId));
@@ -2001,24 +2123,22 @@
             const items = Array.from(container.querySelectorAll('.ingrediente-item'));
             
             const seleccionados = items
-                .map(item => parseInt(item.querySelector('.ingrediente-select').value))
+                .map(item => parseInt(item.querySelector('.ingrediente-select').getAttribute('data-ing-value') || '0'))
                 .filter(v => v);
-            
+
             items.forEach(item => {
-                const select = item.querySelector('.ingrediente-select');
-                const valorActual = parseInt(select.value);
-                
-                const disponibles = ingredientes.filter(ing => 
+                const input = item.querySelector('.ingrediente-select');
+                const valorActual = parseInt(input.getAttribute('data-ing-value') || '0');
+                const disponibles = ingredientes.filter(ing =>
                     !seleccionados.includes(ing.id) || ing.id === valorActual
                 );
-                
-                let optionsHTML = '<option value="">-- Selecciona --</option>';
-                disponibles.forEach(ing => {
-                    const selected = ing.id === valorActual ? 'selected' : '';
-                    optionsHTML += `<option value="${ing.id}" ${selected}>${ing.nombre}</option>`;
-                });
-                
-                select.innerHTML = optionsHTML;
+                const wrapper = input.closest('.combobox-wrapper');
+                if (wrapper && wrapper._updateOpciones) {
+                    wrapper._updateOpciones(
+                        disponibles.map(i => ({ value: i.id, label: i.nombre })),
+                        valorActual || null
+                    );
+                }
             });
         }
 
@@ -2048,7 +2168,7 @@
                     const select = ingEl.querySelector('.ingrediente-select');
                     if (!select) return;
                     
-                    const ingredienteId = parseInt(select.value);
+                    const ingredienteId = parseInt(select.getAttribute('data-ing-value') || '0');
                     if (!ingredienteId) return;
                     
                     const cantidades = {};
@@ -2232,19 +2352,29 @@
         let ingredientesTemporales = [];
         let recetaActual = null;
 
+        let _comboboxCosto = null;
         function renderSelectRecetas() {
-            const select = document.getElementById('selectRecetaCosto');
-            select.innerHTML = '<option value="">-- Selecciona una receta --</option>';
-            
-            const ordenadas = [...recetas].filter(r => !r.nombre.startsWith('🍪')).sort((a, b) => a.nombre.localeCompare(b.nombre));
-            ordenadas.forEach(r => {
-                select.innerHTML += `<option value="${r.id}">${r.nombre}</option>`;
-            });
+            const input = document.getElementById('selectRecetaCosto');
+            const ordenadas = [...recetas]
+                .filter(r => !r.nombre.startsWith('🍪'))
+                .sort((a, b) => a.nombre.localeCompare(b.nombre));
+            const opciones = ordenadas.map(r => ({ value: r.id, label: r.nombre }));
+
+            if (_comboboxCosto) {
+                // Ya montado — solo actualizar opciones
+                const wrapper = input.closest('.combobox-wrapper');
+                if (wrapper && wrapper._updateOpciones) wrapper._updateOpciones(opciones, null);
+            } else {
+                _comboboxCosto = mountCombobox(input, opciones, (val) => {
+                    input.setAttribute('data-receta-value', val);
+                    cargarRecetaParaCosto();
+                }, null);
+            }
         }
 
         function cargarRecetaParaCosto() {
             const select = document.getElementById('selectRecetaCosto');
-            const recetaId = parseInt(select.value);
+            const recetaId = parseInt(select.getAttribute('data-receta-value') || '0');
 
             if (!recetaId) {
                 document.getElementById('areaCalculoCosto').style.display = 'none';

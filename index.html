@@ -725,19 +725,8 @@
             /* ── BLOQUE INGREDIENTES EN RECETA ── */
             .bloque-ingredientes { padding: 10px; }
             .bloque-titulo-input { font-size: 14px; padding: 8px; }
-            /* Label "Ingrediente" a la izquierda de la lista en mobile */
-            .ingrediente-item::before {
-                content: none !important;
-            }
-            .ingredientes-list::before {
-                content: 'Ingrediente';
-                display: block;
-                font-size: 11px;
-                font-weight: 700;
-                color: #9b3060;
-                margin-bottom: 4px;
-                padding-left: 2px;
-            }
+            /* Sin labels duplicados en mobile */
+            .ingrediente-item::before { content: none !important; }
             .ingrediente-item {
                 display: flex !important;
                 flex-direction: column;
@@ -759,19 +748,23 @@
                 flex-shrink: 0;
             }
             .ingrediente-item .ing-botones-orden .btn-orden {
-                font-size: 10px;
-                padding: 2px 5px;
+                font-size: 14px;
+                font-weight: 900;
+                padding: 1px 6px;
+                line-height: 1;
             }
             .ingrediente-item .ing-fila-top .combobox-wrapper,
             .ingrediente-item .ing-fila-top .ingrediente-select {
                 flex: 1;
                 min-width: 0;
+                width: 0; /* fuerza el flex a respetar el espacio disponible */
             }
             .ingrediente-item .ing-fila-top .combobox-wrapper .combobox-input {
                 font-size: 13px;
                 padding: 8px 10px;
                 width: 100%;
                 box-sizing: border-box;
+                display: block;
             }
             .ingrediente-item .ingrediente-select {
                 flex: 1;
@@ -1960,7 +1953,7 @@
             enc.style.cssText = 'display:flex; gap:10px; margin-bottom:10px; padding:0 12px; font-weight:600; color:#9b3060; font-size:14px; align-items:center;';
             const mk = (w, txt) => {
                 const d = document.createElement('div');
-                d.style.cssText = `width:${w}px; min-width:${w}px; flex-shrink:0; text-align:center;`;
+                d.style.cssText = `width:${w}px; min-width:${w}px; flex-shrink:0; text-align:left;`;
                 if (txt) d.textContent = txt;
                 return d;
             };

@@ -107,6 +107,7 @@
         .combobox-option.cb-selected { background: #c9547a; color: white; font-weight: 700; }
         .combobox-empty { padding: 9px 14px; color: #a0aec0; font-size: 13px; font-style: italic; }
         .combobox-input::placeholder { color: #718096; }
+        .ingrediente-item .inputs-cantidades input::placeholder { color: #718096; font-weight: 600; }
 
         @keyframes starPop {
             0%   { transform: scale(1); }
@@ -388,6 +389,21 @@
             text-align: center;
         }
 
+        /* Fila superior del ingrediente-item: botones + buscador */
+        .ing-fila-top {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 6px;
+            width: 100%;
+        }
+        .ing-botones-orden {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            align-items: center;
+            flex-shrink: 0;
+        }
         .btn-orden {
             background: none;
             border: none;
@@ -709,6 +725,19 @@
             /* ── BLOQUE INGREDIENTES EN RECETA ── */
             .bloque-ingredientes { padding: 10px; }
             .bloque-titulo-input { font-size: 14px; padding: 8px; }
+            /* Label "Ingrediente" a la izquierda de la lista en mobile */
+            .ingrediente-item::before {
+                content: none !important;
+            }
+            .ingredientes-list::before {
+                content: 'Ingrediente';
+                display: block;
+                font-size: 11px;
+                font-weight: 700;
+                color: #9b3060;
+                margin-bottom: 4px;
+                padding-left: 2px;
+            }
             .ingrediente-item {
                 display: flex !important;
                 flex-direction: column;
@@ -718,36 +747,35 @@
                 border: 2px solid #e2e8f0;
                 border-radius: 10px;
             }
-            .ingrediente-item > div:first-child {
-                display: flex;
-                flex-direction: row;
+            /* Fila top en mobile: botones a la izquierda, buscador a la derecha */
+            .ingrediente-item .ing-fila-top {
+                display: flex !important;
+                flex-direction: row !important;
                 align-items: center;
                 gap: 6px;
+                width: 100%;
             }
-            /* Botones ▲▼ en columna compacta a la izquierda del select */
-            .ingrediente-item > div:first-child > div:first-child {
-                display: flex !important;
-                flex-direction: column !important;
-                gap: 2px !important;
-                align-items: center;
+            .ingrediente-item .ing-botones-orden {
                 flex-shrink: 0;
             }
-            .ingrediente-item > div:first-child > div:first-child .btn-orden {
+            .ingrediente-item .ing-botones-orden .btn-orden {
                 font-size: 10px;
                 padding: 2px 5px;
+            }
+            .ingrediente-item .ing-fila-top .combobox-wrapper,
+            .ingrediente-item .ing-fila-top .ingrediente-select {
+                flex: 1;
+                min-width: 0;
+            }
+            .ingrediente-item .ing-fila-top .combobox-wrapper .combobox-input {
+                font-size: 13px;
+                padding: 8px 10px;
+                width: 100%;
+                box-sizing: border-box;
             }
             .ingrediente-item .ingrediente-select {
                 flex: 1;
                 min-width: 0;
-            }
-            /* Combobox wrapper dentro del item ocupa el espacio */
-            .ingrediente-item > div:first-child > .combobox-wrapper {
-                flex: 1;
-                min-width: 0;
-            }
-            .ingrediente-item > div:first-child > .combobox-wrapper .combobox-input {
-                font-size: 13px;
-                padding: 8px 10px;
             }
             .ingrediente-item .inputs-cantidades {
                 display: flex !important;
@@ -779,6 +807,10 @@
                 padding: 8px 4px;
                 font-size: 13px;
                 text-align: center;
+            }
+            .ingrediente-item .inputs-cantidades input::placeholder {
+                color: #718096;
+                font-weight: 600;
             }
 
             /* ── TABLA INGREDIENTES: sticky nombre, scroll horizontal ── */
@@ -1919,8 +1951,8 @@
             const primerItem = bloqueEl.querySelector('.ingrediente-item');
             if (!primerItem) return;
             const celdas = primerItem.children;
-            const anchoOrden    = celdas[0].getBoundingClientRect().width;
-            const anchoSelect   = primerItem.querySelector('.ingrediente-select').getBoundingClientRect().width;
+            // celdas[0] = ing-fila-top (botones+buscador juntos)
+            const anchoFilaTop  = celdas[0].getBoundingClientRect().width;
             const anchoInputs   = Array.from(primerItem.querySelectorAll('.inputs-cantidades input')).map(i => i.getBoundingClientRect().width);
             const anchoEliminar = celdas[celdas.length - 1].getBoundingClientRect().width;
             const enc = document.createElement('div');
@@ -1932,8 +1964,7 @@
                 if (txt) d.textContent = txt;
                 return d;
             };
-            enc.appendChild(mk(anchoOrden, ''));
-            enc.appendChild(mk(anchoSelect, 'Ingrediente'));
+            enc.appendChild(mk(anchoFilaTop, 'Ingrediente'));
             tamanos.forEach((t, i) => enc.appendChild(mk(anchoInputs[i] || 115, t)));
             enc.appendChild(mk(anchoEliminar, ''));
             bloqueEl.querySelector('.bloque-header').insertAdjacentElement('afterend', enc);
@@ -1943,7 +1974,7 @@
             const tamanos = document.getElementById('tamanosReceta').value.split(',').map(t => t.trim()).filter(t => t);
             const numColumnas = tamanos.length > 0 ? tamanos.length : 1;
             const anchoColumna = numColumnas === 4 ? '115px' : (numColumnas === 3 ? '130px' : (numColumnas === 2 ? '160px' : '200px'));
-            itemEl.style.gridTemplateColumns = `50px minmax(200px, 1fr) ${Array(numColumnas).fill(anchoColumna).join(' ')} 110px`;
+            itemEl.style.gridTemplateColumns = `minmax(200px, 1fr) ${Array(numColumnas).fill(anchoColumna).join(' ')} 110px`;
             
             const inputsContainer = itemEl.querySelector('.inputs-cantidades');
             if (!inputsContainer) return;
@@ -1963,6 +1994,7 @@
                 input.type = 'text';
                 input.inputMode = 'numeric';
                 input.value = valorNum ? parseInt(valorNum).toLocaleString('es-AR') : '';
+                input.placeholder = tamano;
                 input.dataset.tamano = tamano;
                 input.style.textAlign = 'center';
                 input.style.padding = '10px';
@@ -2031,7 +2063,7 @@
             
             const numColumnas = tamanos.length > 0 ? tamanos.length : 1;
             const anchoColumna = numColumnas === 4 ? '115px' : (numColumnas === 3 ? '130px' : (numColumnas === 2 ? '160px' : '200px'));
-            div.style.gridTemplateColumns = `50px minmax(200px, 1fr) ${Array(numColumnas).fill(anchoColumna).join(' ')} 110px`;
+            div.style.gridTemplateColumns = `minmax(200px, 1fr) ${Array(numColumnas).fill(anchoColumna).join(' ')} 110px`;
             
             let optionsHTML = '<option value="">-- Selecciona --</option>';
             ingredientesDisponibles.forEach(ing => {
@@ -2051,22 +2083,24 @@
                 tamanos.forEach(t => {
                     const val = datosIng && datosIng.cantidades ? (datosIng.cantidades[t] || '') : '';
                     const valFmt1 = val ? parseInt(val).toLocaleString('es-AR') : '';
-                    inputsHTML += `<div class="input-con-label"><label style="font-size:11px;font-weight:700;color:#a0aec0;">${t}</label><input type="text" inputmode="numeric" data-tamano="${t}" value="${valFmt1}" oninput="formatearInput(this)" style="text-align: center; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 14px;"></div>`;
+                    inputsHTML += `<input type="text" inputmode="numeric" data-tamano="${t}" value="${valFmt1}" placeholder="${t}" oninput="formatearInput(this)" style="text-align: center; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 14px;">`;
                 });
             } else {
                 const val = datosIng && datosIng.cantidades ? (datosIng.cantidades['Único'] || '') : '';
                 const valFmt2 = val ? parseInt(val).toLocaleString('es-AR') : '';
-                inputsHTML += `<div class="input-con-label"><label style="font-size:11px;font-weight:700;color:#a0aec0;">Único</label><input type="text" inputmode="numeric" data-tamano="Único" value="${valFmt2}" oninput="formatearInput(this)" style="text-align: center; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 14px;"></div>`;
+                inputsHTML += `<input type="text" inputmode="numeric" data-tamano="Único" value="${valFmt2}" placeholder="Único" oninput="formatearInput(this)" style="text-align: center; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 14px;">`;
             }
             inputsHTML += '</div>';
             
             div.innerHTML = `
-                <div style="display: flex; flex-direction: column; gap: 3px; align-items: center;">
-                    <button type="button" class="btn-orden" onclick="moverIngrediente(${bloqueId}, ${ingId}, 'up')">▲</button>
-                    <button type="button" class="btn-orden" onclick="moverIngrediente(${bloqueId}, ${ingId}, 'down')">▼</button>
+                <div class="ing-fila-top">
+                    <div class="ing-botones-orden">
+                        <button type="button" class="btn-orden" onclick="moverIngrediente(${bloqueId}, ${ingId}, 'up')">▲</button>
+                        <button type="button" class="btn-orden" onclick="moverIngrediente(${bloqueId}, ${ingId}, 'down')">▼</button>
+                    </div>
+                    <input type="text" class="ingrediente-select" data-ing-value="" placeholder="Buscar ingrediente..." autocomplete="off"
+                        style="flex:1;padding:10px;border:2px solid #e2e8f0;border-radius:8px;font-size:14px;box-sizing:border-box;">
                 </div>
-                <input type="text" class="ingrediente-select" data-ing-value="" placeholder="Buscar ingrediente..." autocomplete="off"
-                    style="padding:10px;border:2px solid #e2e8f0;border-radius:8px;font-size:14px;width:100%;box-sizing:border-box;">
                 ${inputsHTML}
                 <div style="text-align: center;">
                     <button type="button" class="btn btn-danger btn-small" onclick="eliminarIngredienteDeBloque(${ingId})">🗑️</button>

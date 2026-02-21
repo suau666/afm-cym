@@ -88,7 +88,7 @@
             background: white;
             border: 2px solid #c9547a;
             border-radius: 10px;
-            max-height: 200px;
+            max-height: 320px;
             overflow-y: auto;
             z-index: 9999;
             box-shadow: 0 8px 24px rgba(155,48,96,0.15);
@@ -771,7 +771,7 @@
                 flex: 1;
                 width: 100%;
                 box-sizing: border-box;
-                font-size: 25px !important;
+                font-size: 14px;
                 padding: 8px 10px;
             }
             .ingrediente-item .ingrediente-select {
@@ -1960,9 +1960,11 @@
             const enc = document.createElement('div');
             enc.className = 'encabezados-columnas';
             enc.style.cssText = 'display:flex; gap:10px; margin-bottom:10px; padding:0 12px; font-weight:600; color:#9b3060; font-size:14px; align-items:center;';
+            let _mkIdx = 0;
             const mk = (w, txt) => {
                 const d = document.createElement('div');
-                d.style.cssText = `width:${w}px; min-width:${w}px; flex-shrink:0; text-align:left;`;
+                d.style.cssText = `width:${w}px; min-width:${w}px; flex-shrink:0; text-align:${_mkIdx === 0 ? 'left' : 'center'};`;
+                _mkIdx++;
                 if (txt) d.textContent = txt;
                 return d;
             };
@@ -2025,6 +2027,10 @@
             const titulo = datosBloque ? datosBloque.titulo : '';
             div.innerHTML = `
                 <div class="bloque-header">
+                    <div style="display:flex;flex-direction:column;gap:2px;flex-shrink:0;">
+                        <button type="button" class="btn-orden" onclick="moverBloque(${bloqueId},'up')" style="font-size:14px;padding:1px 6px;">▲</button>
+                        <button type="button" class="btn-orden" onclick="moverBloque(${bloqueId},'down')" style="font-size:14px;padding:1px 6px;">▼</button>
+                    </div>
                     <input type="text" class="bloque-titulo-input" placeholder="Título (ej: Masa, Relleno)" value="${titulo}" required>
                     <button type="button" class="btn btn-danger btn-small" onclick="eliminarBloque(${bloqueId})">🗑️</button>
                 </div>
@@ -2044,6 +2050,17 @@
         function eliminarBloque(bloqueId) {
             const bloque = document.querySelector(`[data-bloque-id="${bloqueId}"]`);
             if (bloque) bloque.remove();
+        }
+
+        function moverBloque(bloqueId, direccion) {
+            const bloque = document.querySelector(`[data-bloque-id="${bloqueId}"]`);
+            if (!bloque) return;
+            const container = bloque.parentNode;
+            if (direccion === 'up' && bloque.previousElementSibling) {
+                container.insertBefore(bloque, bloque.previousElementSibling);
+            } else if (direccion === 'down' && bloque.nextElementSibling) {
+                container.insertBefore(bloque.nextElementSibling, bloque);
+            }
         }
 
         function agregarIngredienteABloque(bloqueId, datosIng = null) {

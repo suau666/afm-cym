@@ -771,7 +771,7 @@
                 flex: 1;
                 width: 100%;
                 box-sizing: border-box;
-                font-size: 25px;
+                font-size: 25px !important;
                 padding: 8px 10px;
             }
             .ingrediente-item .ingrediente-select {
@@ -1787,6 +1787,7 @@
             const wrapper = document.createElement('div');
             wrapper.className = 'combobox-wrapper';
             inputEl.parentNode.insertBefore(wrapper, inputEl);
+            inputEl.classList.add('combobox-input');
             wrapper.appendChild(inputEl);
 
             const dropdown = document.createElement('div');

@@ -1798,10 +1798,21 @@
             function posicionarDropdown() {
                 const rect = wrapper.getBoundingClientRect();
                 dropdown.style.position = 'fixed';
-                dropdown.style.top = (rect.bottom + 2) + 'px';
                 dropdown.style.left = rect.left + 'px';
                 dropdown.style.width = rect.width + 'px';
                 dropdown.style.zIndex = '99999';
+                const spaceBelow = window.innerHeight - rect.bottom - 4;
+                const spaceAbove = rect.top - 4;
+                const maxH = 320;
+                if (spaceBelow >= Math.min(maxH, 150) || spaceBelow >= spaceAbove) {
+                    dropdown.style.top = (rect.bottom + 2) + 'px';
+                    dropdown.style.bottom = '';
+                    dropdown.style.maxHeight = Math.min(maxH, spaceBelow) + 'px';
+                } else {
+                    dropdown.style.top = '';
+                    dropdown.style.bottom = (window.innerHeight - rect.top + 2) + 'px';
+                    dropdown.style.maxHeight = Math.min(maxH, spaceAbove) + 'px';
+                }
             }
 
             // Mantener valor interno seleccionado
@@ -1837,9 +1848,20 @@
 
             function posicionarDropdown() {
                 const rect = inputEl.getBoundingClientRect();
-                dropdown.style.top = (rect.bottom + 2) + 'px';
                 dropdown.style.left = rect.left + 'px';
                 dropdown.style.width = rect.width + 'px';
+                const spaceBelow2 = window.innerHeight - rect.bottom - 4;
+                const spaceAbove2 = rect.top - 4;
+                const maxH2 = 320;
+                if (spaceBelow2 >= Math.min(maxH2, 150) || spaceBelow2 >= spaceAbove2) {
+                    dropdown.style.top = (rect.bottom + 2) + 'px';
+                    dropdown.style.bottom = '';
+                    dropdown.style.maxHeight = Math.min(maxH2, spaceBelow2) + 'px';
+                } else {
+                    dropdown.style.top = '';
+                    dropdown.style.bottom = (window.innerHeight - rect.top + 2) + 'px';
+                    dropdown.style.maxHeight = Math.min(maxH2, spaceAbove2) + 'px';
+                }
             }
             inputEl.addEventListener('focus', () => {
                 renderOpciones(inputEl.value === currentLabel ? '' : inputEl.value);
@@ -1970,25 +1992,45 @@
             if (tamanos.length === 0) return;
             const primerItem = bloqueEl.querySelector('.ingrediente-item');
             if (!primerItem) return;
-            const celdas = primerItem.children;
-            // celdas[0] = ing-fila-top (botones+buscador juntos)
-            const anchoFilaTop  = celdas[0].getBoundingClientRect().width;
-            const anchoInputs   = Array.from(primerItem.querySelectorAll('.inputs-cantidades input')).map(i => i.getBoundingClientRect().width);
-            const anchoEliminar = celdas[celdas.length - 1].getBoundingClientRect().width;
+            // Medir elementos individualmente para alineación exacta
+            const filaTop    = primerItem.querySelector('.ing-fila-top');
+            const botonesEl  = primerItem.querySelector('.ing-botones-orden');
+            const comboEl    = primerItem.querySelector('.combobox-wrapper') || primerItem.querySelector('.ingrediente-select');
+            const inputsEls  = Array.from(primerItem.querySelectorAll('.inputs-cantidades input'));
+            const eliminarEl = primerItem.querySelector('.btn.btn-danger');
+            const rFila   = filaTop    ? filaTop.getBoundingClientRect()    : null;
+            const rBotones= botonesEl  ? botonesEl.getBoundingClientRect()  : null;
+            const rCombo  = comboEl    ? comboEl.getBoundingClientRect()    : null;
+            const rElim   = eliminarEl ? eliminarEl.parentElement.getBoundingClientRect() : null;
+            if (!rFila || !rCombo) return;
             const enc = document.createElement('div');
             enc.className = 'encabezados-columnas';
-            enc.style.cssText = 'display:flex; gap:10px; margin-bottom:10px; padding:0 12px; font-weight:600; color:#9b3060; font-size:14px; align-items:center;';
-            let _mkIdx = 0;
-            const mk = (w, txt) => {
+            // Posicionar el enc alineado con el item, compensando el padding del item
+            const itemRect = primerItem.getBoundingClientRect();
+            enc.style.cssText = 'display:flex; gap:0; margin-bottom:10px; padding:0 12px; font-weight:600; color:#9b3060; font-size:14px; align-items:center;';
+            const mk = (w, txt, align='center') => {
                 const d = document.createElement('div');
-                d.style.cssText = `width:${w}px; min-width:${w}px; flex-shrink:0; text-align:${_mkIdx === 0 ? 'left' : 'center'};`;
-                _mkIdx++;
+                d.style.cssText = `width:${w}px; min-width:${w}px; flex-shrink:0; text-align:${align};`;
                 if (txt) d.textContent = txt;
                 return d;
             };
-            enc.appendChild(mk(anchoFilaTop, 'Ingrediente'));
-            tamanos.forEach((t, i) => enc.appendChild(mk(anchoInputs[i] || 115, t)));
-            enc.appendChild(mk(anchoEliminar, ''));
+            // Espacio de botones (gap incluido)
+            const gapBotonesCombo = rCombo.left - (rBotones ? rBotones.right : rFila.left);
+            const anchoBotones = rBotones ? (rBotones.width + gapBotonesCombo) : 0;
+            if (anchoBotones > 0) enc.appendChild(mk(anchoBotones, ''));
+            // Label "Ingrediente" alineado con el combobox
+            enc.appendChild(mk(rCombo.width, 'Ingrediente', 'left'));
+            // Tamaños
+            inputsEls.forEach((inp, i) => {
+                const gap = i === 0 ? (inp.getBoundingClientRect().left - rCombo.right) : (inp.getBoundingClientRect().left - inputsEls[i-1].getBoundingClientRect().right);
+                enc.appendChild(mk(inp.getBoundingClientRect().width + gap, tamanos[i] || '', 'center'));
+            });
+            // Espacio eliminar
+            if (rElim) {
+                const lastInp = inputsEls[inputsEls.length - 1];
+                const gapElim = rElim.left - (lastInp ? lastInp.getBoundingClientRect().right : rCombo.right);
+                enc.appendChild(mk(rElim.width + gapElim, ''));
+            }
             bloqueEl.querySelector('.bloque-header').insertAdjacentElement('afterend', enc);
         }
 

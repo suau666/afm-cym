@@ -82,17 +82,16 @@
         /* ── COMBOBOX ── */
         .combobox-wrapper { position: relative; width: 100%; }
         .combobox-dropdown {
-            position: absolute;
-            top: calc(100% + 2px);
-            left: 0; right: 0;
+            position: fixed;
             background: white;
             border: 2px solid #c9547a;
             border-radius: 10px;
             max-height: 320px;
             overflow-y: auto;
-            z-index: 9999;
+            z-index: 99999;
             box-shadow: 0 8px 24px rgba(155,48,96,0.15);
             display: none;
+            box-sizing: border-box;
         }
         .combobox-dropdown.open { display: block; }
         .combobox-option {
@@ -556,6 +555,7 @@
             border-radius: 15px;
             border: 2px solid #e2e8f0;
             margin-bottom: 25px;
+            overflow: visible;
         }
 
         .btn-tamano {
@@ -1792,7 +1792,17 @@
 
             const dropdown = document.createElement('div');
             dropdown.className = 'combobox-dropdown';
-            wrapper.appendChild(dropdown);
+            // Mover dropdown al body para evitar recorte por overflow:hidden de padres
+            document.body.appendChild(dropdown);
+
+            function posicionarDropdown() {
+                const rect = wrapper.getBoundingClientRect();
+                dropdown.style.position = 'fixed';
+                dropdown.style.top = (rect.bottom + 2) + 'px';
+                dropdown.style.left = rect.left + 'px';
+                dropdown.style.width = rect.width + 'px';
+                dropdown.style.zIndex = '99999';
+            }
 
             // Mantener valor interno seleccionado
             let currentValue = selectedValue;
@@ -1825,13 +1835,21 @@
                 });
             }
 
+            function posicionarDropdown() {
+                const rect = inputEl.getBoundingClientRect();
+                dropdown.style.top = (rect.bottom + 2) + 'px';
+                dropdown.style.left = rect.left + 'px';
+                dropdown.style.width = rect.width + 'px';
+            }
             inputEl.addEventListener('focus', () => {
                 renderOpciones(inputEl.value === currentLabel ? '' : inputEl.value);
+                posicionarDropdown();
                 dropdown.classList.add('open');
             });
             inputEl.addEventListener('input', () => {
-                currentValue = null; // deseleccionar hasta que elija
+                currentValue = null;
                 renderOpciones(inputEl.value);
+                posicionarDropdown();
                 dropdown.classList.add('open');
             });
             inputEl.addEventListener('blur', () => {
@@ -1977,8 +1995,9 @@
         function actualizarInputsTamanos(bloqueId, ingId, itemEl) {
             const tamanos = document.getElementById('tamanosReceta').value.split(',').map(t => t.trim()).filter(t => t);
             const numColumnas = tamanos.length > 0 ? tamanos.length : 1;
-            const anchoColumna = numColumnas === 4 ? '115px' : (numColumnas === 3 ? '130px' : (numColumnas === 2 ? '160px' : '200px'));
-            itemEl.style.gridTemplateColumns = `minmax(200px, 1fr) ${Array(numColumnas).fill(anchoColumna).join(' ')} 110px`;
+            // Auto-ajuste: máx 6 tamaños, ancho se reduce automáticamente
+            const _nc1 = Math.min(numColumnas, 6);
+            itemEl.style.gridTemplateColumns = `minmax(160px, 2fr) ${Array(_nc1).fill('1fr').join(' ')} 70px`;
             
             const inputsContainer = itemEl.querySelector('.inputs-cantidades');
             if (!inputsContainer) return;
@@ -2005,6 +2024,8 @@
                 input.style.border = '2px solid #e2e8f0';
                 input.style.borderRadius = '8px';
                 input.style.fontSize = '14px';
+                input.style.width = '100%';
+                input.style.boxSizing = 'border-box';
                 input.addEventListener('input', () => formatearInput(input));
                 return input;
             };
@@ -2081,8 +2102,9 @@
             div.dataset.bloqueId = bloqueId;
             
             const numColumnas = tamanos.length > 0 ? tamanos.length : 1;
-            const anchoColumna = numColumnas === 4 ? '115px' : (numColumnas === 3 ? '130px' : (numColumnas === 2 ? '160px' : '200px'));
-            div.style.gridTemplateColumns = `minmax(200px, 1fr) ${Array(numColumnas).fill(anchoColumna).join(' ')} 110px`;
+            // Auto-ajuste: máx 6 tamaños, ancho se reduce automáticamente
+            const _nc2 = Math.min(numColumnas, 6);
+            div.style.gridTemplateColumns = `minmax(160px, 2fr) ${Array(_nc2).fill('1fr').join(' ')} 70px`;
             
             let optionsHTML = '<option value="">-- Selecciona --</option>';
             ingredientesDisponibles.forEach(ing => {
@@ -2102,12 +2124,12 @@
                 tamanos.forEach(t => {
                     const val = datosIng && datosIng.cantidades ? (datosIng.cantidades[t] || '') : '';
                     const valFmt1 = val ? parseInt(val).toLocaleString('es-AR') : '';
-                    inputsHTML += `<input type="text" inputmode="numeric" data-tamano="${t}" value="${valFmt1}" placeholder="${t}" oninput="formatearInput(this)" style="text-align: center; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 14px;">`;
+                    inputsHTML += `<input type="text" inputmode="numeric" data-tamano="${t}" value="${valFmt1}" placeholder="${t}" oninput="formatearInput(this)" style="width:100%;text-align:center;padding:10px;border:2px solid #e2e8f0;border-radius:8px;font-size:14px;box-sizing:border-box;">`;
                 });
             } else {
                 const val = datosIng && datosIng.cantidades ? (datosIng.cantidades['Único'] || '') : '';
                 const valFmt2 = val ? parseInt(val).toLocaleString('es-AR') : '';
-                inputsHTML += `<input type="text" inputmode="numeric" data-tamano="Único" value="${valFmt2}" placeholder="Único" oninput="formatearInput(this)" style="text-align: center; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 14px;">`;
+                inputsHTML += `<input type="text" inputmode="numeric" data-tamano="Único" value="${valFmt2}" placeholder="Único" oninput="formatearInput(this)" style="width:100%;text-align:center;padding:10px;border:2px solid #e2e8f0;border-radius:8px;font-size:14px;box-sizing:border-box;">`;
             }
             inputsHTML += '</div>';
             

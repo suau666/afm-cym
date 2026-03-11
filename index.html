@@ -1042,6 +1042,27 @@
         
 
         </style>
+<!-- PANTALLA LOGIN -->
+<div id="loginScreen" style="display:none; position:fixed; inset:0; background:linear-gradient(135deg,#fde8f3 0%,#f5c8e8 100%); z-index:99999; display:flex; align-items:center; justify-content:center;">
+    <div style="background:white; border-radius:24px; padding:40px 36px; width:90%; max-width:400px; box-shadow:0 20px 60px rgba(155,48,96,0.2); text-align:center;">
+        <div style="font-size:48px; margin-bottom:8px;">🍰</div>
+        <h2 style="color:#9b3060; font-size:26px; margin-bottom:4px;">Recetario</h2>
+        <p style="color:#c9547a; font-size:14px; margin-bottom:28px;">Ingresá para continuar</p>
+        <div id="loginError" style="display:none; background:#fee2e2; color:#c53030; border-radius:10px; padding:10px 14px; font-size:13px; margin-bottom:16px;"></div>
+        <input type="email" id="loginEmail" placeholder="Email" autocomplete="email"
+            style="width:100%; box-sizing:border-box; padding:13px 16px; border:2px solid #e2e8f0; border-radius:12px; font-size:15px; margin-bottom:12px; outline:none;"
+            onfocus="this.style.borderColor='#c9547a'" onblur="this.style.borderColor='#e2e8f0'">
+        <input type="password" id="loginPassword" placeholder="Contraseña" autocomplete="current-password"
+            style="width:100%; box-sizing:border-box; padding:13px 16px; border:2px solid #e2e8f0; border-radius:12px; font-size:15px; margin-bottom:20px; outline:none;"
+            onfocus="this.style.borderColor='#c9547a'" onblur="this.style.borderColor='#e2e8f0'"
+            onkeydown="if(event.key==='Enter') hacerLogin()">
+        <button onclick="hacerLogin()" id="loginBtn"
+            style="width:100%; padding:14px; background:linear-gradient(135deg,#c9547a,#9b3060); color:white; border:none; border-radius:12px; font-size:16px; font-weight:700; cursor:pointer;">
+            Ingresar
+        </button>
+    </div>
+</div>
+
 <div class="container">
         <div class="tabs">
             <button class="tab active" onclick="cambiarTab(event, 'recetas')">📋 Recetas</button>
@@ -1292,21 +1313,22 @@
         const SUPABASE_URL = 'https://rdpgokflbghswjwtmlzq.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_L4yEJdwiQw287zZ3eLhCBQ_BZNlk6M5';
 
-        const HEADERS_READ = {
+        let _authToken = null;
+        const getHeadersRead  = () => ({
             'apikey': SUPABASE_KEY,
-            'Authorization': `Bearer ${SUPABASE_KEY}`
-        };
-        const HEADERS_WRITE = {
+            'Authorization': `Bearer ${_authToken || SUPABASE_KEY}`
+        });
+        const getHeadersWrite = () => ({
             'apikey': SUPABASE_KEY,
-            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Authorization': `Bearer ${_authToken || SUPABASE_KEY}`,
             'Content-Type': 'application/json',
             'Prefer': 'return=minimal'
-        };
+        });;
 
         const supa = {
             async get(tabla, orderBy = 'id') {
                 const r = await fetch(`${SUPABASE_URL}/rest/v1/${tabla}?select=*&order=${orderBy}`, {
-                    headers: HEADERS_READ
+                    headers: getHeadersRead()
                 });
                 if (!r.ok) { console.error('GET error', tabla, r.status, await r.text()); return []; }
                 return r.json();
@@ -1314,7 +1336,7 @@
             async upsert(tabla, data) {
                 // Verificar si existe por id
                 const checkR = await fetch(`${SUPABASE_URL}/rest/v1/${tabla}?id=eq.${data.id}&select=id`, {
-                    headers: HEADERS_READ
+                    headers: getHeadersRead()
                 });
                 if (!checkR.ok) { throw new Error(`Check failed (${checkR.status}): ${await checkR.text()}`); }
                 const rows = await checkR.json();
@@ -1325,7 +1347,7 @@
                 console.log(`supa.upsert ${tabla} → ${method}`, data);
                 const r = await fetch(url, {
                     method,
-                    headers: HEADERS_WRITE,
+                    headers: getHeadersWrite(),
                     body: JSON.stringify(data)
                 });
                 if (!r.ok) {
@@ -1337,7 +1359,7 @@
             async delete(tabla, id) {
                 const r = await fetch(`${SUPABASE_URL}/rest/v1/${tabla}?id=eq.${id}`, {
                     method: 'DELETE',
-                    headers: HEADERS_WRITE
+                    headers: getHeadersWrite()
                 });
                 if (!r.ok) { const e = await r.text(); throw new Error(`DELETE (${r.status}): ${e}`); }
                 console.log(`✓ supa.delete ${tabla} id=${id} OK`);
@@ -1430,6 +1452,35 @@
 
         // Datos iniciales
         // ===== INICIALIZACIÓN SUPABASE =====
+        async function hacerLogin() {
+            const email = document.getElementById('loginEmail').value.trim();
+            const pass  = document.getElementById('loginPassword').value;
+            const btn   = document.getElementById('loginBtn');
+            const err   = document.getElementById('loginError');
+            err.style.display = 'none';
+            btn.textContent = 'Ingresando...';
+            btn.disabled = true;
+            try {
+                const r = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+                    method: 'POST',
+                    headers: { 'apikey': SUPABASE_KEY, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password: pass })
+                });
+                const data = await r.json();
+                if (!r.ok) throw new Error(data.error_description || data.msg || 'Error de login');
+                _authToken = data.access_token;
+                // Guardar sesión en sessionStorage para no pedir login al recargar en el mismo tab
+                sessionStorage.setItem('sb_token', _authToken);
+                document.getElementById('loginScreen').style.display = 'none';
+                await inicializarApp();
+            } catch(e) {
+                err.textContent = e.message === 'Invalid login credentials' ? 'Email o contraseña incorrectos' : e.message;
+                err.style.display = 'block';
+                btn.textContent = 'Ingresar';
+                btn.disabled = false;
+            }
+        }
+
         async function inicializarApp() {
             mostrarCargando(true);
             try {
@@ -2672,7 +2723,23 @@
             document.getElementById('costox3').textContent = '$' + formatearPrecio(costox3);
         }
 
-        inicializarApp();
+        // Arranque: verificar sesión guardada o mostrar login
+        (async () => {
+            const saved = sessionStorage.getItem('sb_token');
+            if (saved) {
+                // Verificar que el token siga válido
+                const r = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+                    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${saved}` }
+                });
+                if (r.ok) {
+                    _authToken = saved;
+                    await inicializarApp();
+                    return;
+                }
+                sessionStorage.removeItem('sb_token');
+            }
+            document.getElementById('loginScreen').style.display = 'flex';
+        })();
     </script>
 
     <!-- Modal Cámara -->
